@@ -140,7 +140,7 @@ export default function BarraSuperior() {
       <IconButton aria-label="show 4 items in cart" color="inherit">
             <ShoppingCartIcon />
         </IconButton>
-        <p>Messages</p>
+        <p>New Messages</p>
       </MenuItem>
       <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
