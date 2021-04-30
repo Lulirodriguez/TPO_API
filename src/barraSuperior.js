@@ -15,6 +15,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
+import logo from './mysportKit-logo.jpeg';
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -32,6 +34,16 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
     },
   },
+  image:{
+    width: '188px',
+    height: '29px',
+  },
+  searchContainer:{
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -39,11 +51,11 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
+    marginRight: 0,
+    marginLeft: theme.spacing(2),
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
+    [theme.breakpoints.up('lg')]: {
+      marginLeft: theme.spacing(130),
       width: 'auto',
     },
   },
@@ -66,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '114ch',
+      width: '40ch',
     },
   },
   sectionDesktop: {
@@ -161,6 +173,7 @@ export default function BarraSuperior() {
       </MenuItem>
     </Menu>
   );
+  // const logo = require('./mysportKit-logo.jpeg');
 
   return (
     <div className={classes.grow}>
@@ -174,21 +187,24 @@ export default function BarraSuperior() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
+          <img alt="" src={logo} className={classes.image} />
+          {/* <Typography className={classes.title} variant="h6" noWrap> 
             Winner Sports
-          </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+          </Typography>  */}
+          <div className={classes.searchContainer}>
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': 'search' }}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>

@@ -1,0 +1,21 @@
+.btn-dark {
+    color: #fff;
+    background-color: black;
+    background-color: cutom-color;
+    border-color: black;
+    border-color: cutom-cor;
+}
+
+.categorybutton {
+    background-color: black;
+    color: white;   
+    padding-bottom: 1em;
+    padding-left: 2.5em;
+    padding-right: 2.5em;
+    border-color: black;
+}
+
+.salebutton {
+    color: red !important;
+    padding-bottom: 1em;
+}
