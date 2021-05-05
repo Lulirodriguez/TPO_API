@@ -4,7 +4,6 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -43,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+   
+    
   },
   search: {
     position: 'relative',
@@ -52,10 +53,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginRight: 0,
-    marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(0),
     width: '100%',
     [theme.breakpoints.up('lg')]: {
-      marginLeft: theme.spacing(130),
+      marginLeft: theme.spacing(0),
       width: 'auto',
     },
   },
@@ -189,7 +190,7 @@ export default function BarraSuperior() {
           </IconButton>
           <img alt="" src={logo} className={classes.image} />
           {/* <Typography className={classes.title} variant="h6" noWrap> 
-            Winner Sports
+            MYSPORT KIT
           </Typography>  */}
           <div className={classes.searchContainer}>
             <div className={classes.search}>

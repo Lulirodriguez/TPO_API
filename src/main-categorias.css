@@ -4,6 +4,8 @@
     background-color: cutom-color;
     border-color: black;
     border-color: cutom-cor;
+    font-family: "Lucida Console", "Courier New", monospace;
+    
 }
 
 .categorybutton {
@@ -18,4 +20,8 @@
 .salebutton {
     color: red !important;
     padding-bottom: 1em;
+}
+
+@media screen and (max-width: 600px) {
+
 }

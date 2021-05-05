@@ -1,6 +1,13 @@
 import './carousel.css';
 import Carousel from 'react-bootstrap/Carousel'
 
+import img1 from './img1.webp';
+import img3 from './img3.jpg';
+import img4 from './img4.jpg';
+import img5 from './img 5.jpg';
+import img6 from './img6.webp';
+
+
 export default function HomeCarousel() {
     return(
         <div className="container">
@@ -9,8 +16,8 @@ export default function HomeCarousel() {
                     <Carousel.Item>
                         <div>
                             <img
-                                className="d-block w-100"
-                                src="https://cdn.pixabay.com/photo/2015/07/02/10/22/training-828726_1280.jpg"
+                                className="d-block carousel-image"
+                                src={img1}
                                 alt="First slide"
                             />
                         </div>
@@ -22,27 +29,53 @@ export default function HomeCarousel() {
                     <Carousel.Item>
                         <div>
                             <img
-                                className="d-block w-100"
-                                src="https://cdn.pixabay.com/photo/2015/07/02/10/23/training-828741_1280.jpg"
-                                alt="First slide"
-                            />
-                        </div>
-                        <Carousel.Caption>
-                            <h3>Second slide label</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                    <Carousel.Item>
-                        <div>
-                            <img
-                                className="d-block w-100"
-                                src="https://cdn.pixabay.com/photo/2017/04/27/08/29/man-2264825_1280.jpg"
+                                className="d-block carousel-image"
+                                src = {img3}
                                 alt="Third slide"
                             />
                         </div>
                         <Carousel.Caption>
                             <h3>Third slide label</h3>
                             <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <div>
+                            <img
+                                className="d-block carousel-image"
+                                src={img4}
+                                alt="Fourth slide"
+                            />
+                        </div>
+                        <Carousel.Caption>
+                            <h3>Toao aoao ao </h3>
+                            <p>sgmmaemAEtr</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <div>
+                            <img
+                                className="d-block carousel-image"
+                                src={img6}
+                                alt="Fifth slide"
+                            />
+                        </div>
+                        <Carousel.Caption>
+                            <h3>hola mundo</h3>
+                            <p>esta es la quinta diapo</p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <div>
+                            <img
+                                className="d-block carousel-image"
+                                src={img5}
+                                alt="Fifth slide"
+                            />
+                        </div>
+                        <Carousel.Caption>
+                            <h3>hola gente</h3>
+                            <p>esta es la sexta diapo</p>
                         </Carousel.Caption>
                     </Carousel.Item>
                 </Carousel> 
