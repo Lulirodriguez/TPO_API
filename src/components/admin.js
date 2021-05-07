@@ -104,6 +104,7 @@ function Products({productos}) {
     const [nuevoNombre, setNuevoNombre] = useState('');
     const [nuevaDescripcion, setNuevaDescripcion] = useState('');
     const [nuevoPrecio, setNuevoPrecio] =useState('');
+    const [nuevoId, setNuevoId] = useState(0);
     const [products, setProducts] = useState(productos);
     const [idCounter, setIdCounter] = useState(0);
     // const [productsToDisplay, setProductsToDisplay] = useState([]);
@@ -151,8 +152,31 @@ function Products({productos}) {
       console.log('prev:', products);
     }
 
-    const editarProducto = (row) => {
-        // editar atributos del componente "objeto" del array -> ???
+    const editarProducto = (edited) => {
+      // let editedProduct = {
+      //   item: {
+      //     'id': 0,
+      //     'nombre': '',
+      //     'imagen': "https://source.unsplash.com/random",
+      //     'descripcion': '',
+      //     'precio': '',
+      //   }
+      // }
+      // editedProduct.id = edited.item.id;
+      // editedProduct.nombre = edited.item.nombre;
+      // editedProduct.descripcion = edited.item.descripcion;
+      // editedProduct.precio = edited.item.precio;
+      // let index = getIndexForItem(edited.item.id);
+        
+      // let editedProducts = [
+      //   ...products.slice(0, index),
+      //   editedProduct,
+      //   ...products.slice(index)
+      // ];
+
+      // setProducts(editedProducts);
+
+      // console.log('post:', products);
     }
 
     const eliminarProducto = (id) => {
@@ -205,9 +229,10 @@ function Products({productos}) {
                 <TableCell className={classes.darkBlend}>{row.item.precio}</TableCell>
                 <TableCell className={classes.darkBlend}> </TableCell>
                 <TableCell className={classes.darkBlend} align="right">
-                  <Button variant="contained" onClick={() => editarProducto(row)} className={classes.button}>
-                      Editar Producto
-                  </Button>
+                <Button className={classes.darkBlend} variant="outlined" color="primary" >
+                  Editar Producto
+                </Button>
+                  {/* <SimpleDialogEditDemo variant="contained" className={classes.button} text="Editar Producto" id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={() => editarProducto()} actual={row} /> */}
                 </TableCell>
                 <TableCell className={classes.darkBlend} align="right">
                   <Button variant="contained" onClick={() => eliminarProducto(row.item.id)} className={classes.button}>
@@ -290,7 +315,7 @@ SimpleDialog.propTypes = {
   selectedValue: PropTypes.string.isRequired,
 };
 
-function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto}) {
+function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto,actual}) {
   const classes = useStyles3();
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(emails[1]);
@@ -310,10 +335,114 @@ function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,prec
       <Button className={classes.darkBlend} variant="outlined" color="primary" onClick={handleClickOpen}>
         {text}
       </Button>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} agregarProducto={() => agregarProducto()}/>
+      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} agregarProducto={() => agregarProducto()} />
     </div>
   );
 }
+
+// // start
+// function SimpleDialogEdit({ onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
+//   const classes = useStyles3();
+
+//   const handleClose = () => {
+//     onClose(selectedValue);
+//   };
+
+//   const handleListItemClick = (value) => {
+//     onClose(value);
+//   };
+
+//   return (
+//     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+//       <DialogTitle id="simple-dialog-title">Editar Producto</DialogTitle>
+//       <List>
+//         <Table maxWidth="md" size="small">
+//           <TableHead>
+//               <TableRow >
+//                   <TableCell  align="center">
+//                     Id: 
+//                     <TextField value={id} onChange={(e) => setId(e.target.value)} />
+//                   </TableCell>
+//                   <TableCell  align="center">
+//                     Nombre: 
+//                     <TextField value={nombre} onChange={(e) => setNombre(e.target.value)} />
+//                   </TableCell>
+//                   <TableCell align="center">
+//                     Descripcion: 
+//                     <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+//                   </TableCell>
+//                   <TableCell  align="center">
+//                     Precio: 
+//                     <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
+//                   </TableCell>
+//               </TableRow>
+//           </TableHead>
+//         </Table>
+
+//         <ListItem autoFocus button onClick={() => handleListItemClick('addAccount')}>
+//           <ListItemAvatar>
+//             <Avatar>
+//               <AddIcon />
+//             </Avatar>
+//           </ListItemAvatar>
+//           <ListItemText primary="Agregar Producto" />
+//         </ListItem>
+//       </List>
+//     </Dialog>
+//   );
+// }
+
+// SimpleDialog.propTypes = {
+//   onClose: PropTypes.func.isRequired,
+//   open: PropTypes.bool.isRequired,
+//   selectedValue: PropTypes.string.isRequired,
+// };
+
+// function SimpleDialogEditDemo({text,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto,actual}) {
+//   const classes = useStyles3();
+//   const [open, setOpen] = React.useState(false);
+//   const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+//   useEffect(() => {
+//     setId(actual.item.id);
+//     setNombre(actual.item.nombre);
+//     setDescripcion(actual.item.descripcion);
+//     setPrecio(actual.item.precio);
+//   },[]);
+
+//   const handleClickOpen = () => {
+//     setOpen(true);
+//   };
+
+//   const handleClose = (value) => {
+//     setOpen(false);
+//     setSelectedValue(value);
+//     let current = {
+//       item: {
+//         'id': 0,
+//         'nombre': '',
+//         'imagen': "https://source.unsplash.com/random",
+//         'descripcion': '',
+//         'precio': '',
+//       }
+//     }
+//     current.item.id = id;
+//     current.item.nombre = nombre;
+//     current.item.descripcion = descripcion; 
+//     current.item.precio = precio;
+//     editarProducto(current);
+//   };
+
+//   return (
+//     <div>
+//       <Button className={classes.darkBlend} variant="outlined" color="primary" onClick={handleClickOpen}>
+//         {text}
+//       </Button>
+//       <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
+//     </div>
+//   );
+// }
+
+// //end
 
 const Admin = ({products,transactions}) => {
   return(

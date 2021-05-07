@@ -48,8 +48,8 @@ export default function HomeCarousel() {
                             />
                         </div>
                         <Carousel.Caption>
-                            <h3>Toao aoao ao </h3>
-                            <p>sgmmaemAEtr</p>
+                            <h3>Destreza</h3>
+                            <p></p>
                         </Carousel.Caption>
                     </Carousel.Item>
                     <Carousel.Item>
@@ -61,8 +61,8 @@ export default function HomeCarousel() {
                             />
                         </div>
                         <Carousel.Caption>
-                            <h3>hola mundo</h3>
-                            <p>esta es la quinta diapo</p>
+                            <h3>Calidad</h3>
+                            <p></p>
                         </Carousel.Caption>
                     </Carousel.Item>
                     <Carousel.Item>
@@ -74,8 +74,8 @@ export default function HomeCarousel() {
                             />
                         </div>
                         <Carousel.Caption>
-                            <h3>hola gente</h3>
-                            <p>esta es la sexta diapo</p>
+                            <h3>Durabilidad</h3>
+                            <p></p>
                         </Carousel.Caption>
                     </Carousel.Item>
                 </Carousel> 
