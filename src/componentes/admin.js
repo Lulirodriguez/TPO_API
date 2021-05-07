@@ -39,29 +39,31 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Orders({transactions}) {
+function Transactions({transactions}) {
   const classes = useStyles();
   return (
     <React.Fragment >
-      <h3 className={classes.darkBlend}>Recent Orders</h3>
+      <h3 className={classes.darkBlend}>Últimas Transacciones</h3>
       <Table maxWidth="lg" size="small">
         <TableHead>
           <TableRow className={classes.darkBlend}>
-            <TableCell className={classes.darkBlend}>Date</TableCell>
-            <TableCell className={classes.darkBlend}>Name</TableCell>
-            <TableCell className={classes.darkBlend}>Ship To</TableCell>
-            <TableCell className={classes.darkBlend}>Payment Method</TableCell>
-            <TableCell className={classes.darkBlend} align="right">Sale Amount</TableCell>
+            <TableCell className={classes.darkBlend}>Producto</TableCell>
+            <TableCell className={classes.darkBlend}>Cantidad</TableCell>
+            <TableCell className={classes.darkBlend}>Precio</TableCell>
+            <TableCell className={classes.darkBlend}>Destinatario</TableCell>
+            <TableCell className={classes.darkBlend}>Dirección de entrega</TableCell>
+            <TableCell className={classes.darkBlend}>Numero de Tarjeta</TableCell>
           </TableRow>
         </TableHead>
         <TableBody className={classes.darkBlend}>
-          {rows.map((row) => (
+          {transactions.map((row) => (
             <TableRow key={row.id} className={classes.darkBlend}>
-              <TableCell className={classes.darkBlend}>{row.date}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.name}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.shipTo}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.paymentMethod}</TableCell>
-              <TableCell className={classes.darkBlend} align="right">{row.amount}</TableCell>
+              <TableCell className={classes.darkBlend}>{row.compra.item.nombre}</TableCell>
+              <TableCell className={classes.darkBlend}>{row.compra.item.cantidad}</TableCell>
+              <TableCell className={classes.darkBlend}>{row.compra.item.precio}</TableCell>
+              <TableCell className={classes.darkBlend}>{row.shippment.firstName} {row.shippment.lastName}</TableCell>
+              <TableCell className={classes.darkBlend}>{row.shippment.address1} {row.shippment.address2}, C.P: {row.shippment.zipCode}, {row.shippment.city} {row.shippment.state}, {row.shippment.country}</TableCell>
+              <TableCell className={classes.darkBlend}>{row.payment.cardNumber}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -87,15 +89,15 @@ function Products({products}) {
     const classes = useStyles2();
 
     const agregarProducto = () => {
-
+        //agrego objeto al array
     }
 
     const editarProducto = (row) => {
-
+        // editar atributos del componente "objeto" del array -> ???
     }
 
     const eliminarProducto = (row) => {
-
+        // elimino objeto del array
     }
 
 
@@ -159,8 +161,8 @@ function Products({products}) {
 const Admin = ({products,transactions}) => {
     return(
         <>
-            <Products products={products}/>
-            <Orders orders={transactions}/>
+            <Products products={products} />
+            <Transactions transactions={transactions}/>
         </>
     );
 }

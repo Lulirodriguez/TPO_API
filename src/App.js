@@ -19,8 +19,32 @@ function App() {
   const [carrito, setCarrito] = useState([]);
   const [shippingData, setShippingData] = useState({});
   const [paymentData, setPaymentData] = useState({});
-  const [transactions, setTransactions] = useState([]);
-  const products = [
+  const [transactions, setTransactions] = useState([{
+    'compra': 
+    {
+      'item': 
+      {
+        'nombre': 'Raqueta',
+        'descripcion': 'Principal herramienta de juego',
+        'precio': 2000,
+        'cantidad': 2,
+      }
+    },
+    'shippment' : {
+      'firstName': 'Juan',
+      'lastName': 'Perez',
+      'address1': 'Cabildo 2000',
+      'address2': '',
+      'city': 'Buenos Aires',
+      'zipCode': '1432',
+      'country': 'Argentina',
+    },
+    'payment': {
+      'cardNumber': '1122334455',
+    }
+  },]);
+
+  var products = [
     {'item': ({
         'id' : 1,
         'nombre': 'Raqueta',
@@ -83,17 +107,8 @@ function App() {
         'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
         'imagen': 'https://source.unsplash.com/random',
         'precio': 900,
-    })},
-];
-  // const checkoutProps = {
-  //   'carrito': `${carrito}`,
-  //   'shippingData': `${shippingData}`, 
-  //   'setShippingData': setShippingData,
-  //   'paymentData': `${paymentData}`,
-  //   'setPaymentData': setPaymentData,
-  //   'transactions': `${transactions}`,
-  //   'setTransactions': setTransactions,
-  // }
+    })
+  }];
 
   return (
     <div className="App">
