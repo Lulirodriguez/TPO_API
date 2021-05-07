@@ -14,7 +14,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
-import logo from '../imagenes/mysportKit-logo.jpeg';
+import logo from '../images/mysportKit-logo.jpeg';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BarraSuperior() {
+export default function TopBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -129,7 +129,7 @@ export default function BarraSuperior() {
       onClose={handleMenuClose}
     >
       <Link to='/sign-in'>
-        <MenuItem onClick={handleMenuClose}>Sign in / Sign up</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Iniciar sesión / Registrarse</MenuItem>
       </Link>
     </Menu>
   );
@@ -180,14 +180,6 @@ export default function BarraSuperior() {
     <div className={classes.grow}>
       <AppBar className={classes.color} position="static">
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color = "inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
           <Link to="/" >
             <img alt="" src={logo} className={classes.image} />
           </Link>
@@ -211,10 +203,10 @@ export default function BarraSuperior() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
+            {/* <IconButton aria-label="show 17 new notifications" color="inherit">
                 <NotificationsIcon />
               
-            </IconButton>
+            </IconButton> */}
             <Link to= '/cart'>
               <IconButton aria-label="show 4 items in the cart" className={classes.color}>
                   <ShoppingCartIcon />

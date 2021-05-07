@@ -140,7 +140,6 @@ export default function SignIn() {
               color="dark"
               variant="contained"
               className={classes.submit}
-              disabled={!username || !password || !match()}
             >
               Sign In
             </Button>

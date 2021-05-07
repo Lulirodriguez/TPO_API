@@ -1,4 +1,4 @@
-import CategoryBar from './mainCategorias.js';
+import CategoryBar from './mainCategories.js';
 import HomeCarousel from './carousel.js';
 
 export default function HomePage() {

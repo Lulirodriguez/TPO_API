@@ -90,9 +90,9 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <AddressForm firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName} address1={address1} setAddress1={setAddress1} address2={address2} setAddress2={setAddress2} city={city} setCity={setCity} state={state} setState={setState} zipCode={zipCode} setZipCode={setZipCode} country={country} setCountry={setCountry}/>;
+        return <AddressForm firstName={firstName} setFirstName={(value) => setFirstName(value)} lastName={lastName} setLastName={(value) => setLastName(value)} address1={address1} setAddress1={(value) => setAddress1(value)} address2={address2} setAddress2={(value) => setAddress2(value)} city={city} setCity={(value) =>  setCity(value)} state={state} setState={(value) => setState(value)} zipCode={zipCode} setZipCode={(value) => setZipCode(value)} country={country} setCountry={(value) => setCountry(value)}/>;
       case 1:
-        return <PaymentForm nameOnCard={nameOnCard} setNameOnCard={setNameOnCard} cardNumber={cardNumber} setCardNumber={setCardNumber} expDate={expDate} setExpDate={setExpDate} cvv={cvv} setCvv={setCvv} />;
+        return <PaymentForm nameOnCard={nameOnCard} setNameOnCard={(value) => setNameOnCard(value)} cardNumber={cardNumber} setCardNumber={(value) => setCardNumber(value)} expDate={expDate} setExpDate={(value) => setExpDate(value)} cvv={cvv} setCvv={(value) => setCvv(value)} />;
       case 2:
         return <Review carrito={carrito} firstName={firstName} lastName={lastName} address1={address1} address2={address2} cardNumber={cardNumber} nameOnCard={nameOnCard} expireDate={expDate}/>;
       default:
@@ -100,24 +100,53 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
     }
   }
 
+  let newShipping = {
+    'firstName': '',
+    'lastName': '',
+    'address1': '',
+    'address2': '',
+    'city': '',
+    'state': '',
+    'zipCode': '',
+    'country': '',
+  }
+
+  let newPayment = {
+    'nameOnCard': '',
+    'cardNumber': '',
+    'expDate': '',
+    'cvv': '',
+  }
+
+  let newTransaction = {
+    'purchase': '',
+    'shipping': '',
+    'payment': '',
+  }
+
   const save = () => {
-    setShippingData({
-      'firstName': firstName,
-      'lastName': lastName,
-      'address1': address1,
-      'address2': address2,
-      'city': city,
-      'state': state,
-      'zipCode': zipCode,
-      'country': country,
-    });
+    newShipping.firstName = firstName;
+    newShipping.lastName = lastName;
+    newShipping.address1 = address1;
+    newShipping.address2 = address2;
+    newShipping.city = city;
+    newShipping.state = state;
+    newShipping.zipCode = zipCode;
+    newShipping.country = country;
+
+    setShippingData([
+      ...shippingData,
+      newShipping
+    ]);
     console.log(shippingData);
-    setPaymentData({
+    setPaymentData([
+      ...paymentData,{
       'nameOnCard': nameOnCard,
       'cardNumber': cardNumber,
       'expDate': expDate,
       'cvv': cvv,
-    });
+      }
+    ]);
     console.log(paymentData);
     setTransactions([
       ...transactions,
@@ -163,6 +192,9 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
                   Thank you for your order.
+                </Typography>
+                <Typography variant="subtitle1">
+                  Your order number is #2001539.
                 </Typography>
                 <RouteLink to="/" >
                   <Button variant="contained" onClick={() => save()} className={classes.button}>

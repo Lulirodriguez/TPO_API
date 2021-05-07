@@ -1,127 +1,40 @@
 // import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import productFile from './jsonFiles/products.json';
+import transactionsFile from './jsonFiles/transactions.json';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import {useState} from 'react';
 
-import HomePage from './componentes/HomePage.js';
-import BarraSuperior from './componentes/barraSuperior';
-import SignIn from './componentes/signIn.js';
-import SignUp from './componentes/signUp.js';
-import Category from './componentes/category.js';
-import Cart from './componentes/cart.js';
-import Checkout from './componentes/checkout.js';
-import Admin from './componentes/admin.js';
-import StickyFooter from './componentes/footer.js';
+import HomePage from './components/HomePage.js';
+import TopBar from './components/topBar';
+import SignIn from './components/signIn.js';
+import SignUp from './components/signUp.js';
+import Category from './components/category.js';
+import Cart from './components/cart.js';
+import Checkout from './components/checkout.js';
+import Admin from './components/admin.js';
+import StickyFooter from './components/footer.js';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState('');
   const [carrito, setCarrito] = useState([]);
-  const [shippingData, setShippingData] = useState({});
-  const [paymentData, setPaymentData] = useState({});
-  const [transactions, setTransactions] = useState([{
-    'compra': 
-    {
-      'item': 
-      {
-        'nombre': 'Raqueta',
-        'descripcion': 'Principal herramienta de juego',
-        'precio': 2000,
-        'cantidad': 2,
-      }
-    },
-    'shippment' : {
-      'firstName': 'Juan',
-      'lastName': 'Perez',
-      'address1': 'Cabildo 2000',
-      'address2': '',
-      'city': 'Buenos Aires',
-      'zipCode': '1432',
-      'country': 'Argentina',
-    },
-    'payment': {
-      'cardNumber': '1122334455',
-    }
-  },]);
-
-  var products = [
-    {'item': ({
-        'id' : 1,
-        'nombre': 'Raqueta',
-        'descripcion': 'Principal herramienta de juego',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 2000,
-    })},
-    {'item': ({
-        'id' : 2,
-        'nombre': 'Tubo de Pelotas Tenis Slazenger',
-        'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 1050,
-    })},
-    {'item': ({
-        'id' : 3,
-        'nombre': 'Encordado de Raqueta',
-        'descripcion': 'Encordados de la mejor calidad',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 470,
-    })},
-    {'item': ({
-        'id' : 4,
-        'nombre': 'Anti vibrador de raqueta',
-        'descripcion': 'Atenua la vibracion de las cuerdas',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 200,
-    })},
-    {'item': ({
-        'id' : 5,
-        'nombre': 'Grip',
-        'descripcion': 'Recubrimiento firme del mango. Agarre solido.',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 400,
-    })},
-    {'item': ({
-        'id' : 6,
-        'nombre': 'Funda de Raqueta',
-        'descripcion': 'Impermeable. Mayor proteccion',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 1200,
-    })},
-    {'item': ({
-        'id' : 7,
-        'nombre': 'Grip Holder',
-        'descripcion': 'Extensibilidad relativa',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 600,
-    })},
-    {'item': ({
-        'id' : 8,
-        'nombre': 'Tubo de Pelotas Tenis Prince',
-        'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 800,
-    })},
-    {'item': ({
-        'id' : 9,
-        'nombre': 'Tubo de Pelotas Tenis Wilson',
-        'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
-        'imagen': 'https://source.unsplash.com/random',
-        'precio': 900,
-    })
-  }];
+  const [shippingData, setShippingData] = useState([]);
+  const [paymentData, setPaymentData] = useState([]);
+  const [transactions, setTransactions] = useState(transactionsFile);
 
   return (
     <div className="App">
       <Router>
         <Switch />
-          <BarraSuperior isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+          <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)}/>
           <Route path="/" exact component={() => <HomePage />} />
           <Route path="/sign-up" exact component={() => <SignUp />} />
-          <Route path="/sign-in" exact component={() => <SignIn setIsLoggedIn={setIsLoggedIn}/>} />
-          <Route path="/category/:category" exact component={() => <Category carrito={carrito} setCarrito={setCarrito} items={products}/>} />
+          <Route path="/sign-in" exact component={() => <SignIn setIsLoggedIn={(value) => setIsLoggedIn(value)}/>} />
+          <Route path="/category/:category" exact component={() => <Category carrito={carrito} setCarrito={(value) => setCarrito(value)} items={productFile}/>} />
           <Route path="/cart" exact component={() => <Cart carrito={carrito}/>} />
-          <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={setShippingData} paymentData={paymentData} setPaymentData={setPaymentData} transactions={transactions} setTransactions={setTransactions}/>} />
-          <Route path="/admin" exact component={() => <Admin products={products} transactions={transactions} />} />
+          <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
+          <Route path="/admin" exact component={() => <Admin products={productFile} transactions={transactions} />} />
           <StickyFooter />
       </Router>
     </div>

@@ -1,0 +1,54 @@
+[
+    {
+        "compra": 
+        {
+        "item": 
+        {
+            "nombre": "Raqueta",
+            "descripcion": "Principal herramienta de juego",
+            "precio": 2000,
+            "cantidad": 2
+        }
+        },
+        "shippment" :
+        {
+        "firstName": "Juan",
+        "lastName": "Perez",
+        "address1": "Cabildo 2000",
+        "address2": "",
+        "city": "Buenos Aires",
+        "zipCode": "1432",
+        "country": "Argentina"
+        },
+        "payment":
+        {
+        "cardNumber": "1122334455"
+        }
+    },
+    {
+        "compra": 
+        {
+        "item": 
+        {
+            "nombre": "Raqueta",
+            "descripcion": "Principal herramienta de juego",
+            "precio": 2000,
+            "cantidad": 4
+        }
+        },
+        "shippment" :
+        {
+            "firstName": "Pedro",
+            "lastName": "Rojas",
+            "address1": "Sucre 1200",
+            "address2": "",
+            "city": "Buenos Aires",
+            "zipCode": "1427",
+            "country": "Argentina"
+           },
+        "payment":
+        {
+            "cardNumber": "5566447733"
+        }
+    }
+]

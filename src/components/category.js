@@ -153,6 +153,7 @@ const Category = ({carrito, setCarrito,items}) => {
 
     useEffect(() => {
         //Acá se va a fetchear la data de la categoría desde el back con algun fetchCategory()
+        console.log(items);
     },[]);
 
     const handleOnAddToCart = (card,cantidad) => {
