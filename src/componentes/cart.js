@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -69,25 +69,30 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Cart() {
+export default function Cart({carrito}) {
   const classes = useStyles();
+
+  let total = 0;
+  const _ = carrito.map((item) => {
+    total += (item.precio * item.cantidad);
+  });
 
   return (
     <div className={classes.table}>
       <Typography variant="h6" gutterBottom>
-        Order summary
+        Carrito
       </Typography>
       <List disablePadding>
-        {products.map((product) => (
-          <ListItem className={classes.listItem} key={product.name}>
-            <ListItemText primary={product.name} secondary={product.desc} />
-            <Typography variant="body2">{product.price}</Typography>
+        {carrito.map((product) => (
+          <ListItem className={classes.listItem} key={product.nombre}>
+            <ListItemText primary={product.nombre} secondary={`${product.descripcion}+' , Cantidad: '${product.cantidad}`} />
+            <Typography variant="body2">${product.precio}</Typography>
           </ListItem>
         ))}
         <ListItem className={classes.listItem}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" className={classes.total}>
-            $34.06
+            ${total}
           </Typography>
         </ListItem>
       </List>

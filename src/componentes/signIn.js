@@ -65,7 +65,7 @@ export default function SignIn() {
   const match = () => {
     let isMatch = false;
     for(let i=0;i<users.length;i++){
-      if(users[i].email == username && users[i].password == password){
+      if(users[i].email === username && users[i].password === password){
         isMatch = true;
       }
     }

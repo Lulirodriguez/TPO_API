@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-export default function PaymentForm() {
+export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCardNumber,expDate,setExpDate,cvv,setCvv}) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -13,7 +13,8 @@ export default function PaymentForm() {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <TextField required id="cardName" label="Name on card" fullWidth autoComplete="cc-name" />
+          <TextField required id="cardName" label="Name on card" fullWidth autoComplete="cc-name" value={nameOnCard}
+            onChange={(e) => setNameOnCard(e.target.value)} />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
@@ -22,10 +23,13 @@ export default function PaymentForm() {
             label="Card number"
             fullWidth
             autoComplete="cc-number"
+            value={cardNumber}
+            onChange={(e) => setCardNumber(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField required id="expDate" label="Expiry date" fullWidth autoComplete="cc-exp" />
+          <TextField required id="expDate" label="Expiry date" fullWidth autoComplete="cc-exp" value={expDate}
+            onChange={(e) => setExpDate(e.target.value)}/>
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
@@ -35,12 +39,8 @@ export default function PaymentForm() {
             helperText="Last three digits on signature strip"
             fullWidth
             autoComplete="cc-csc"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={<Checkbox color="secondary" name="saveCard" value="yes" />}
-            label="Remember credit card details for next time"
+            value={cvv}
+            onChange={(e) => setCvv(e.target.value)}
           />
         </Grid>
       </Grid>
