@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 2),
     marginTop: 'auto',
     backgroundColor: '#353535',
+    position: 'fixed',
+    bottom: 0, 
+    width: '100%',
   },
 }));
 

@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor : 'B0B0B0',
+    backgroundColor : '#B0B0B0',
   },
   cardMedia: {
     paddingTop: '56.25%', // 16:9
@@ -74,7 +74,7 @@ const Counter = ({id, itemsCount}) => {
     );
 }
 
-const TenisPage = () => {
+const Category = () => {
   const classes = useStyles();
     const items = [
         {'item': ({
@@ -82,58 +82,72 @@ const TenisPage = () => {
             'nombre': 'Raqueta',
             'descripcion': 'Principal herramienta de juego',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$2000',
         })},
         {'item': ({
             'id' : 2,
-            'nombre': 'Pelotas de Tenis',
+            'nombre': 'Tubo de Pelotas Tenis Slazenger',
             'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$1050',
         })},
         {'item': ({
             'id' : 3,
             'nombre': 'Encordado de Raqueta',
             'descripcion': 'Encordados de la mejor calidad',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$470',
         })},
         {'item': ({
             'id' : 4,
-            'nombre': 'Anti vibrador',
+            'nombre': 'Anti vibrador de raqueta',
             'descripcion': 'Atenua la vibracion de las cuerdas',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$200',
         })},
         {'item': ({
             'id' : 5,
             'nombre': 'Grip',
             'descripcion': 'Recubrimiento firme del mango. Agarre solido.',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$400',
         })},
         {'item': ({
             'id' : 6,
             'nombre': 'Funda de Raqueta',
             'descripcion': 'Impermeable. Mayor proteccion',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$1200',
         })},
         {'item': ({
             'id' : 7,
-            'nombre': 'Raqueta',
-            'descripcion': 'Principal herramienta de juego',
+            'nombre': 'Grip Holder',
+            'descripcion': 'Extensibilidad relativa',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$600',
         })},
         {'item': ({
             'id' : 8,
-            'nombre': 'Pelotas de Tenis',
+            'nombre': 'Tubo de Pelotas Tenis Prince',
             'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$800',
         })},
         {'item': ({
             'id' : 9,
-            'nombre': 'Encordado de Raqueta',
-            'descripcion': 'Encordados de la mejor calidad',
+            'nombre': 'Tubo de Pelotas Tenis Wilson',
+            'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
             'imagen': 'https://source.unsplash.com/random',
+            'precio': '$900',
         })},
     ];
     const [carrito, setCarrito] = React.useState([]); 
     const [carritoCount, setCarritoCount] = React.useState(0);
+
+    useEffect(() => {
+        console.log("Abro categoría");
+        //Acá se va a fetchear la data de la categoría desde el back con algun fetchCategory()
+    },[]);
 
     const handleOnClick = (card) => {
         for(let i = 0; i < card.item.id;i++){
@@ -172,6 +186,9 @@ const TenisPage = () => {
                             <Typography className={classes.darkBlend}>
                             {card.item.descripcion}
                             </Typography>
+                            <Typography className={classes.darkBlend}>
+                            {card.item.precio}
+                            </Typography>
                         </CardContent>
                         <CardActions className={classes.darkBlend}>
                             <Counter id={card.item.id} itemsCount={itemsCount}/>
@@ -195,6 +212,7 @@ const TenisPage = () => {
                                 <td>
                                     <p>Nombre: {articulo.nombre}</p>
                                     <p>Descripcion: {articulo.descripcion}</p>
+                                    <p>Precio: {articulo.precio}</p>
                                     <p>Cantidad: {itemsCount[articulo.id]}</p>
                                     <br />
                                 </td>
@@ -208,5 +226,5 @@ const TenisPage = () => {
     );
 }
 
-export default TenisPage;
+export default Category;
 
