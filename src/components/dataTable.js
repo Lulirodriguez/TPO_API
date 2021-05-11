@@ -14,7 +14,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import './dataTable.css';
-import productFile from '../../jsonFiles/product.json';
+import productFile from '../jsonFiles/product.json';
 
 const DataTableCrudDemo = () => {
 
