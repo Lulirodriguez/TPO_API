@@ -1,16 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
@@ -22,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
   color: {
       color: 'white',
-      backgroundColor: '#000000',
+      backgroundColor: 'black', //#212121
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -37,47 +33,7 @@ const useStyles = makeStyles((theme) => ({
     width: '188px',
     height: '29px',
   },
-  searchContainer:{
-    position: 'relative',
-    display: 'flex',
-    marginLeft: 'auto',
-    alignItems: 'right',
-    justifyContent: 'right',
-  },
-  search: {
-    position: 'inherit',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    width: '100%',
-    [theme.breakpoints.up('lg')]: {
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '40ch',
-    },
-  },
+ 
   sectionDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
@@ -117,7 +73,7 @@ export default function TopBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = 'primary-account-menu';
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -128,13 +84,13 @@ export default function TopBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <Link to='/sign-in'>
-        <MenuItem onClick={handleMenuClose}>Iniciar sesión / Registrarse</MenuItem>
+      <Link to='/sign-in' style={{ textDecoration: 'none', color: '#da3770' }}>
+        <MenuItem onClick={handleMenuClose}>Iniciar sesión / Crear una cuenta</MenuItem>
       </Link>
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = 'primary-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -154,23 +110,18 @@ export default function TopBar() {
           <p>Carrito</p>
         </Link>
       </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-            <NotificationsIcon />
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
+
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
+          aria-controls="primary-account-menu"
           aria-haspopup="true"
           color="inherit"
 
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>Perfil</p>
       </MenuItem>
     </Menu>
   );
@@ -186,21 +137,7 @@ export default function TopBar() {
           {/* <Typography className={classes.title} variant="h6" noWrap> 
             MYSPORT KIT
           </Typography>  */}
-          <div className={classes.searchContainer}>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </div>
-          </div>
+          
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {/* <IconButton aria-label="show 17 new notifications" color="inherit">

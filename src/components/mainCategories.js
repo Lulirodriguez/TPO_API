@@ -1,8 +1,43 @@
-import './mainCategories.css'
+import { makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
-import Button from 'react-bootstrap/Button'
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+        },
+    },
+    margin: {
+        margin: theme.spacing(1),
+        paddingLeft:'10px',
+        paddingRight:'5px',
+        paddingTop:'5px',
+        paddingBottom:'5px',
+        fontWeight: '500',
+        fontSize:'20px',
+        fontFamily: 'Cantarell',
+
+
+    },
+    saleButton: {
+        color: 'red',
+        paddingLeft:'10px',
+        paddingRight:'5px',
+        paddingTop:'5px',
+        paddingBottom:'5px',
+        fontWeight: '500',
+        fontSize:'20px',
+    },
+
+    extendedIcon: {
+        marginRight: theme.spacing(1),
+    },
+}));
+
 
 export default function CategoryBar(){
+    const classes = useStyles();
     const categories = [
         {
             'id': 1,
@@ -41,14 +76,15 @@ export default function CategoryBar(){
         },
     ];
     return (
-        <div>
+        <div className={classes.root}>
             {categories.map(cat => (
-                <Link key={cat.id} to={cat.path} >
-                    <Button variant="dark" size="lg" className="categorybutton">{cat.name}</Button>{' '}
+                <Link key={cat.id} to={cat.path} style={{ textDecoration: 'none' }}>
+                    <Button size="large" className={classes.margin} > 
+                    {cat.name}</Button>{' '}
                 </Link>
             ))}
-            <Link key={0} to={`/category/sale`} >
-                <Button variant="dark" size="lg" className="categorybutton salebutton">SALE</Button>{' '}
+            <Link key={0} to={`/category/sale`} style={{ textDecoration: 'none' }}>
+                <Button size="large" className={classes.saleButton} >SALE</Button>{' '}
             </Link>
         </div>
     );

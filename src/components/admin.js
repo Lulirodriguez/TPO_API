@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,12 +14,12 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import PersonIcon from '@material-ui/icons/Person';
 import AddIcon from '@material-ui/icons/Add';
-import Typography from '@material-ui/core/Typography';
-import { blue } from '@material-ui/core/colors';
 import { TextField } from '@material-ui/core';
-import DataTableCrudDemo from './dataTable.js';
+import CreateIcon from '@material-ui/icons/Create';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+
 
 // // Generate Order Data
 // function createData(id, date, name, shipTo, paymentMethod, amount) {
@@ -42,10 +41,12 @@ function preventDefault(event) {
 const useStyles = makeStyles((theme) => ({
   seeMore: {
     marginTop: theme.spacing(3),
+
   },
-  darkBlend: {
-      backgroundColor: 'black',
-      color: 'white',
+  whiteBlend: {
+      backgroundColor: 'white',
+      color: 'black',
+
   },
   end: {
       paddingBottom: '50px',
@@ -56,27 +57,28 @@ function Transactions({transactions}) {
   const classes = useStyles();
   return (
     <React.Fragment >
-      <h3 className={classes.darkBlend}>Últimas Transacciones</h3>
+      <h4  align= "center"  >TRANSACCIONES RECIENTES</h4>
+      <br/>
       <Table maxWidth="lg" size="small">
         <TableHead>
-          <TableRow className={classes.darkBlend}>
-            <TableCell className={classes.darkBlend}>Producto</TableCell>
-            <TableCell className={classes.darkBlend}>Cantidad</TableCell>
-            <TableCell className={classes.darkBlend}>Precio</TableCell>
-            <TableCell className={classes.darkBlend}>Destinatario</TableCell>
-            <TableCell className={classes.darkBlend}>Dirección de entrega</TableCell>
-            <TableCell className={classes.darkBlend}>Numero de Tarjeta</TableCell>
+          <TableRow >
+            <TableCell >Producto</TableCell>
+            <TableCell >Cantidad</TableCell>
+            <TableCell >Precio</TableCell>
+            <TableCell >Destinatario</TableCell>
+            <TableCell >Dirección de entrega</TableCell>
+            <TableCell >Numero de Tarjeta</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody className={classes.darkBlend}>
+        <TableBody >
           {transactions.map((row) => (
-            <TableRow key={row.id} className={classes.darkBlend}>
-              <TableCell className={classes.darkBlend}>{row.compra.item.nombre}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.compra.item.cantidad}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.compra.item.precio}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.shippment.firstName} {row.shippment.lastName}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.shippment.address1} {row.shippment.address2}, C.P: {row.shippment.zipCode}, {row.shippment.city} {row.shippment.state}, {row.shippment.country}</TableCell>
-              <TableCell className={classes.darkBlend}>{row.payment.cardNumber}</TableCell>
+            <TableRow key={row.id} >
+              <TableCell >{row.compra.item.nombre}</TableCell>
+              <TableCell >{row.compra.item.cantidad}</TableCell>
+              <TableCell >{row.compra.item.precio}</TableCell>
+              <TableCell >{row.shippment.firstName} {row.shippment.lastName}</TableCell>
+              <TableCell >{row.shippment.address1} {row.shippment.address2}, C.P: {row.shippment.zipCode}, {row.shippment.city} {row.shippment.state}, {row.shippment.country}</TableCell>
+              <TableCell >{row.payment.cardNumber}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -89,9 +91,9 @@ const useStyles2 = makeStyles((theme) => ({
     seeMore: {
       marginTop: theme.spacing(3),
     },
-    darkBlend: {
-        backgroundColor: 'black',
-        color: 'white',
+    whiteBlend: {
+        backgroundColor: 'ffffff',
+        color: 'black',
     },
     end: {
         paddingBottom: '50px',
@@ -195,13 +197,14 @@ function Products({productos}) {
 
     return (
       <React.Fragment >
-        <h1 className={classes.darkBlend}>USUARIO ADMINISTRADOR</h1>
-        <h3 className={classes.darkBlend}>Productos</h3>
+        <h1 className={classes.whiteBlend}>USUARIO ADMINISTRADOR</h1>
+        <br/>
+        <h4 className={classes.whiteBlend} align= "left">ABM PRODUCTOS</h4>
         <Table maxWidth="lg" size="small">
             <TableHead>
-                <TableRow className={classes.darkBlend}>
-                    <TableCell className={classes.darkBlend} align="center">
-                    <SimpleDialogDemo className={classes.button} text="Agregar Producto" nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} agregarProducto={() => agregarProducto()}/>
+                <TableRow className={classes.whiteBlend}>
+                    <TableCell className={classes.whiteBlend} align="right">
+                    <SimpleDialogDemo className={classes.button} text="Agregar +" nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} agregarProducto={() => agregarProducto()}/>
                     </TableCell>
                 </TableRow>
             </TableHead>
@@ -209,35 +212,32 @@ function Products({productos}) {
 
         <Table maxWidth="lg" size="small">
           <TableHead>
-            <TableRow className={classes.darkBlend}>
-              <TableCell className={classes.darkBlend}>Id</TableCell>
-              <TableCell className={classes.darkBlend}>Name</TableCell>
-              <TableCell className={classes.darkBlend}>Description</TableCell>
-              <TableCell className={classes.darkBlend}>Price</TableCell>
-              <TableCell className={classes.darkBlend} align="right">
-                </TableCell>
-                <TableCell className={classes.darkBlend} align="right">
+            <TableRow className={classes.whiteBlend}>
+              <TableCell className={classes.whiteBlend}>ID</TableCell>
+              <TableCell className={classes.whiteBlend}>NOMBRE PRODUCTO</TableCell>
+              <TableCell className={classes.whiteBlend}>DESCRIPCIÓN</TableCell>
+              <TableCell className={classes.whiteBlend}>PRECIO</TableCell>
+              <TableCell className={classes.whiteBlend} align="right"></TableCell>
+                <TableCell className={classes.whiteBlend} align="right">
                 </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody className={classes.darkBlend}>
+          <TableBody className={classes.whiteBlend}>
             {products.map((row) => (
-              <TableRow key={row.id} className={classes.darkBlend}>
-                <TableCell className={classes.darkBlend}>{row.item.id}</TableCell>
-                <TableCell className={classes.darkBlend}>{row.item.nombre}</TableCell>
-                <TableCell className={classes.darkBlend}>{row.item.descripcion}</TableCell>
-                <TableCell className={classes.darkBlend}>{row.item.precio}</TableCell>
-                <TableCell className={classes.darkBlend}> </TableCell>
-                <TableCell className={classes.darkBlend} align="right">
-                <Button className={classes.darkBlend} variant="outlined" color="primary" >
-                  Editar Producto
+              <TableRow key={row.id} className={classes.whiteBlend}>
+                <TableCell className={classes.whiteBlend}>{row.item.id}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.item.nombre}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.item.descripcion}</TableCell>
+                <TableCell className={classes.whiteBlend}>${row.item.precio}</TableCell>
+                <TableCell className={classes.whiteBlend}> </TableCell>
+                <TableCell className={classes.whiteBlend} align="right">
+                <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
+                  <CreateIcon/>
                 </Button>
-                  {/* <SimpleDialogEditDemo variant="contained" className={classes.button} text="Editar Producto" id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={() => editarProducto()} actual={row} /> */}
-                </TableCell>
-                <TableCell className={classes.darkBlend} align="right">
-                  <Button variant="contained" onClick={() => eliminarProducto(row.item.id)} className={classes.button}>
-                      Eliminar Producto
-                  </Button>
+
+                <Button variant="secondary" onClick={() => eliminarProducto(row.item.id)} className={classes.button}>
+                    <DeleteIcon/>
+                </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -252,13 +252,13 @@ function Products({productos}) {
 const emails = ['username@gmail.com', 'user02@gmail.com'];
 const useStyles3 = makeStyles({
   avatar: {
-    backgroundColor: blue[100],
-    color: blue[600],
+    backgroundColor: 'ffffff',
+    color: 'black',
   },
-  darkBlend:{
-    backgroundColor: 'black',
-    color: 'white',
-    fontColor: 'white',
+  whiteBlend:{
+    backgroundColor: 'ffffff',
+    color: 'black',
+    fontColor: 'black',
   }
 });
 
@@ -332,8 +332,8 @@ function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,prec
 
   return (
     <div>
-      <Button className={classes.darkBlend} variant="outlined" color="primary" onClick={handleClickOpen}>
-        {text}
+      <Button className={classes.whiteBlend} color="secondary" onClick={handleClickOpen}>
+        <AddBoxIcon/>
       </Button>
       <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} agregarProducto={() => agregarProducto()} />
     </div>
@@ -434,7 +434,7 @@ function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,prec
 
 //   return (
 //     <div>
-//       <Button className={classes.darkBlend} variant="outlined" color="primary" onClick={handleClickOpen}>
+//       <Button className={classes.whiteBlend} variant="outlined" color="primary" onClick={handleClickOpen}>
 //         {text}
 //       </Button>
 //       <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
@@ -446,11 +446,12 @@ function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,prec
 
 const Admin = ({products,transactions}) => {
   return(
-      <>
+      <div style={{marginTop:'40px',marginLeft:'60px', marginRight:'60px'}}>
           <Products productos={products} />
+          <br/>
           <Transactions transactions={transactions}/>
           {/* <DataTableCrudDemo /> */}
-      </>
+      </div>
   );
 }
 

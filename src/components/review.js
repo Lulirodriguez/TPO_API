@@ -63,14 +63,14 @@ export default function Review({carrito,firstName,lastName,address1,address2,car
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <Typography variant="h6" gutterBottom className={classes.title}>
-            Shipping
+            Envio a:
           </Typography>
           <Typography gutterBottom>{firstName} {lastName}</Typography>
           <Typography gutterBottom>{address1} {address2}</Typography>
         </Grid>
         <Grid item container direction="column" xs={12} sm={6}>
           <Typography variant="h6" gutterBottom className={classes.title}>
-            Payment details
+            Detalles de pago
           </Typography>
           <Grid container>
               <div>

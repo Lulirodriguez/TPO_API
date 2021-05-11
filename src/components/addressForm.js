@@ -8,7 +8,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Shipping address
+        Dirección de envío
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
@@ -16,7 +16,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
             required
             id="firstName"
             name="firstName"
-            label="First name"
+            label="Nombre/s"
             fullWidth
             autoComplete="given-name"
             value={firstName}
@@ -28,7 +28,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
             required
             id="lastName"
             name="lastName"
-            label="Last name"
+            label="Apellido/s"
             fullWidth
             autoComplete="family-name"
             value={lastName}
@@ -40,7 +40,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
             required
             id="address1"
             name="address1"
-            label="Address line 1"
+            label="Dirección (linea 1)"
             fullWidth
             autoComplete="shipping address-line1"
             value={address1}
@@ -51,7 +51,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
           <TextField
             id="address2"
             name="address2"
-            label="Address line 2"
+            label="Dirección (linea 2)"
             fullWidth
             autoComplete="shipping address-line2"
             value={address2}
@@ -63,7 +63,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
             required
             id="city"
             name="city"
-            label="City"
+            label="Localidad"
             fullWidth
             autoComplete="shipping address-level2"
             value={city}
@@ -71,7 +71,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField id="state" name="state" label="State/Province/Region" fullWidth value={state}
+          <TextField id="state" name="state" label="Provincia" fullWidth value={state}
             onChange={(e) => setState(e.target.value)}/>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -79,7 +79,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
             required
             id="zip"
             name="zip"
-            label="Zip / Postal code"
+            label="Código postal"
             fullWidth
             autoComplete="shipping postal-code"
             value={zipCode}
@@ -91,7 +91,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
             required
             id="country"
             name="country"
-            label="Country"
+            label="País"
             fullWidth
             autoComplete="shipping country"
             value={country}

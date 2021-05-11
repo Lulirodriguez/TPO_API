@@ -22,7 +22,7 @@
         },
         "payment":
         {
-        "cardNumber": "1122334455"
+        "cardNumber": "**** **** **** 5522"
         }
     },
     {
@@ -32,7 +32,7 @@
         {
             "nombre": "Raqueta",
             "descripcion": "Principal herramienta de juego",
-            "precio": 2000,
+            "precio": 4000,
             "cantidad": 4
         }
         },
@@ -48,7 +48,7 @@
            },
         "payment":
         {
-            "cardNumber": "5566447733"
+            "cardNumber": "**** **** **** 1023"
         }
     }
 ]

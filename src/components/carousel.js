@@ -7,7 +7,6 @@ import img4 from '../images/img4.jpg';
 import img5 from '../images/img 5.jpg';
 import img6 from '../images/img6.webp';
 
-
 export default function HomeCarousel() {
     return(
         <div className="container">

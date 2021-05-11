@@ -9,18 +9,18 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Payment method
+        Datos de pago
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <TextField required id="cardName" label="Name on card" fullWidth autoComplete="cc-name" value={nameOnCard}
+          <TextField required id="cardName" label="Nombre (como figura en la tarjeta)" fullWidth autoComplete="cc-name" value={nameOnCard}
             onChange={(e) => setNameOnCard(e.target.value)} />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
             id="cardNumber"
-            label="Card number"
+            label="Numero de la tarjeta"
             fullWidth
             autoComplete="cc-number"
             value={cardNumber}
@@ -28,15 +28,15 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField required id="expDate" label="Expiry date" fullWidth autoComplete="cc-exp" value={expDate}
+          <TextField required id="expDate" label="Fecha de vencimiento" fullWidth autoComplete="cc-exp" value={expDate}
             onChange={(e) => setExpDate(e.target.value)}/>
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             required
             id="cvv"
-            label="CVV"
-            helperText="Last three digits on signature strip"
+            label="Código de seguridad"
+            helperText="3 o 4 digitos (atras de la tarjeta al lado de la firma o arriba al lado del numero)"
             fullWidth
             autoComplete="cc-csc"
             value={cvv}

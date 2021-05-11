@@ -8,7 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import './cart.css';
 
 const products = [
   { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
@@ -34,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 'auto',
     alignItems: 'center',
     textAlign: 'center',
-    color: '#E2E2E2',
-    backgroundColor: '#353535',
+    color: '#000000',
+    backgroundColor: '#FFFFFF',
   },
   listItem: {
     padding: theme.spacing(1, 0),
@@ -57,15 +56,19 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
     paddingTop: '5px',
-    paddingBottom: '10px',
-    backgroundColor: 'white',
+    paddingBottom: '5px',
+    backgroundColor: 'pink',
     color: 'black',
+    paddingRight:'70px',
+    paddingLeft:'70px',
     
   
   },
   checkoutButton:{
     alignItems: 'right', 
     position: 'relative',
+    backgroundColor: 'pink',
+    color: 'black',
   }
 }));
 
@@ -80,12 +83,12 @@ export default function Cart({carrito}) {
   return (
     <div className={classes.table}>
       <Typography variant="h6" gutterBottom>
-        Carrito
+        CARRITO
       </Typography>
       <List disablePadding>
         {carrito.map((product) => (
           <ListItem className={classes.listItem} key={product.nombre}>
-            <ListItemText primary={product.nombre} secondary={`${product.descripcion}+' , Cantidad: '${product.cantidad}`} />
+            <ListItemText primary={product.nombre} secondary={`${product.descripcion} // Cantidad: ${product.cantidad}`} />
             <Typography variant="body2">${product.precio}</Typography>
           </ListItem>
         ))}
@@ -96,21 +99,20 @@ export default function Cart({carrito}) {
           </Typography>
         </ListItem>
       </List>
-      <Grid container spacing={2} className= {classes.checkoutButton}>
-        <Grid>
-          <Link to= '/checkout' >
-            <Button type="submit"
-                fullWidth
+  
+          <Link to= '/checkout' style={{ textDecoration: 'none' }} >
+            <Button 
+                type="submit"
                 align="center"
-                color="white"
                 variant="contained"
+                color="secondary"
                 className={classes.submit}
               >
-              CHECKOUT
+              PAGAR
             </Button>
           </Link>
         
-        </Grid>
+          <Grid container spacing={2} className= {classes.checkoutButton}>
       </Grid>
     </div>
   );

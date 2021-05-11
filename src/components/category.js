@@ -8,54 +8,64 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
-    backgroundColor : '#black',
+    backgroundColor : 'white',
   },
   card: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor : '#B0B0B0',
+    backgroundColor : '#ffffff',
+    padding: '5px',
   },
   cardMedia: {
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '80%', // 16:9
+    
   },
   cardContent: {
     flexGrow: 1,
-    backgroundColor : 'black',
-    color: 'white',
+    backgroundColor : 'white',
+    color: 'black',
   },
   footer: {
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
-  darkBlend: {
-    backgroundColor : 'black',
-    color: 'white',
+  whiteBlend: {
+    backgroundColor : 'white',
+    color: 'black',
   },
   darkButton: {
-    backgroundColor : 'black',
-    color: 'white',
+    backgroundColor : 'white',
+    color: 'black',
+    paddingTop: '5px',
+    paddingRight: '2px',
+    paddingLeft: '2px',
     borderColor: '#423E3E',
   },
   cart: {
-      fontSize: '18px',
+      fontSize: '30px',
       alignItems: 'center',
-      paddingBottom: '20px'
-  }
+      paddingBottom: '10px'
+  },
+  counterButton: {
+      marginBottom:'10.px'
+
+  },
 }));
 
 const Counter = ({card, addToCart}) => {
     const classes = useStyles();
-    const [counter, setCounter] = React.useState(0);
+    const [counter, setCounter] = React.useState(1);
 
     const decreaseCount = () => {
-        if(counter > 0){
+        if(counter > 1){
             setCounter(counter-1)
         }
     }
@@ -73,8 +83,8 @@ const Counter = ({card, addToCart}) => {
             <Button className={classes.darkButton} variant="dark" size="xs" onClick={() => increaseCount()}>
             +
             </Button>
-            <Button className={classes.darkButton} variant="dark" size="small" onClick={() => addToCart(card,counter)}>
-                Agregar al Carrito
+            <Button color="secondary" className={classes.darkButton} variant= "secondary" size="small" onClick={() => addToCart(card,counter)}>
+                <AddShoppingCartIcon/>
             </Button>
         </>
     );
@@ -177,14 +187,14 @@ const Category = ({carrito, setCarrito,items}) => {
     }
 
     return (
-        <div>
+        <div className={classes.counterbutton}>
             <main>
                 <Container className={classes.cardGrid} maxWidth="lg">
                 <Grid container spacing={4}>
                 <div>
-                    <table className={classes.darkBlend}>
+                    <table className={classes.whiteBlend}>
                         <th>
-                            <p className={classes.cart}>Carrito</p>
+                            <p className={classes.cart}>Productos </p>
                         </th>
                         <tr>
                             {carrito.map((articulo) => (
@@ -210,17 +220,17 @@ const Category = ({carrito, setCarrito,items}) => {
                             title="Imagen"
                         />
                         <CardContent className={classes.cardContent}>
-                            <Typography className={classes.darkBlend} gutterBottom variant="h5" component="h2">
+                            <Typography className={classes.whiteBlend} gutterBottom variant="h5" component="h2">
                             {card.item.nombre}
                             </Typography>
-                            <Typography className={classes.darkBlend}>
+                            <Typography className={classes.whiteBlend}>
                             {card.item.descripcion}
                             </Typography>
-                            <Typography className={classes.darkBlend}>
+                            <Typography className={classes.whiteBlend}>
                             ${card.item.precio}
                             </Typography>
                         </CardContent>
-                        <CardActions className={classes.darkBlend}>
+                        <CardActions className={classes.whiteBlend}>
                             <Counter id={card.item.id} card={card} addToCart={handleOnAddToCart}/>
                         </CardActions>
                         </Card>

@@ -8,16 +8,18 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddressForm from './addressForm.js';
 import PaymentForm from './paymentForm.js';
 import Review from './review.js';
-import { SaveAltOutlined } from '@material-ui/icons';
+import './checkout.css';
+
+
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
+
   },
   layout: {
     width: 'auto',
@@ -49,10 +51,14 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
+    backgroundColor:'pink',
+    color: 'black',
   },
+
+
 }));
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Dirección de envío', 'Datos de pago', 'Revise su orden'];
 
 // function getStepContent(step) {
 //   switch (step) {
@@ -180,9 +186,9 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
           <Typography component="h1" variant="h4" align="center">
             Checkout
           </Typography>
-          <Stepper activeStep={activeStep} className={classes.stepper}>
+          <Stepper activeStep ={activeStep} className={classes.stepper}>
             {steps.map((label) => (
-              <Step key={label}>
+              <Step key={label} >
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
@@ -191,14 +197,14 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
+                  Muchas gracias por su compra.
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #2001539.
+                  ¡La compra ha sido realizada con éxito! Su número de orden es el #2001539. Le estaremos enviando un email de confirmación de compra con todos los detalles a su correo electrónico.
                 </Typography>
-                <RouteLink to="/" >
-                  <Button variant="contained" onClick={() => save()} className={classes.button}>
-                    Return to home page
+                <RouteLink to="/" style={{ textDecoration: 'none' }} >
+                  <Button variant="contained" className={classes.linkButton} color="secondary" onClick={() => save()} className={classes.button}>
+                    Volver a la página de inicio
                   </Button>
                 </RouteLink>
               </React.Fragment>
@@ -213,11 +219,11 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
                   )}
                   <Button
                     variant="contained"
-                    color="primary"
                     onClick={handleNext}
+                    color= "secondary"
                     className={classes.button}
                   >
-                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Comprar' : 'Next'}
                   </Button>
                 </div>
               </React.Fragment>

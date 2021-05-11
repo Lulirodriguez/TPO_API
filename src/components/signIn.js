@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: 'pink',
+    color: 'black',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -32,12 +33,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
     paddingTop: '5px',
     paddingBottom: '10px',
-    backgroundColor: 'white',
+    backgroundColor: 'pink',
     color: 'black',
   },
   darkBlend: {
-    backgroundColor: 'black',
-    color: 'white',
+    backgroundColor: 'white',
+    color: 'black',
   },
   greyBlend: {
     backgroundColor: '#E2E2E2',
@@ -51,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
   },
   darkCheckbox: {
     fontSize: '10px',
-    backgroundColor: 'black',
-    color: 'white',
+    backgroundColor: 'white',
+    color: 'black',
   },
 }));
 
@@ -93,11 +94,11 @@ export default function SignIn() {
     <Container className={classes.greyBorder} component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar && classes.darkBlend}>
+        <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography className={classes.darkBlend} component="h1" variant="h5">
-          Sign in
+          Iniciar sesión
         </Typography>
         <form className={classes.form && classes.darkBlend} noValidate>
           <TextField
@@ -106,7 +107,7 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Correo electrónico"
             name="email"
             autoComplete="email"
             autoFocus
@@ -120,7 +121,7 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Contraseña"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -128,32 +129,29 @@ export default function SignIn() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" className={classes.darkCheckbox}/>}
-            label="Remember me"
-            className={classes.darkCheckbox}
-          />
-          <RouteLink to="/">
+          
+          <RouteLink to="/" style={{ textDecoration: 'none' }}>
             <Button
               type="submit"
               fullWidth
-              color="dark"
+              backgroundColor= "black"
+              color="secondary"
               variant="contained"
               className={classes.submit}
             >
-              Sign In
+              Ingresar
             </Button>
           </RouteLink>
           <Grid container>
             <Grid item xs>
               <Link className={classes.darkBlend} href="#" variant="body2">
-                Forgot password?
+                ¿Olvidó la contraseña?
               </Link>
             </Grid>
             <Grid item>
               <RouteLink to="/sign-up" >
                 <Link className={classes.darkBlend} variant="body2" >
-                  {"Don't have an account? Sign Up"}
+                  {"¿No tiene cuenta? Regístrese "}
                 </Link>
               </RouteLink>
             </Grid>

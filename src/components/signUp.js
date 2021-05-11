@@ -4,28 +4,13 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: 'black',
-    color: 'white',
+    backgroundColor: 'pink',
+    color: 'black',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -47,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
     paadingTop: '5px',
     paddingBottom: '10px',
-    backgroundColor: 'white',
+    backgroundColor: 'pink',
     color: 'black',
   },
-  darkBlend: {
+  whiteBlend: {
     backgroundColor: 'black',
     color: 'white',
   },
@@ -64,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
   whiteBorder: {
     borderColor: 'white!important',
   },
-  darkCheckbox: {
+  colorCheckbox: {
     fontSize: '10px',
-    backgroundColor: 'black',
-    color: 'white',
+    backgroundColor: 'white',
+    color: 'black',
   },
 }));
 
@@ -91,8 +76,8 @@ export default function SignUp() {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography className={classes.darkBlend} component="h1" variant="h5">
-          Sign up
+        <Typography component="h1" variant="h5">
+          Crear una cuenta
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -104,7 +89,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="firstName"
-                label="First Name"
+                label="Nombre/s"
                 autoFocus
                 className={classes.greyBlend}
                 value={firstName}
@@ -117,7 +102,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="lastName"
-                label="Last Name"
+                label="Apellido/s"
                 name="lastName"
                 autoComplete="lname"
                 className={classes.greyBlend}
@@ -131,7 +116,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Correo electrónico"
                 name="email"
                 autoComplete="email"
                 className={classes.greyBlend}
@@ -145,7 +130,7 @@ export default function SignUp() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Contraseña"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -154,39 +139,30 @@ export default function SignUp() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox className={classes.darkCheckbox} value="allowExtraEmails" color="primary" />}
-                label="Remember me"
-                className={classes.darkCheckbox}
-              />
-            </Grid>
+            
           </Grid>
-          <RouteLink to="/" >
+          <RouteLink to="/" style={{ textDecoration: 'none' }} >
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              color="dark"
+              color="secondary"
               className={classes.submit}
             >
-              Sign Up
+              Registrarse
             </Button>
           </RouteLink>
           <Grid container justify="flex-end">
             <Grid item>
               <RouteLink to="/sign-in" >
                 <Link variant="body2" size="xs" className={classes.darkBlend}>
-                  Already have an account? Sign in
+                  ¿Ya tiene una cuenta? Inicie sesión
                 </Link>
               </RouteLink>
             </Grid>
           </Grid>
         </form>
       </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
     </Container>
   );
 }
