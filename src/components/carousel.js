@@ -10,8 +10,8 @@ import img6 from '../images/img6.webp';
 export default function HomeCarousel() {
     return(
         <div className="container">
-            <div className="row justify-content-center">
-                <Carousel>
+            <div >
+                <Carousel align="center">
                     <Carousel.Item>
                         <div>
                             <img

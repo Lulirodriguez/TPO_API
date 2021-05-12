@@ -87,6 +87,9 @@ export default function TopBar() {
       <Link to='/sign-in' style={{ textDecoration: 'none', color: '#da3770' }}>
         <MenuItem onClick={handleMenuClose}>Iniciar sesión / Crear una cuenta</MenuItem>
       </Link>
+      <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
+        <MenuItem onClick={handleMenuClose}>Iniciar sesión como administrador</MenuItem>
+      </Link>
     </Menu>
   );
 
@@ -108,7 +111,7 @@ export default function TopBar() {
               <ShoppingCartIcon />
           </IconButton>
           <p>Carrito</p>
-        </Link>
+      </Link>
       </MenuItem>
 
       <MenuItem onClick={handleProfileMenuOpen}>
