@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     backgroundColor : '#ffffff',
-    padding: '5px',
+    padding: '20px',
   },
   cardMedia: {
     paddingTop: '80%', // 16:9
@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor : 'white',
     color: 'black',
+    align: 'right',
   },
   footer: {
     backgroundColor: theme.palette.background.paper,
@@ -41,14 +42,21 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor : 'white',
     color: 'black',
   },
-  darkButton: {
+  whiteButton: {
     backgroundColor : 'white',
     color: 'black',
-    paddingTop: '5px',
-    paddingRight: '2px',
-    paddingLeft: '2px',
-    borderColor: '#423E3E',
+    margin:'auto',
+
+
   },
+
+  pinkButton: {
+    backgroundColor : 'pink',
+    color: 'black',
+    margin: 'auto',
+
+  },
+
   cart: {
       fontSize: '30px',
       alignItems: 'center',
@@ -75,102 +83,30 @@ const Counter = ({card, addToCart}) => {
     }
 
     return(
-        <>
-            <Button className={classes.darkButton} variant="dark" size="xs" onClick={() => decreaseCount()}>
+        <div style={{display:'flex', margin:'auto'}}>
+            <Button className={classes.whiteButton} variant="dark" size="xs" onClick={() => decreaseCount()}>
             -
             </Button>
             {counter}
-            <Button className={classes.darkButton} variant="dark" size="xs" onClick={() => increaseCount()}>
+            <Button className={classes.whiteButton} variant="dark" size="xs" onClick={() => increaseCount()}>
             +
             </Button>
-            <Button color="secondary" className={classes.darkButton} variant= "secondary" size="small" onClick={() => addToCart(card,counter)}>
+            <Button color="secondary" className={classes.pinkButton} variant= "contained" size="small" onClick={() => addToCart(card,counter)}>
                 <AddShoppingCartIcon/>
             </Button>
-        </>
+        </div>
     );
 }
 
 const Category = ({carrito, setCarrito,items}) => {
   const classes = useStyles();
-//   const editJsonFile = require("edit-json-file");
-//   let file = editJsonFile('../jsonFiles/cart.json');
 
-    // const items = [
-    //     {'item': ({
-    //         'id' : 1,
-    //         'nombre': 'Raqueta',
-    //         'descripcion': 'Principal herramienta de juego',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 2000,
-    //     })},
-    //     {'item': ({
-    //         'id' : 2,
-    //         'nombre': 'Tubo de Pelotas Tenis Slazenger',
-    //         'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 1050,
-    //     })},
-    //     {'item': ({
-    //         'id' : 3,
-    //         'nombre': 'Encordado de Raqueta',
-    //         'descripcion': 'Encordados de la mejor calidad',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 470,
-    //     })},
-    //     {'item': ({
-    //         'id' : 4,
-    //         'nombre': 'Anti vibrador de raqueta',
-    //         'descripcion': 'Atenua la vibracion de las cuerdas',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 200,
-    //     })},
-    //     {'item': ({
-    //         'id' : 5,
-    //         'nombre': 'Grip',
-    //         'descripcion': 'Recubrimiento firme del mango. Agarre solido.',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 400,
-    //     })},
-    //     {'item': ({
-    //         'id' : 6,
-    //         'nombre': 'Funda de Raqueta',
-    //         'descripcion': 'Impermeable. Mayor proteccion',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 1200,
-    //     })},
-    //     {'item': ({
-    //         'id' : 7,
-    //         'nombre': 'Grip Holder',
-    //         'descripcion': 'Extensibilidad relativa',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 600,
-    //     })},
-    //     {'item': ({
-    //         'id' : 8,
-    //         'nombre': 'Tubo de Pelotas Tenis Prince',
-    //         'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 800,
-    //     })},
-    //     {'item': ({
-    //         'id' : 9,
-    //         'nombre': 'Tubo de Pelotas Tenis Wilson',
-    //         'descripcion': 'Alta calidad de rebote, camaras de aire reforzadas.',
-    //         'imagen': 'https://source.unsplash.com/random',
-    //         'precio': 900,
-    //     })},
-    // ];
 
     useEffect(() => {
-        //Acá se va a fetchear la data de la categoría desde el back con algun fetchCategory()
         console.log(items);
     },[]);
 
     const handleOnAddToCart = (card,cantidad) => {
-        // console.log(card);
-        // file.append("item",  {id : `${card.item.id}`, nombre : `${card.item.nombre}`, descripcion : `${card.item.descripcion}`, precio : `${card.item.precio}`, cantidad : `${cantidad}`});
-        // console.log("archivo: ", file.get());
-        // setCarritoCount(carritoCount+cantidad);
         if(cantidad > 0){
             let item = card.item;
             item.cantidad = cantidad;
@@ -190,7 +126,7 @@ const Category = ({carrito, setCarrito,items}) => {
         <div className={classes.counterbutton}>
             <main>
                 <Container className={classes.cardGrid} maxWidth="lg">
-                <Grid container spacing={4}>
+                <Grid container spacing={8}>
                 <div>
                     <table className={classes.whiteBlend}>
                         <th>
@@ -212,7 +148,7 @@ const Category = ({carrito, setCarrito,items}) => {
                 </Grid>
                 <Grid container spacing={4}>
                     {items.map((card) => (
-                    <Grid key={card.item.id} xs={12} sm={6} md={4}>
+                    <Grid key={card.item.id} xs={12} sm={6} md={3}>
                         <Card className={classes.card}>
                         <CardMedia
                             className={classes.cardMedia}

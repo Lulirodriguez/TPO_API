@@ -17,16 +17,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'block',
     flexDirection: 'column',
-    minHeight: '100%',
-    marginBottom: '-142px',
     color: 'grey',
   },
   footer: {
     padding: theme.spacing(3, 2),
     marginTop: 'auto',
-    backgroundColor: '#D8D6D6',
-    position: 'fixed',
-    bottom: 0, 
+    backgroundColor: '#D8D6D6', 
     width: '100%',
   },
 }));
