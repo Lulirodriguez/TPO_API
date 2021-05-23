@@ -17,11 +17,12 @@ import Admin from './components/admin.js';
 import StickyFooter from './components/footer.js';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [carrito, setCarrito] = useState([]);
   const [shippingData, setShippingData] = useState([]);
   const [paymentData, setPaymentData] = useState([]);
   const [transactions, setTransactions] = useState(transactionsFile);
+
 
   return (
     <div className="App">
@@ -32,7 +33,7 @@ function App() {
           <Route path="/sign-up" exact component={() => <SignUp />} />
           <Route path="/sign-in" exact component={() => <SignIn setIsLoggedIn={(value) => setIsLoggedIn(value)}/>} />
           <Route path="/category/:category" exact component={() => <Category carrito={carrito} setCarrito={(value) => setCarrito(value)} items={productFile}/>} />
-          <Route path="/cart" exact component={() => <Cart carrito={carrito}/>} />
+          <Route path="/cart" exact component={() => <Cart carrito={carrito} isLoggedIn={isLoggedIn}/>} />
           <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
           <Route path="/admin" exact component={() => <Admin products={productFile} transactions={transactions} />} />
           <StickyFooter />

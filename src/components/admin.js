@@ -231,14 +231,15 @@ function Products({productos}) {
                 <TableCell className={classes.whiteBlend}>${row.item.precio}</TableCell>
                 <TableCell className={classes.whiteBlend}> </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                {/* <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
-                  <CreateIcon/>
-                </Button> */}
-                <SimpleDialogEditDemo className={classes.button} id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={(value) => editarProducto(value)} actual={row}/>
-                
-                <Button variant="secondary" onClick={() => eliminarProducto(row.item.id)} className={classes.button}>
-                    <DeleteIcon/>
-                </Button>
+                  {/* <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
+                    <CreateIcon/>
+                  </Button> */}
+                  <SimpleDialogEditDemo className={classes.button} id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={(value) => editarProducto(value)} actual={row}/>
+                </TableCell>
+                <TableCell className={classes.whiteBlend} align="right">
+                  <Button variant="secondary" onClick={() => eliminarProducto(row.item.id)} className={classes.button} style={{height: '95%'}}>
+                      <DeleteIcon/>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

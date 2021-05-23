@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Cart({carrito}) {
+export default function Cart({carrito,isLoggedIn}) {
   const classes = useStyles();
 
   let total = 0;
@@ -99,8 +99,7 @@ export default function Cart({carrito}) {
           </Typography>
         </ListItem>
       </List>
-  
-          <Link to= '/checkout' style={{ textDecoration: 'none' }} >
+          <Link to= {isLoggedIn ? '/checkout' : '/login'} style={{ textDecoration: 'none' }} >
             <Button 
                 type="submit"
                 align="center"

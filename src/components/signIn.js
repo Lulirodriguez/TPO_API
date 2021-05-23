@@ -57,11 +57,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn({setIsLoggedIn}) {
   const classes = useStyles();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+
+  const showError = (e) => {
+    e.preventDefault();
+    setError(true);
+  }
+
+  const handleSetUsername = (e) => {
+    setUsername(e.target.value);
+  }
+
+  const handleSetPassword = (e) => {
+    setPassword(e.target.value);
+  }
 
   const match = () => {
     let isMatch = false;
@@ -71,6 +85,10 @@ export default function SignIn() {
       }
     }
     return isMatch;
+  }
+
+  const handleSignIn = (e) => {
+    setIsLoggedIn(true);
   }
 
   const customer = {
@@ -86,6 +104,7 @@ export default function SignIn() {
     'email': 'admin@uade.edu.ar',
     'password': 'uade1234',
   };
+
   const users = [
       customer,admin
   ]
@@ -100,6 +119,11 @@ export default function SignIn() {
         <Typography className={classes.darkBlend} component="h1" variant="h5">
           Iniciar sesión
         </Typography>
+        {error? (
+            <Typography style={{color: 'red', fontSize: '13px'}} component="h1" variant="h5">
+            Usuario o contraseña inválidos.
+            </Typography>): (<></>)
+        }
         <form className={classes.form && classes.darkBlend} noValidate>
           <TextField
             variant="outlined"
@@ -113,7 +137,7 @@ export default function SignIn() {
             autoFocus
             className={classes.greyBlend}
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => handleSetUsername(e)}
           />
           <TextField
             variant="outlined"
@@ -127,21 +151,36 @@ export default function SignIn() {
             autoComplete="current-password"
             className={classes.greyBlend}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handleSetPassword(e)}
           />
+          {!!match() ? (
+            <RouteLink to="/" style={{ textDecoration: 'none', color:'black' }}>
+              <Button
+                type="submit"
+                fullWidth
+                backgroundColor= "black"
+                color="secondary"
+                variant="contained"
+                className={classes.submit}
+                onClick={(e) => handleSignIn(e)}
+              >
+                    Ingresar
+              </Button>
+            </RouteLink>
+          ) : (
+              <Button
+                type="submit"
+                fullWidth
+                backgroundColor= "black"
+                color="secondary"
+                variant="contained"
+                className={classes.submit}
+                onClick={(e) => showError(e)}
+              >
+                Ingresar
+              </Button>
+          )}
           
-          <RouteLink to="/" style={{ textDecoration: 'none' }}>
-            <Button
-              type="submit"
-              fullWidth
-              backgroundColor= "black"
-              color="secondary"
-              variant="contained"
-              className={classes.submit}
-            >
-              Ingresar
-            </Button>
-          </RouteLink>
           <Grid container>
             <Grid item xs>
               <Link className={classes.darkBlend} href="#" variant="body2">

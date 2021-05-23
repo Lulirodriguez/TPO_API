@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopBar() {
+export default function TopBar({isLoggedIn,setIsLoggedIn}) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -69,6 +69,12 @@ export default function TopBar() {
     handleMobileMenuClose();
   };
 
+  const handleLogOut = () => {
+    setIsLoggedIn(false);
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  }
+
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
@@ -84,12 +90,26 @@ export default function TopBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <Link to='/sign-in' style={{ textDecoration: 'none', color: '#da3770' }}>
-        <MenuItem onClick={handleMenuClose}>Iniciar sesión / Crear una cuenta</MenuItem>
-      </Link>
+      {!!isLoggedIn ? (
+        <div>
+          <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770' }}>
+            <MenuItem onClick={handleMenuClose}>Ver Perfil</MenuItem>
+          </Link>
+          <MenuItem style={{ textDecoration: 'none', color: '#da3770'}} onClick={() => handleLogOut()}>Cerrar Sesión</MenuItem>
+        </div>
+      ) : (
+        <div>
+          <Link to='/sign-in' style={{ textDecoration: 'none', color: '#da3770' }}>
+            <MenuItem onClick={handleMenuClose}>Iniciar sesión / Crear una cuenta</MenuItem>
+          </Link>
+      {/* {isAdmin ? (
       <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
-        <MenuItem onClick={handleMenuClose}>Iniciar sesión como administrador</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
       </Link>
+      ) : (<></>)} */}
+        </div>
+      )}
+      
     </Menu>
   );
 
@@ -104,28 +124,49 @@ export default function TopBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
+      {isLoggedIn ? (
+        <div>
+          <MenuItem>
+            <Link to='/cart' style={{ textDecoration: 'none', color: '#da3770'}}>
+              <IconButton aria-label="show 4 items in cart"
+                aria-controls="primary-account-menu"
+                aria-haspopup="true" 
+                className={classes.color}>
+                    <ShoppingCartIcon />
+                </IconButton>
+                {/* <p>Carrito</p> */}
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleProfileMenuOpen}>
+            <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770'}}>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="primary-account-menu"
+                aria-haspopup="true"
+                className={classes.color}
 
-      <MenuItem>
-      <Link to='/cart'>
-        <IconButton aria-label="show 4 items in cart" className={classes.color}>
-              <ShoppingCartIcon />
-          </IconButton>
-          <p>Carrito</p>
+              >
+                <AccountCircle />
+              </IconButton>
+            </Link>
+            {/* <p>Ver Perfil</p> */}
+          </MenuItem>
+          <MenuItem style={{ textDecoration: 'none', color: '#da3770'}} onClick={() => handleLogOut()}>Cerrar Sesión</MenuItem>
+          
+        </div>
+      ) : (
+        <div>
+          <Link to='/sign-in' style={{ textDecoration: 'none', color: '#da3770' }}>
+            <MenuItem onClick={handleMenuClose}>Iniciar sesión / Crear una cuenta</MenuItem>
+          </Link>
+        </div>
+      )}
+      {/* {isAdmin ? (
+      <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
+        <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
       </Link>
-      </MenuItem>
-
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Perfil</p>
-      </MenuItem>
+      ) : (<></>)} */}
+      
     </Menu>
   );
   // const logo = require('./mysportKit-logo.jpeg');
@@ -147,21 +188,26 @@ export default function TopBar() {
                 <NotificationsIcon />
               
             </IconButton> */}
-            <Link to= '/cart'>
-              <IconButton aria-label="show 4 items in the cart" className={classes.color}>
-                  <ShoppingCartIcon />
-              </IconButton>
-            </Link>
+            {isLoggedIn ? (
+              <div className={classes.sectionDesktop}>
+                <Link to= '/cart'>
+                  <IconButton aria-label="show 4 items in the cart" className={classes.color}>
+                      <ShoppingCartIcon />
+                  </IconButton>
+                </Link>
+              </div>
+            ): (<></>)}
             <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+            
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
