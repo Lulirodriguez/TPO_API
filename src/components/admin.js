@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   whiteBlend: {
-      backgroundColor: 'white',
+      backgroundColor: 'pink',
       color: 'black',
 
   },
@@ -155,30 +155,30 @@ function Products({productos}) {
     }
 
     const editarProducto = (edited) => {
-      // let editedProduct = {
-      //   item: {
-      //     'id': 0,
-      //     'nombre': '',
-      //     'imagen': "https://source.unsplash.com/random",
-      //     'descripcion': '',
-      //     'precio': '',
-      //   }
-      // }
-      // editedProduct.id = edited.item.id;
-      // editedProduct.nombre = edited.item.nombre;
-      // editedProduct.descripcion = edited.item.descripcion;
-      // editedProduct.precio = edited.item.precio;
-      // let index = getIndexForItem(edited.item.id);
+      let editedProduct = {
+        item: {
+          'id': 0,
+          'nombre': '',
+          'imagen': "https://source.unsplash.com/random",
+          'descripcion': '',
+          'precio': '',
+        }
+      }
+      editedProduct.item.id = edited.item.id;
+      editedProduct.item.nombre = edited.item.nombre;
+      editedProduct.item.descripcion = edited.item.descripcion;
+      editedProduct.item.precio = edited.item.precio;
+      let index = getIndexForItem(edited.item.id);
         
-      // let editedProducts = [
-      //   ...products.slice(0, index),
-      //   editedProduct,
-      //   ...products.slice(index)
-      // ];
+      let editedProducts = [
+        ...products.slice(0, index),
+        editedProduct,
+        ...products.slice(index+1)
+      ];
 
-      // setProducts(editedProducts);
+      setProducts(editedProducts);
 
-      // console.log('post:', products);
+      console.log('post:', products);
     }
 
     const eliminarProducto = (id) => {
@@ -204,7 +204,7 @@ function Products({productos}) {
             <TableHead>
                 <TableRow className={classes.whiteBlend}>
                     <TableCell className={classes.whiteBlend} align="right">
-                    <SimpleDialogDemo className={classes.button} text="Agregar +" nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} agregarProducto={() => agregarProducto()}/>
+                    <SimpleDialogDemo className={classes.button} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} agregarProducto={() => agregarProducto()}/>
                     </TableCell>
                 </TableRow>
             </TableHead>
@@ -231,10 +231,11 @@ function Products({productos}) {
                 <TableCell className={classes.whiteBlend}>${row.item.precio}</TableCell>
                 <TableCell className={classes.whiteBlend}> </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
+                {/* <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
                   <CreateIcon/>
-                </Button>
-
+                </Button> */}
+                <SimpleDialogEditDemo className={classes.button} id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={(value) => editarProducto(value)} actual={row}/>
+                
                 <Button variant="secondary" onClick={() => eliminarProducto(row.item.id)} className={classes.button}>
                     <DeleteIcon/>
                 </Button>
@@ -315,7 +316,7 @@ SimpleDialog.propTypes = {
   selectedValue: PropTypes.string.isRequired,
 };
 
-function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto,actual}) {
+function SimpleDialogDemo({nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto,actual}) {
   const classes = useStyles3();
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(emails[1]);
@@ -340,109 +341,105 @@ function SimpleDialogDemo({text,nombre,setNombre,descripcion,setDescripcion,prec
   );
 }
 
-// // start
-// function SimpleDialogEdit({ onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
-//   const classes = useStyles3();
+// start
+function SimpleDialogEdit({ onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
+  const classes = useStyles3();
 
-//   const handleClose = () => {
-//     onClose(selectedValue);
-//   };
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
 
-//   const handleListItemClick = (value) => {
-//     onClose(value);
-//   };
+  const handleListItemClick = (value) => {
+    onClose(value);
+  };
 
-//   return (
-//     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-//       <DialogTitle id="simple-dialog-title">Editar Producto</DialogTitle>
-//       <List>
-//         <Table maxWidth="md" size="small">
-//           <TableHead>
-//               <TableRow >
-//                   <TableCell  align="center">
-//                     Id: 
-//                     <TextField value={id} onChange={(e) => setId(e.target.value)} />
-//                   </TableCell>
-//                   <TableCell  align="center">
-//                     Nombre: 
-//                     <TextField value={nombre} onChange={(e) => setNombre(e.target.value)} />
-//                   </TableCell>
-//                   <TableCell align="center">
-//                     Descripcion: 
-//                     <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-//                   </TableCell>
-//                   <TableCell  align="center">
-//                     Precio: 
-//                     <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
-//                   </TableCell>
-//               </TableRow>
-//           </TableHead>
-//         </Table>
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Editar Producto</DialogTitle>
+      <List>
+        <Table maxWidth="md" size="small">
+          <TableHead>
+              <TableRow >
+                  <TableCell  align="center">
+                    Nombre: 
+                    <TextField value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                  </TableCell>
+                  <TableCell align="center">
+                    Descripcion: 
+                    <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+                  </TableCell>
+                  <TableCell  align="center">
+                    Precio: 
+                    <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
+                  </TableCell>
+              </TableRow>
+          </TableHead>
+        </Table>
 
-//         <ListItem autoFocus button onClick={() => handleListItemClick('addAccount')}>
-//           <ListItemAvatar>
-//             <Avatar>
-//               <AddIcon />
-//             </Avatar>
-//           </ListItemAvatar>
-//           <ListItemText primary="Agregar Producto" />
-//         </ListItem>
-//       </List>
-//     </Dialog>
-//   );
-// }
+        <ListItem autoFocus button onClick={() => handleListItemClick('addAccount')}>
+          <ListItemAvatar>
+            <Avatar>
+              <AddIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="Editar Producto" />
+        </ListItem>
+      </List>
+    </Dialog>
+  );
+}
 
-// SimpleDialog.propTypes = {
-//   onClose: PropTypes.func.isRequired,
-//   open: PropTypes.bool.isRequired,
-//   selectedValue: PropTypes.string.isRequired,
-// };
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  selectedValue: PropTypes.string.isRequired,
+};
 
-// function SimpleDialogEditDemo({text,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto,actual}) {
-//   const classes = useStyles3();
-//   const [open, setOpen] = React.useState(false);
-//   const [selectedValue, setSelectedValue] = React.useState(emails[1]);
-//   useEffect(() => {
-//     setId(actual.item.id);
-//     setNombre(actual.item.nombre);
-//     setDescripcion(actual.item.descripcion);
-//     setPrecio(actual.item.precio);
-//   },[]);
+function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto,actual}) {
+  const classes = useStyles3();
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  useEffect(() => {
+    setId(actual.item.id);
+    setNombre(actual.item.nombre);
+    setDescripcion(actual.item.descripcion);
+    setPrecio(actual.item.precio);
+  },[]);
 
-//   const handleClickOpen = () => {
-//     setOpen(true);
-//   };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-//   const handleClose = (value) => {
-//     setOpen(false);
-//     setSelectedValue(value);
-//     let current = {
-//       item: {
-//         'id': 0,
-//         'nombre': '',
-//         'imagen': "https://source.unsplash.com/random",
-//         'descripcion': '',
-//         'precio': '',
-//       }
-//     }
-//     current.item.id = id;
-//     current.item.nombre = nombre;
-//     current.item.descripcion = descripcion; 
-//     current.item.precio = precio;
-//     editarProducto(current);
-//   };
+  const handleClose = (value) => {
+    setOpen(false);
+    setSelectedValue(value);
+    let current = {
+      item: {
+        'id': 0,
+        'nombre': '',
+        'imagen': "https://source.unsplash.com/random",
+        'descripcion': '',
+        'precio': '',
+      }
+    }
+    current.item.id = id;
+    current.item.nombre = nombre;
+    current.item.descripcion = descripcion; 
+    current.item.precio = precio;
+    editarProducto(current);
+  };
 
-//   return (
-//     <div>
-//       <Button className={classes.whiteBlend} variant="outlined" color="primary" onClick={handleClickOpen}>
-//         {text}
-//       </Button>
-//       <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
-//     </div>
-//   );
-// }
+  return (
+    <div>
+      <Button className={classes.whiteBlend} variant="secondary" variant="secondary" onClick={handleClickOpen}>
+        <CreateIcon/>
+      </Button>
+      <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
+    </div>
+  );
+}
 
-// //end
+//end
 
 const Admin = ({products,transactions}) => {
   return(
