@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -11,6 +11,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 import logo from '../images/mysportKit-logo.jpeg';
+// import Login from './App.js';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -50,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TopBar({isLoggedIn,setIsLoggedIn}) {
   const classes = useStyles();
+  // const { admin } = useContext(Login);
+  // const [isAdmin, setIsAdmin] = admin;
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -106,9 +110,9 @@ export default function TopBar({isLoggedIn,setIsLoggedIn}) {
       <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
         <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
       </Link>
-      ) : (<></>)} */}
+      ) : (<></>)*/}
         </div>
-      )}
+      )} }
       
     </Menu>
   );
@@ -124,19 +128,20 @@ export default function TopBar({isLoggedIn,setIsLoggedIn}) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
+      
+      <MenuItem>
+        <Link to='/cart' style={{ textDecoration: 'none', color: '#da3770'}}>
+          <IconButton aria-label="show 4 items in cart"
+            aria-controls="primary-account-menu"
+            aria-haspopup="true" 
+            className={classes.color}>
+                <ShoppingCartIcon />
+            </IconButton>
+            {/* <p>Carrito</p> */}
+        </Link>
+      </MenuItem>
       {isLoggedIn ? (
         <div>
-          <MenuItem>
-            <Link to='/cart' style={{ textDecoration: 'none', color: '#da3770'}}>
-              <IconButton aria-label="show 4 items in cart"
-                aria-controls="primary-account-menu"
-                aria-haspopup="true" 
-                className={classes.color}>
-                    <ShoppingCartIcon />
-                </IconButton>
-                {/* <p>Carrito</p> */}
-            </Link>
-          </MenuItem>
           <MenuItem onClick={handleProfileMenuOpen}>
             <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770'}}>
               <IconButton
@@ -188,15 +193,11 @@ export default function TopBar({isLoggedIn,setIsLoggedIn}) {
                 <NotificationsIcon />
               
             </IconButton> */}
-            {isLoggedIn ? (
-              <div className={classes.sectionDesktop}>
-                <Link to= '/cart'>
-                  <IconButton aria-label="show 4 items in the cart" className={classes.color}>
-                      <ShoppingCartIcon />
-                  </IconButton>
-                </Link>
-              </div>
-            ): (<></>)}
+              <Link to= '/cart'>
+                <IconButton aria-label="show 4 items in the cart" className={classes.color}>
+                    <ShoppingCartIcon />
+                </IconButton>
+              </Link>
             <IconButton
                   edge="end"
                   aria-label="account of current user"
@@ -207,7 +208,7 @@ export default function TopBar({isLoggedIn,setIsLoggedIn}) {
                 >
                   <AccountCircle />
                 </IconButton>
-            
+          
           </div>
           <div className={classes.sectionMobile}>
             <IconButton

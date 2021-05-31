@@ -99,7 +99,7 @@ export default function Cart({carrito,isLoggedIn}) {
           </Typography>
         </ListItem>
       </List>
-          <Link to= {isLoggedIn ? '/checkout' : '/login'} style={{ textDecoration: 'none' }} >
+          <Link to= {isLoggedIn ? '/checkout' : '/sign-in'} style={{ textDecoration: 'none' }} >
             <Button 
                 type="submit"
                 align="center"
