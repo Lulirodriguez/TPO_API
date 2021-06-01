@@ -15,6 +15,7 @@ import Cart from './components/cart.js';
 import Checkout from './components/checkout.js';
 import Admin from './components/admin.js';
 import StickyFooter from './components/footer.js';
+import UserProfile from './components/userProfile.js';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,6 +40,7 @@ function App() {
           <Route path="/cart" exact component={() => <Cart carrito={carrito} isLoggedIn={isLoggedIn}/>} />
           <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
           <Route path="/admin" exact component={() => <Admin products={productFile} transactions={transactions} />} />
+          <Route path="/userProfile" component={() => <UserProfile />} />
         </Login.Provider>
         <StickyFooter />
       </Router>

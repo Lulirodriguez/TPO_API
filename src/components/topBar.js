@@ -112,7 +112,7 @@ export default function TopBar({isLoggedIn,setIsLoggedIn}) {
       </Link>
       ) : (<></>)*/}
         </div>
-      )} }
+      )} 
       
     </Menu>
   );
