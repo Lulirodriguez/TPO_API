@@ -114,10 +114,26 @@ const Category = ({carrito, setCarrito,items}) => {
                 setCarrito(item);
             }
             else{
-                setCarrito([
-                    ...carrito,
-                    item,
-                ]);
+                let index = -1;
+                for(let i=0; i<carrito.length;i++){
+                    if(carrito[i].id === item.id){
+                        index = i;
+                    }
+                }
+                if(index === -1){
+                    setCarrito([
+                        ...carrito,
+                        item,
+                    ]);
+                }
+                else{
+                    item.cantidad += carrito[index].cantidad;
+                    setCarrito([
+                        ...carrito.slice(0,index),
+                        item,
+                        ...carrito.slice(index+1),
+                    ]);
+                }
             }
         } 
     }

@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn({setIsLoggedIn}) {
+export default function SignIn({setIsLoggedIn,setIsAdmin}) {
   const classes = useStyles();
 
   const [username, setUsername] = useState('');
@@ -79,16 +79,24 @@ export default function SignIn({setIsLoggedIn}) {
 
   const match = () => {
     let isMatch = false;
-    for(let i=0;i<users.length;i++){
-      if(users[i].email === username && users[i].password === password){
-        isMatch = true;
-      }
+    if(getMatchedUser() != null){
+      isMatch = true;
     }
     return isMatch;
   }
 
+  const getMatchedUser = () => {
+    for(let i=0;i<users.length;i++){
+      if(users[i].email === username && users[i].password === password){
+        return users[i];
+      }
+    }
+    return null;
+  }
+
   const handleSignIn = (e) => {
     setIsLoggedIn(true);
+    setIsAdmin(getMatchedUser().isAdmin);
   }
 
   const customer = {
@@ -96,6 +104,7 @@ export default function SignIn({setIsLoggedIn}) {
     'lastName': 'Teacher',
     'email': 'customer@uade.edu.ar',
     'password': 'uade1234',
+    'isAdmin': false,
   };
 
   const admin = {
@@ -103,6 +112,7 @@ export default function SignIn({setIsLoggedIn}) {
     'lastName': 'Teacher',
     'email': 'admin@uade.edu.ar',
     'password': 'uade1234',
+    'isAdmin': true,
   };
 
   const users = [

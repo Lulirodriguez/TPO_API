@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   total: {
     fontWeight: 700,
+    marginRight: '7.5%',
   },
   title: {
     marginTop: theme.spacing(2),
@@ -72,8 +73,20 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Cart({carrito,isLoggedIn}) {
+export default function Cart({carrito,setCarrito,isLoggedIn}) {
   const classes = useStyles();
+
+  const handleDeleteFromCart = (e,product) => {
+    e.preventDefault();
+    for(let i=0;i<carrito.length;i++){
+      if(carrito[i].id == product.id){
+        setCarrito([
+          ...carrito.slice(0,i),
+          ...carrito.slice(i+1),
+        ]);
+      }
+    }
+  }
 
   let total = 0;
   const _ = carrito.map((item) => {
@@ -90,6 +103,14 @@ export default function Cart({carrito,isLoggedIn}) {
           <ListItem className={classes.listItem} key={product.nombre}>
             <ListItemText primary={product.nombre} secondary={`${product.descripcion} // Cantidad: ${product.cantidad}`} />
             <Typography variant="body2">${product.precio}</Typography>
+            <Button 
+            variant="contained"
+            color="secondary"
+            size='small'
+            style={{marginLeft: '12px'}}
+            onClick={(e)=>handleDeleteFromCart(e,product)}>
+            Borrar
+          </Button>
           </ListItem>
         ))}
         <ListItem className={classes.listItem}>

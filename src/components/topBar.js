@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopBar({isLoggedIn,setIsLoggedIn}) {
+export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin}) {
   const classes = useStyles();
   // const { admin } = useContext(Login);
   // const [isAdmin, setIsAdmin] = admin;
@@ -75,6 +75,7 @@ export default function TopBar({isLoggedIn,setIsLoggedIn}) {
 
   const handleLogOut = () => {
     setIsLoggedIn(false);
+    setIsAdmin(false);
     setAnchorEl(null);
     handleMobileMenuClose();
   }
@@ -99,23 +100,24 @@ export default function TopBar({isLoggedIn,setIsLoggedIn}) {
           <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770' }}>
             <MenuItem onClick={handleMenuClose}>Ver Perfil</MenuItem>
           </Link>
-          <MenuItem style={{ textDecoration: 'none', color: '#da3770'}} onClick={() => handleLogOut()}>Cerrar Sesión</MenuItem>
+          {isAdmin ? (
+          <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
+            <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
+          </Link>
+          ) : (<></>)}
+          <Link to='/' style={{ textDecoration: 'none', color: '#da3770' }}>
+            <MenuItem style={{ textDecoration: 'none', color: '#da3770'}} onClick={() => handleLogOut()}>Cerrar Sesión</MenuItem>
+          </Link>
         </div>
       ) : (
         <div>
           <Link to='/sign-in' style={{ textDecoration: 'none', color: '#da3770' }}>
             <MenuItem onClick={handleMenuClose}>Iniciar sesión / Crear una cuenta</MenuItem>
           </Link>
-      {/* {isAdmin ? (
-      <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
-        <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
-      </Link>
-      ) : (<></>)*/}
         </div>
-      )} 
-      
+      )}
     </Menu>
-  );
+    );
 
   const mobileMenuId = 'primary-account-menu-mobile';
   const renderMobileMenu = (

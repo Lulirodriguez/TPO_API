@@ -305,6 +305,9 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="Agregar Producto" />
+          <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleClose}>
+            Cancelar
+          </Button>
         </ListItem>
       </List>
     </Dialog>
@@ -324,12 +327,17 @@ function SimpleDialogDemo({nombre,setNombre,descripcion,setDescripcion,precio,se
 
   const handleClickOpen = () => {
     setOpen(true);
+    setNombre('');
+    setDescripcion('');
+    setPrecio('');
   };
 
   const handleClose = (value) => {
     setOpen(false);
     setSelectedValue(value);
-    agregarProducto();
+    if(nombre!='' && descripcion!= '' && precio!=''){
+      agregarProducto();
+    }
   };
 
   return (
@@ -343,7 +351,7 @@ function SimpleDialogDemo({nombre,setNombre,descripcion,setDescripcion,precio,se
 }
 
 // start
-function SimpleDialogEdit({ onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
+function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
   const classes = useStyles3();
 
   const handleClose = () => {
@@ -384,6 +392,9 @@ function SimpleDialogEdit({ onClose, selectedValue, open ,id,setId,nombre,setNom
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="Editar Producto" />
+          <Button className={classes.whiteBlend} align="right" color="secondary" onClick={closeModal}>
+            Cancelar
+          </Button>
         </ListItem>
       </List>
     </Dialog>
@@ -411,6 +422,10 @@ function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripc
     setOpen(true);
   };
 
+  const closeModal = (e) => {
+    setOpen(false);
+  }
+
   const handleClose = (value) => {
     setOpen(false);
     setSelectedValue(value);
@@ -435,7 +450,7 @@ function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripc
       <Button className={classes.whiteBlend} variant="secondary" variant="secondary" onClick={handleClickOpen}>
         <CreateIcon/>
       </Button>
-      <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
+      <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} closeModal={closeModal} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
     </div>
   );
 }
