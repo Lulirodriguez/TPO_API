@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Counter = ({card, addToCart}) => {
     const classes = useStyles();
-    const [counter, setCounter] = React.useState(card.item.cantidad?card.item.cantidad:1);
+    const [counter, setCounter] = React.useState(card.item.cantidad ? card.item.cantidad : 1);
 
     const decreaseCount = () => {
         if(counter > 1){

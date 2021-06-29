@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -7,7 +7,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-
 
 const products = [
   { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
@@ -73,6 +72,57 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const CartCounter = ({product,cart,setCart}) => {
+  const [counter, setCounter] = useState(product.cantidad);
+
+  const setNewAmount = (counter) => {
+    for(let i=0;i<cart.length;i++){
+      if(cart[i].id == product.id){
+        let item = cart[i];
+        item.cantidad = counter;
+        setCart([
+          ...cart.slice(0,i),
+          item,
+          ...cart.slice(i+1),
+        ]);
+      }
+    }
+  }
+
+  const decreaseCount = (event) => {
+      if(counter > 1){
+        setNewAmount(counter-1);
+      }
+      else if(counter === 1){
+        for(let i=0;i<cart.length;i++){
+          if(cart[i].id == product.id){
+            setCart([
+              ...cart.slice(0,i),
+              ...cart.slice(i+1),
+            ]);
+          }
+        }
+      }
+  }
+
+  const increaseCount = (event) => {
+    // setCounter(counter+1);
+    setNewAmount(counter+1);
+  }
+
+  return(
+      <div style={{margin:'auto'}}>
+          <Button size="xs" onClick={(e) => decreaseCount(e)}>
+          -
+          </Button>
+          {counter}
+          <Button  size="xs" onClick={(e) => increaseCount(e)}>
+          +
+          </Button>
+      </div>
+  );
+}
+
 export default function Cart({carrito,setCarrito,isLoggedIn}) {
   const classes = useStyles();
 
@@ -100,26 +150,30 @@ export default function Cart({carrito,setCarrito,isLoggedIn}) {
       </Typography>
       <List disablePadding>
         {carrito.map((product) => (
-          <ListItem className={classes.listItem} key={product.nombre}>
-            <ListItemText primary={product.nombre} secondary={`${product.descripcion} // Cantidad: ${product.cantidad}`} />
-            <Typography variant="body2">${product.precio}</Typography>
-            <Button 
-            variant="contained"
-            color="secondary"
-            size='small'
-            style={{marginLeft: '12px'}}
-            onClick={(e)=>handleDeleteFromCart(e,product)}>
-            Borrar
-          </Button>
-          </ListItem>
+            <ListItem className={classes.listItem} key={product.nombre}>
+              <ListItemText primary={product.nombre} secondary={`${product.descripcion}`} />
+              <CartCounter key={product.nombre} product={product} cart={carrito} setCart={(value) => setCarrito(value)} />
+              <Typography variant="body2">${product.precio}</Typography>
+              <Button 
+                variant="contained"
+                color="secondary"
+                size='small'
+                style={{marginLeft: '12px'}}
+                onClick={(e)=>handleDeleteFromCart(e,product)}>
+                Borrar
+              </Button>
+            </ListItem>
         ))}
-        <ListItem className={classes.listItem}>
-          <ListItemText primary="Total" />
-          <Typography variant="subtitle1" className={classes.total}>
-            ${total}
-          </Typography>
-        </ListItem>
-      </List>
+        </List>
+        <List disablePadding>
+        {carrito && carrito.length!==0 ?
+        (<div>
+          <ListItem className={classes.listItem}>
+            <ListItemText primary="Total" />
+            <Typography variant="subtitle1" className={classes.total}>
+              ${total}
+            </Typography>
+          </ListItem>
           <Link to= {isLoggedIn ? '/checkout' : '/sign-in'} style={{ textDecoration: 'none' }} >
             <Button 
                 type="submit"
@@ -131,6 +185,8 @@ export default function Cart({carrito,setCarrito,isLoggedIn}) {
               PAGAR
             </Button>
           </Link>
+          </div>):(<p>Aún no hay productos en el carrito</p>)}
+          </List>
         
           <Grid container spacing={2} className= {classes.checkoutButton}>
       </Grid>
