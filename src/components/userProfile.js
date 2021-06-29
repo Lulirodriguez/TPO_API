@@ -112,28 +112,55 @@ const DireccionEnvio = () => {
           </CardHeader>
           <CardBody>
             <GridContainer>
-              <GridItem xs={12} sm={12} md={4}>
+              <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="City"
-                  id="city"
+                  labelText="Direccion 1"
+                  id="direx1"
                   formControlProps={{
                     fullWidth: true,
                   }}
                 />
               </GridItem>
-              <GridItem xs={12} sm={12} md={4}>
+              <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Country"
-                  id="country"
+                  labelText="Direccion 2"
+                  id="direx2"
                   formControlProps={{
                     fullWidth: true,
                   }}
                 />
               </GridItem>
-              <GridItem xs={12} sm={12} md={4}>
+              <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Postal Code"
-                  id="postal-code"
+                  labelText="Localidad"
+                  id="localidad"
+                  formControlProps={{
+                    fullWidth: true,
+                  }}
+                />
+              </GridItem>
+              <GridItem xs={12} sm={12} md={6}>
+                <CustomInput
+                  labelText="Provincia"
+                  id="provincia"
+                  formControlProps={{
+                    fullWidth: true,
+                  }}
+                />
+              </GridItem>
+              <GridItem xs={12} sm={12} md={6}>
+                <CustomInput
+                  labelText="Codigo Postal"
+                  id="postalCode"
+                  formControlProps={{
+                    fullWidth: true,
+                  }}
+                />
+              </GridItem>
+              <GridItem xs={12} sm={12} md={6}>
+                <CustomInput
+                  labelText="País"
+                  id="pais"
                   formControlProps={{
                     fullWidth: true,
                   }}
@@ -162,28 +189,37 @@ const MetodoDePago = () => {
           </CardHeader>
           <CardBody>
             <GridContainer>
-              <GridItem xs={12} sm={12} md={4}>
+              <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Numero de la Targeta"
-                  id="city"
+                  labelText="Nombre en la Targeta"
+                  id="cardName"
                   formControlProps={{
                     fullWidth: true,
                   }}
                 />
               </GridItem>
-              <GridItem xs={12} sm={12} md={4}>
+              <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Codigo"
-                  id="country"
+                  labelText="Numero de la Tarjeta"
+                  id="cardNumber"
                   formControlProps={{
                     fullWidth: true,
                   }}
                 />
               </GridItem>
-              <GridItem xs={12} sm={12} md={4}>
+              <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Tipo Targeta"
-                  id="postal-code"
+                  labelText="Fecha Vencimiento"
+                  id="expiredDate"
+                  formControlProps={{
+                    fullWidth: true,
+                  }}
+                />
+              </GridItem>
+              <GridItem xs={12} sm={12} md={6}>
+                <CustomInput
+                  labelText="Código de Seguridad"
+                  id="securityCode"
                   formControlProps={{
                     fullWidth: true,
                   }}
