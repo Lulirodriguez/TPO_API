@@ -305,10 +305,10 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="Agregar Producto" />
-          <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleClose}>
+        </ListItem>
+        <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleClose}>
             Cancelar
           </Button>
-        </ListItem>
       </List>
     </Dialog>
   );
@@ -392,10 +392,10 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="Editar Producto" />
-          <Button className={classes.whiteBlend} align="right" color="secondary" onClick={closeModal}>
+        </ListItem>
+        <Button className={classes.whiteBlend} align="right" color="secondary" onClick={closeModal}>
             Cancelar
           </Button>
-        </ListItem>
       </List>
     </Dialog>
   );
@@ -410,39 +410,43 @@ SimpleDialog.propTypes = {
 function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto,actual}) {
   const classes = useStyles3();
   const [open, setOpen] = React.useState(false);
+  const [forcedClose, setForcedClose] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(emails[1]);
-  useEffect(() => {
+
+  const handleClickOpen = () => {
     setId(actual.item.id);
     setNombre(actual.item.nombre);
     setDescripcion(actual.item.descripcion);
     setPrecio(actual.item.precio);
-  },[]);
-
-  const handleClickOpen = () => {
     setOpen(true);
+    setForcedClose(false);
   };
 
   const closeModal = (e) => {
     setOpen(false);
+    setForcedClose(true);
   }
 
   const handleClose = (value) => {
-    setOpen(false);
-    setSelectedValue(value);
-    let current = {
-      item: {
-        'id': 0,
-        'nombre': '',
-        'imagen': "https://source.unsplash.com/random",
-        'descripcion': '',
-        'precio': '',
+    if(!forcedClose){
+      setOpen(false);
+      setSelectedValue(value);
+      let current = {
+        item: {
+          'id': 0,
+          'nombre': '',
+          'imagen': "https://source.unsplash.com/random",
+          'descripcion': '',
+          'precio': '',
+        }
       }
+      current.item.id = id;
+      current.item.nombre = nombre;
+      current.item.descripcion = descripcion; 
+      current.item.precio = precio;
+      editarProducto(current);
+      setForcedClose(false);
     }
-    current.item.id = id;
-    current.item.nombre = nombre;
-    current.item.descripcion = descripcion; 
-    current.item.precio = precio;
-    editarProducto(current);
   };
 
   return (
