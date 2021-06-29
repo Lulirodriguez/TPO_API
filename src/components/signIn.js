@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn({setIsLoggedIn,setIsAdmin}) {
+export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser}) {
   const classes = useStyles();
 
   const [username, setUsername] = useState('');
@@ -96,6 +96,7 @@ export default function SignIn({setIsLoggedIn,setIsAdmin}) {
 
   const handleSignIn = (e) => {
     setIsLoggedIn(true);
+    setCurrentUser(getMatchedUser());
     setIsAdmin(getMatchedUser().isAdmin);
   }
 

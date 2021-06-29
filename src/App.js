@@ -20,6 +20,7 @@ import UserProfile from './components/userProfile.js';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [carrito, setCarrito] = useState([]);
   const [shippingData, setShippingData] = useState([]);
   const [paymentData, setPaymentData] = useState([]);
@@ -32,12 +33,12 @@ function App() {
           <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)} isAdmin={isAdmin} setIsAdmin={(value)=> setIsAdmin(value)} cart={carrito} />
           <Route path="/" exact component={() => <HomePage />} />
           <Route path="/sign-up" exact component={() => <SignUp />} />
-          <Route path="/sign-in" exact component={() => <SignIn setIsLoggedIn={(value) => setIsLoggedIn(value)} setIsAdmin={(value)=> setIsAdmin(value)}/>} />
+          <Route path="/sign-in" exact component={() => <SignIn setIsLoggedIn={(value) => setIsLoggedIn(value)} setIsAdmin={(value)=> setIsAdmin(value)} setCurrentUser={(value)=> setCurrentUser(value)} />} />
           <Route path="/category/:category" exact component={() => <Category carrito={carrito} setCarrito={(value) => setCarrito(value)} items={productFile}/>} />
           <Route path="/cart" exact component={() => <Cart carrito={carrito} setCarrito={(value)=>setCarrito(value)} isLoggedIn={isLoggedIn}/>} />
           <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
           <Route path="/admin" exact component={() => <Admin products={productFile} transactions={transactions} />} />
-          <Route path="/profile" component={() => <UserProfile />} />
+          <Route path="/profile" component={() => <UserProfile user={currentUser} />} />
         <StickyFooter />
       </Router>
     </div>
