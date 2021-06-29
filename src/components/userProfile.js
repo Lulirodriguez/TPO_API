@@ -103,7 +103,7 @@ const EditProfile = ({user}) => {
 const DireccionEnvio = () => {
   const classes = useStyles();
   return (
-    <div style={{minWidth:'60%'}}>
+    <div style={{maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={16}>
         <Card>
           <CardHeader style={{backgroundColor:'#da3770'}}>
