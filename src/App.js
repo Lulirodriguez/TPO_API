@@ -29,7 +29,7 @@ function App() {
     <div className="App">
       <Router>
         <Switch />
-          <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)} isAdmin={isAdmin} setIsAdmin={(value)=> setIsAdmin(value)}/>
+          <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)} isAdmin={isAdmin} setIsAdmin={(value)=> setIsAdmin(value)} cart={carrito} />
           <Route path="/" exact component={() => <HomePage />} />
           <Route path="/sign-up" exact component={() => <SignUp />} />
           <Route path="/sign-in" exact component={() => <SignIn setIsLoggedIn={(value) => setIsLoggedIn(value)} setIsAdmin={(value)=> setIsAdmin(value)}/>} />

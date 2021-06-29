@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -9,6 +9,7 @@ import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 
 import logo from '../images/mysportKit-logo.jpeg';
 // import Login from './App.js';
@@ -49,10 +50,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin}) {
+export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart}) {
   const classes = useStyles();
   // const { admin } = useContext(Login);
   // const [isAdmin, setIsAdmin] = admin;
+
+  const [color, setColor] = useState('#ffffff') //'#f50057';
+
+  useEffect(()=> {
+    if(cart && cart.length!==0){
+      setColor('#f50057');
+    }
+    else{
+      setColor('#ffffff');
+    }
+  },[cart]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -132,14 +144,14 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin}) {
     >
       
       <MenuItem>
-        <Link to='/cart' style={{ textDecoration: 'none', color: '#da3770'}}>
+        <Link to='/cart' style={{ textDecoration: 'none', color: color}}>
           <IconButton aria-label="show 4 items in cart"
             aria-controls="primary-account-menu"
             aria-haspopup="true" 
             className={classes.color}>
-                <ShoppingCartIcon />
+              <ShoppingCartIcon />
+              {/*cart && cart.length!=0 ? <ShoppingCartIcon /> : <ShoppingCartOutlinedIcon /> */}
             </IconButton>
-            {/* <p>Carrito</p> */}
         </Link>
       </MenuItem>
       {isLoggedIn ? (
@@ -195,8 +207,8 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin}) {
                 <NotificationsIcon />
               
             </IconButton> */}
-              <Link to= '/cart'>
-                <IconButton aria-label="show 4 items in the cart" className={classes.color}>
+              <Link to= '/cart' style={{color: color}}>
+                <IconButton aria-label="show 4 items in the cart" style={{color: color}}>
                     <ShoppingCartIcon />
                 </IconButton>
               </Link>

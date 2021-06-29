@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Counter = ({card, addToCart}) => {
     const classes = useStyles();
-    const [counter, setCounter] = React.useState(1);
+    const [counter, setCounter] = React.useState(card.item.cantidad?card.item.cantidad:1);
 
     const decreaseCount = () => {
         if(counter > 1){
@@ -99,8 +99,8 @@ const Counter = ({card, addToCart}) => {
 }
 
 const Category = ({carrito, setCarrito,items}) => {
-  const classes = useStyles();
-
+    const classes = useStyles();
+    const [itemList, setItemList] = useState(items);
 
     useEffect(() => {
         console.log(items);
@@ -127,7 +127,7 @@ const Category = ({carrito, setCarrito,items}) => {
                     ]);
                 }
                 else{
-                    item.cantidad += carrito[index].cantidad;
+                    // item.cantidad += carrito[index].cantidad;
                     setCarrito([
                         ...carrito.slice(0,index),
                         item,
@@ -135,7 +135,18 @@ const Category = ({carrito, setCarrito,items}) => {
                     ]);
                 }
             }
-        } 
+            let listIndex = -1;
+            for(let i=0; i<itemList.length;i++){
+                if(itemList[i].id === item.id){
+                    listIndex = i;
+                }
+            }
+            setItemList([
+                ...itemList.slice(0,listIndex),
+                item,
+                ...itemList.slice(listIndex+1),
+            ]);
+        }
     }
 
     return (
@@ -143,27 +154,9 @@ const Category = ({carrito, setCarrito,items}) => {
             <main>
                 <Container className={classes.cardGrid} maxWidth="lg">
                 <Grid container spacing={8}>
-                <div>
-                    <table className={classes.whiteBlend}>
-                        <th>
-                            <p className={classes.cart}>Productos </p>
-                        </th>
-                        <tr>
-                            {carrito.map((articulo) => (
-                                <td>
-                                    <p>Nombre: {articulo.nombre}</p>
-                                    <p>Descripcion: {articulo.descripcion}</p>
-                                    <p>Precio: ${articulo.precio}</p>
-                                    <p>Cantidad: {articulo.cantidad}</p>
-                                    <br />
-                                </td>
-                            ))}
-                        </tr>
-                    </table>
-                </div>
                 </Grid>
                 <Grid container spacing={4}>
-                    {items.map((card) => (
+                    {itemList.map((card) => (
                     <Grid key={card.item.id} xs={12} sm={6} md={3}>
                         <Card className={classes.card}>
                         <CardMedia
