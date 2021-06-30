@@ -29,7 +29,8 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
+      <div className="pageContainer">
+      <Router >
         <Switch />
           <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)} isAdmin={isAdmin} setIsAdmin={(value)=> setIsAdmin(value)} cart={carrito} />
           <Route path="/" exact component={() => <HomePage />} />
@@ -40,8 +41,9 @@ function App() {
           <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
           <Route path="/admin" exact component={() => <Admin products={productFile} transactions={transactions} />} />
           <Route path="/profile" component={() => <UserProfile user={currentUser} />} />
-        <StickyFooter />
       </Router>
+      </div>
+      <StickyFooter />
     </div>
   );
 }
