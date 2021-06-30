@@ -8,20 +8,20 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-const products = [
-  { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
-  { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
-  { name: 'Product 3', desc: 'Something else', price: '$6.51' },
-  { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
-const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-];
+// const products = [
+//   { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
+//   { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
+//   { name: 'Product 3', desc: 'Something else', price: '$6.51' },
+//   { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
+//   { name: 'Shipping', desc: '', price: 'Free' },
+// ];
+// const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
+// const payments = [
+//   { name: 'Card type', detail: 'Visa' },
+//   { name: 'Card holder', detail: 'Mr John Smith' },
+//   { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
+//   { name: 'Expiry date', detail: '04/2024' },
+// ];
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -106,7 +106,6 @@ const CartCounter = ({product,cart,setCart}) => {
   }
 
   const increaseCount = (event) => {
-    // setCounter(counter+1);
     setNewAmount(counter+1);
   }
 
@@ -123,8 +122,14 @@ const CartCounter = ({product,cart,setCart}) => {
   );
 }
 
-export default function Cart({carrito,setCarrito,isLoggedIn}) {
+export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
   const classes = useStyles();
+
+  useEffect(() => {
+    if(!isLoggedIn){
+      setReadyToPay(true);
+    }
+  },[])
 
   const handleDeleteFromCart = (e,product) => {
     e.preventDefault();
@@ -182,7 +187,7 @@ export default function Cart({carrito,setCarrito,isLoggedIn}) {
                 color="secondary"
                 className={classes.submit}
               >
-              PAGAR
+                PAGAR
             </Button>
           </Link>
           </div>):(<p>Aún no hay productos en el carrito</p>)}

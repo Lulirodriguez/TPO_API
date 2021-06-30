@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser}) {
+export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToPay}) {
   const classes = useStyles();
 
   const [username, setUsername] = useState('');
@@ -165,7 +165,7 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser}) {
             onChange={(e) => handleSetPassword(e)}
           />
           {!!match() ? (
-            <RouteLink to="/" style={{ textDecoration: 'none', color:'black' }}>
+            <RouteLink to={readyToPay? "/checkout" :  "/"} style={{ textDecoration: 'none', color:'black' }}>
               <Button
                 type="submit"
                 fullWidth

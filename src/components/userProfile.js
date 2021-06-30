@@ -26,14 +26,14 @@ import transactionsFile from '../jsonFiles/transactions.json';
 
 const styles = {
   cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
+    color: "#000000",
     margin: "0",
     fontSize: "14px",
     marginTop: "0",
     marginBottom: "0",
   },
   cardTitleWhite: {
-    color: "#FFFFFF",
+    color: "#000000",
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
@@ -51,7 +51,7 @@ const EditProfile = ({user}) => {
     <div style={{minWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={16}>
         <Card>
-          <CardHeader style={{backgroundColor:'#da3770'}}>
+          <CardHeader style={{backgroundColor:'pink'}}>
             <h4 className={classes.cardTitleWhite}>Editar Perfil</h4>
             <p className={classes.cardCategoryWhite}>Complete su perfil</p>
           </CardHeader>
@@ -92,7 +92,7 @@ const EditProfile = ({user}) => {
             </GridContainer>
           </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'#da3770'}}>Actualizar Perfil</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Perfil</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -106,7 +106,7 @@ const DireccionEnvio = () => {
     <div style={{maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={16}>
         <Card>
-          <CardHeader style={{backgroundColor:'#da3770'}}>
+          <CardHeader style={{backgroundColor:'pink', color: 'black'}}>
             <h4 className={classes.cardTitleWhite}>Dirección de Envío</h4>
             <p className={classes.cardCategoryWhite}>Cambiar preferencias de envío</p>
           </CardHeader>
@@ -169,7 +169,7 @@ const DireccionEnvio = () => {
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'#da3770'}}>Actualizar Detalles de Envío</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Detalles de Envío</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -183,7 +183,7 @@ const MetodoDePago = () => {
     <div style={{minWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={16}>
         <Card>
-          <CardHeader style={{backgroundColor:'#da3770'}}>
+          <CardHeader style={{backgroundColor:'pink', color: 'black'}}>
             <h4 className={classes.cardTitleWhite}>Método de Pago</h4>
             <p className={classes.cardCategoryWhite}>Cambiar preferencias de pago</p>
           </CardHeader>
@@ -228,7 +228,7 @@ const MetodoDePago = () => {
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'#da3770'}}>Actualizar Método de Pago</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Método de Pago</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -242,7 +242,7 @@ const MisCompras = ({transactions}) => {
     <div style={{minWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={16}>
         <Card>
-          <CardHeader style={{backgroundColor:'#da3770'}}>
+          <CardHeader style={{backgroundColor:'pink', color: 'pink'}}>
             <h4 className={classes.cardTitleWhite}>Mis Compras</h4>
             <p className={classes.cardCategoryWhite}>Visualización de transacciones</p>
           </CardHeader>
@@ -275,7 +275,6 @@ const MisCompras = ({transactions}) => {
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'#da3770'}}>Transacciones</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -303,25 +302,25 @@ export default function UserProfile({user}) {
               <p className={classes.description}>
                 Dirección de correo electrónico: {user? user.email : "-"}
               </p>
-              <Button color="primary" round style={{backgroundColor:'#da3770', minWidth:'50%'}} onClick={(e) => setDisplay(1)}>
+              <Button color="primary" round style={{backgroundColor:'pink', color: 'black', minWidth:'35%'}} onClick={(e) => setDisplay(1)}>
                 <Link to="#" style={{textDecoration: 'none', color: 'inherit'}}>
                 Perfil
                 </Link>
               </Button>
               <br/>
-              <Button color="primary" round style={{backgroundColor:'#da3770', minWidth:'50%'}} onClick={(e) => setDisplay(2)}>
+              <Button color="primary" round style={{backgroundColor:'pink',  color: 'black', minWidth:'35%'}} onClick={(e) => setDisplay(2)}>
                 <Link to="#" style={{textDecoration: 'none', color: 'inherit'}}>
                   Dirección de Envío
                 </Link>
               </Button>
               <br/>
-              <Button color="primary" round style={{backgroundColor:'#da3770', minWidth:'50%'}} onClick={(e) => setDisplay(3)}>
+              <Button color="primary" round style={{backgroundColor:'pink',  color: 'black', minWidth:'35%'}} onClick={(e) => setDisplay(3)}>
                 <Link to="#" style={{textDecoration: 'none', color: 'inherit'}}>
                   Método de Pago
                 </Link>
               </Button>
               <br/>
-              <Button color="primary" round style={{backgroundColor:'#da3770', minWidth:'50%'}} onClick={(e) => setDisplay(4)}> 
+              <Button color="primary" round style={{backgroundColor:'pink',  color: 'black', minWidth:'35%'}} onClick={(e) => setDisplay(4)}> 
                 <Link to="#" style={{textDecoration: 'none', color: 'inherit'}}>
                   Mis compras
                 </Link>
