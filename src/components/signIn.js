@@ -194,16 +194,18 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
           
           <Grid container>
             <Grid item xs>
-              <Link className={classes.darkBlend} href="#" variant="body2">
+            <RouteLink to="/passwordRecovery" >
+              <Link className={classes.darkBlend} variant="body2">
                 ¿Olvidó la contraseña?
               </Link>
+            </RouteLink>
             </Grid>
             <Grid item>
               <RouteLink to="/sign-up" >
                 <Link className={classes.darkBlend} variant="body2" >
                   {"¿No tiene cuenta? Regístrese "}
                 </Link>
-              </RouteLink>
+                </RouteLink>
             </Grid>
           </Grid>
         </form>

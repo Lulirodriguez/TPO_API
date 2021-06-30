@@ -8,6 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
+import DeleteIcon from '@material-ui/icons/Delete';
 // const products = [
 //   { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
 //   { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
@@ -158,14 +159,13 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
             <ListItem className={classes.listItem} key={product.nombre}>
               <ListItemText primary={product.nombre} secondary={`${product.descripcion}`} />
               <CartCounter key={product.nombre} product={product} cart={carrito} setCart={(value) => setCarrito(value)} />
-              <Typography variant="body2">${product.precio}</Typography>
+              <Typography style={{marginLeft: '25px'}} variant="body2">${product.precio}</Typography>
               <Button 
-                variant="contained"
-                color="secondary"
+                variant="secondary"
                 size='small'
-                style={{marginLeft: '12px'}}
+                style={{marginLeft: '25px'}}
                 onClick={(e)=>handleDeleteFromCart(e,product)}>
-                Borrar
+                <DeleteIcon/>
               </Button>
             </ListItem>
         ))}

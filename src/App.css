@@ -3,8 +3,8 @@
 }
 
 .pageContainer {
-  min-height: 91.9vh!important;
-  position: relative!important;
+  min-height: 91.9vh;
+  position: relative;
 }
 
 html {

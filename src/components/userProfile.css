@@ -1,0 +1,8 @@
+.profileContainer {
+  min-height: 91vh!important;
+  max-width: 100%!important;
+  position: relative;
+  margin-bottom: -3.3%;
+  margin-right: -2%;
+  margin-left: -2%;
+}
