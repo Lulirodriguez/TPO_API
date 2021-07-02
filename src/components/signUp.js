@@ -95,12 +95,13 @@ export default function SignUp() {
     }
     try{
       let res = await api.post('/usuarios/register',body);
-      console.log(res);
+      // console.log(res);
       setError(false);
       // toastr.success("Usuario Registrado con éxito");
     } catch(err) {
       // toastr.error("Error al registrar usuario");
-      console.log(err);
+      // console.log(err);
+      alert("El mail ingresado es inválido");
     }
   }
 
