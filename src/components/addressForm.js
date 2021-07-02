@@ -1,9 +1,54 @@
-import React , {useState} from 'react';
+import React , {useState, useEffect} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 
-export default function AddressForm({firstName,setFirstName,lastName,setLastName,address1,setAddress1,address2,setAddress2,city,setCity,state,setState,zipCode,setZipCode,country,setCountry}) {
+export default function AddressForm({firstName,setFirstName,lastName,setLastName,address1,setAddress1,address2,setAddress2,city,setCity,state,setState,zipCode,setZipCode,country,setCountry,setError}) {
+
+  useEffect(()=> {
+    if(!validarCampos()){
+      setError(true);
+    }
+    else{
+      setError(false);
+    }
+  },[firstName,lastName,address1,address2,city,state,zipCode,country]);
+
+  const validarCampos = () => {
+    return validarCaracteres(firstName) &&
+    validarCaracteres(lastName) &&
+    validarCaracteres(city) &&
+    validarCaracteres(state) &&
+    validarCaracteres(country) &&
+    validarNumeros(zipCode);
+  }
+
+  function validarFormatoFecha(campo) {
+    var RegExPattern = /^\d{1,2}\/\d{1,2}\/$/;
+    if ((campo.match(RegExPattern)) && (campo!='')) {
+          return true;
+    } else {
+          return false;
+    }
+  }
+
+  const validarNumeros = (value) => {
+    let valoresAceptados = /^[0-9]+$/;
+    if ( value.match(valoresAceptados) && (value!='') ){
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[A-Z]+$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   return (
     <React.Fragment>

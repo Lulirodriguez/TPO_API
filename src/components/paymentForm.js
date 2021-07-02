@@ -1,11 +1,57 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCardNumber,expDate,setExpDate,cvv,setCvv}) {
+export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCardNumber,expDate,setExpDate,cvv,setCvv,setError}) {
+
+  useEffect(()=> {
+    if(!validarCampos()){
+      setError(true);
+    }
+    else{
+      setError(false);
+    }
+  },[nameOnCard,cardNumber,expDate,cvv]);
+
+  const validarCampos = () => {
+    return true;
+  }
+
+  //  validarCaracteres(nameOnCard)  &&
+  //   validarNumeros(cardNumber) &&
+  //   validarNumeros(cvv);
+
+  function validarFormatoFecha(campo) {
+    var RegExPattern = /^\d{1,2}\/\d{1,2}\/$/;
+    if ((campo.match(RegExPattern)) && (campo!='')) {
+          return true;
+    } else {
+          return false;
+    }
+  }
+
+  const validarNumeros = (value) => {
+    let valoresAceptados = /^[0-9]+$/;
+    if ( value.match(valoresAceptados) && (value!='') ){
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[A-Z]+$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>

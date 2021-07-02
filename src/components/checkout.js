@@ -79,6 +79,7 @@ const steps = ['Dirección de envío', 'Datos de pago', 'Revise su orden'];
 export default function Checkout({carrito, shippingData, setShippingData, paymentData, setPaymentData, transactions, setTransactions}) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [error, setError] = React.useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -99,9 +100,9 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <AddressForm firstName={firstName} setFirstName={(value) => setFirstName(value)} lastName={lastName} setLastName={(value) => setLastName(value)} address1={address1} setAddress1={(value) => setAddress1(value)} address2={address2} setAddress2={(value) => setAddress2(value)} city={city} setCity={(value) =>  setCity(value)} state={state} setState={(value) => setState(value)} zipCode={zipCode} setZipCode={(value) => setZipCode(value)} country={country} setCountry={(value) => setCountry(value)}/>;
+        return <AddressForm firstName={firstName} setFirstName={(value) => setFirstName(value)} lastName={lastName} setLastName={(value) => setLastName(value)} address1={address1} setAddress1={(value) => setAddress1(value)} address2={address2} setAddress2={(value) => setAddress2(value)} city={city} setCity={(value) =>  setCity(value)} state={state} setState={(value) => setState(value)} zipCode={zipCode} setZipCode={(value) => setZipCode(value)} country={country} setCountry={(value) => setCountry(value)} setError={(value) => setError(value)}/>;
       case 1:
-        return <PaymentForm nameOnCard={nameOnCard} setNameOnCard={(value) => setNameOnCard(value)} cardNumber={cardNumber} setCardNumber={(value) => setCardNumber(value)} expDate={expDate} setExpDate={(value) => setExpDate(value)} cvv={cvv} setCvv={(value) => setCvv(value)} />;
+        return <PaymentForm nameOnCard={nameOnCard} setNameOnCard={(value) => setNameOnCard(value)} cardNumber={cardNumber} setCardNumber={(value) => setCardNumber(value)} expDate={expDate} setExpDate={(value) => setExpDate(value)} cvv={cvv} setCvv={(value) => setCvv(value)} setError={(value) => setError(value)} />;
       case 2:
         return <Review carrito={carrito} firstName={firstName} lastName={lastName} address1={address1} address2={address2} cardNumber={cardNumber} nameOnCard={nameOnCard} expireDate={expDate}/>;
       default:
@@ -189,6 +190,9 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
           <Typography component="h1" variant="h4" align="center">
             Checkout
           </Typography>
+          {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
+            Complete los campos en el formato adecuado
+          </Typography> : <></>}
           <Stepper activeStep ={activeStep} className={classes.stepper}>
             {steps.map((label) => (
               <Step key={label} >
@@ -220,14 +224,21 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
                       Back
                     </Button>
                   )}
-                  <Button
+                  {!error? (<Button
                     variant="contained"
                     onClick={handleNext}
                     color= "secondary"
                     className={classes.button}
                   >
                     {activeStep === steps.length - 1 ? 'Comprar' : 'Next'}
-                  </Button>
+                  </Button>) : (<Button
+                    variant="contained"
+                    color= "secondary"
+                    className={classes.button}
+                  >
+                    {activeStep === steps.length - 1 ? 'Comprar' : 'Next'}
+                  </Button>)}
+                  
                 </div>
               </React.Fragment>
             )}
