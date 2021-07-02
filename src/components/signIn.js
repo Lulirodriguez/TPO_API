@@ -101,8 +101,8 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
   }
 
   const customer = {
-    'firstName': 'Customer',
-    'lastName': 'Teacher',
+    'firstName': 'Juan',
+    'lastName': 'Gomez',
     'email': 'customer@uade.edu.ar',
     'password': 'uade1234',
     'isAdmin': false,

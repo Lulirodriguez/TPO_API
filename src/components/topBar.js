@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart}) {
+export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart,setCart,setReadyToPay}) {
   const classes = useStyles();
   // const { admin } = useContext(Login);
   // const [isAdmin, setIsAdmin] = admin;
@@ -88,6 +88,8 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
   const handleLogOut = () => {
     setIsLoggedIn(false);
     setIsAdmin(false);
+    setCart([]);
+    setReadyToPay(false);
     setAnchorEl(null);
     handleMobileMenuClose();
   }

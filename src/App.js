@@ -33,7 +33,7 @@ function App() {
       <div className="pageContainer">
       <Router >
         <Switch />
-          <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)} isAdmin={isAdmin} setIsAdmin={(value)=> setIsAdmin(value)} cart={carrito} />
+          <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)} isAdmin={isAdmin} setIsAdmin={(value)=> setIsAdmin(value)} cart={carrito} setCart={(value) => setCarrito(value)} setReadyToPay={(value) => setReadyToPay(value)} />
           <Route path="/" exact component={() => <HomePage />} />
           <Route path="/sign-up" exact component={() => <SignUp />} />
           <Route path="/passwordRecovery" exact component={() => <PasswordRecovery />} />
