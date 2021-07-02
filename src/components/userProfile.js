@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from 'react-router-dom';
@@ -24,6 +24,7 @@ import TableRow from '@material-ui/core/TableRow';
 import avatar from "../images/marc.jpg";
 import transactionsFile from '../jsonFiles/transactions.json';
 
+import axios from 'axios';
 import './userProfile.css';
 
 const styles = {
@@ -45,10 +46,50 @@ const styles = {
   },
 };
 
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+});
+
 const useStyles = makeStyles(styles);
 
 const EditProfile = ({user}) => {
   const classes = useStyles();
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [username,setUsername] = useState('');
+  
+  useEffect(()=> {
+    getProfile();
+  },[]);
+
+  const getProfile = () => {
+    api.get("/usuarios/:id",user).then(res => {
+      console.log(res);
+      let user = res.body;
+      setNombre(user.nombre);
+      setApellido(user.apellido);
+      setUsername(user.username);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  const handleUpdateProfile = e => {
+    let user = {
+      'nombre': nombre,
+      'apellido': apellido,
+      'username': username,
+    }
+    api.put("/usuarios/:id",user).then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
 
   return(
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
@@ -66,8 +107,10 @@ const EditProfile = ({user}) => {
                   id="email-address"
                   formControlProps={{
                     fullWidth: true,
-                  }}>
-                    {user ? user.email : ''}
+                  }}
+                  value={username}
+                  onChange={(e)=>setUsername(e.target.value)}
+                  >
                 </CustomInput>
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -77,8 +120,9 @@ const EditProfile = ({user}) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  value={nombre}
+                  onChange={(e)=>setNombre(e.target.value)}
                   >
-                  {user ? user.firstName : ''}
                 </CustomInput>
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -88,14 +132,15 @@ const EditProfile = ({user}) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  value={apellido}
+                  onChange={(e)=>setApellido(e.target.value)}
                   >
-                  {user ? user.lastName : ''}
                 </CustomInput>
               </GridItem>
             </GridContainer>
           </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Perfil</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdateProfile(e)}>Actualizar Perfil</Button>
           </CardFooter>
         </Card>
       </GridItem>

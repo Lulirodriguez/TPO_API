@@ -11,6 +11,17 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
+import axios from 'axios';
+// import toastr from 'toastr';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+});
+//Access-Control-Allow-Headers:
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -58,14 +69,39 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const [error,setError] = useState(false);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const showError = (e) => {
+    e.preventDefault();
+    setError(true);
+  }
+
   const completed = () => {
-    return firstName && lastName && username && password;
+    return firstName != '' && lastName != '' && username != '' && password != '';
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let body = {
+      'nombre': firstName,
+      'apellido': lastName,
+      'username': username,
+      'password': password
+    }
+    try{
+      let res = await api.post('/usuarios/register',body);
+      console.log(res);
+      setError(false);
+      // toastr.success("Usuario Registrado con éxito");
+    } catch(err) {
+      // toastr.error("Error al registrar usuario");
+      console.log(err);
+    }
   }
 
 
@@ -79,6 +115,9 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Crear una cuenta
         </Typography>
+        {error? <Typography component="h1" variant="h5" style={{color: 'red', fontSize:'14px'}}>
+          Completa todos los campos
+        </Typography>:<></>}
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -141,17 +180,31 @@ export default function SignUp() {
             </Grid>
             
           </Grid>
-          <RouteLink to="/" style={{ textDecoration: 'none' }} >
+          {!!completed() ? 
+          <div>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="secondary"
               className={classes.submit}
+              onClick={(e) => handleSubmit(e)}
             >
-              Registrarse
+              <RouteLink to="/sign-in" style={{ textDecoration: 'none', color: 'inherit' }} >
+                Registrarse
+              </RouteLink>
             </Button>
-          </RouteLink>
+          </div> : 
+          <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="secondary"
+          className={classes.submit}
+          onClick={(e) => showError(e)}
+          >
+            Registrarse
+          </Button>}
           <Grid container justify="flex-end">
             <Grid item>
               <RouteLink to="/sign-in" >

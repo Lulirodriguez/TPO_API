@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link as RouteLink} from 'react-router-dom';
+import {useHistory}  from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +13,16 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+});
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -63,9 +74,28 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  // const [users, setUsers] = useState([]);
+  let history = useHistory();
 
-  const showError = (e) => {
-    e.preventDefault();
+  // useEffect(()=> {
+  //   try{
+  //     getUsers();
+  //   }catch(err){
+  //     console.log(err);
+  //   }
+  // },[]);
+
+  // const getUsers = async () => {
+  //   try{
+  //     let users = await api.get('/usuarios');
+  //     setUsers(users);
+  //   }catch(err){
+  //     console.log(err);
+  //   }
+  // }
+
+  const showError = () => {
+    // e.preventDefault();
     setError(true);
   }
 
@@ -77,48 +107,70 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
     setPassword(e.target.value);
   }
 
-  const match = () => {
-    let isMatch = false;
-    if(getMatchedUser() != null){
-      isMatch = true;
-    }
-    return isMatch;
+  // const match = () => {
+  //   let isMatch = false;
+  //   if(getMatchedUser() != null){
+  //     isMatch = true;
+  //   }
+  //   return isMatch;
+  // }
+
+  // const getMatchedUser = () => {
+  //   for(let i=0;i<users.length;i++){
+  //     if(users[i].username === username && bcrypt.compareSync(password, users[i].password)){
+  //       return users[i];
+  //     }
+  //   }
+  //   return null;
+  // }
+
+  const redirect = () => {
+    let path = readyToPay? "/checkout" : "/";
+    history.push(path); //redirijo al inicio
   }
 
-  const getMatchedUser = () => {
-    for(let i=0;i<users.length;i++){
-      if(users[i].email === username && users[i].password === password){
-        return users[i];
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    let body = {
+      'username': username,
+      'password': password,
+    }
+    api.post('/usuarios/login',body).then(res => {
+      console.log(res);
+      if(res.status === 200){
+        setIsLoggedIn(true);
+        let user = res.body;
+        setCurrentUser(user);
+        setIsAdmin(user.isAdmin);
+        redirect();
       }
-    }
-    return null;
+      else {
+        showError();
+      }
+    }).catch( err => {
+      console.log(err);
+    });
   }
 
-  const handleSignIn = (e) => {
-    setIsLoggedIn(true);
-    setCurrentUser(getMatchedUser());
-    setIsAdmin(getMatchedUser().isAdmin);
-  }
+  // const customer = {
+  //   'firstName': 'Customer',
+  //   'lastName': 'Teacher',
+  //   'email': 'customer@uade.edu.ar',
+  //   'password': 'uade1234',
+  //   'isAdmin': false,
+  // };
 
-  const customer = {
-    'firstName': 'Customer',
-    'lastName': 'Teacher',
-    'email': 'customer@uade.edu.ar',
-    'password': 'uade1234',
-    'isAdmin': false,
-  };
+  // const admin = {
+  //   'firstName': 'Admin',
+  //   'lastName': 'Teacher',
+  //   'email': 'admin@uade.edu.ar',
+  //   'password': 'uade1234',
+  //   'isAdmin': true,
+  // };
 
-  const admin = {
-    'firstName': 'Admin',
-    'lastName': 'Teacher',
-    'email': 'admin@uade.edu.ar',
-    'password': 'uade1234',
-    'isAdmin': true,
-  };
-
-  const users = [
-      customer,admin
-  ]
+  // const users = [
+  //     customer,admin
+  // ]
 
   return (
     <Container className={classes.greyBorder} component="main" maxWidth="xs">
@@ -164,8 +216,8 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
             value={password}
             onChange={(e) => handleSetPassword(e)}
           />
-          {!!match() ? (
-            <RouteLink to={readyToPay? "/checkout" :  "/"} style={{ textDecoration: 'none', color:'black' }}>
+          {/* {!!match() ? (
+            <RouteLink to={readyToPay? "/checkout" :  "/"} style={{ textDecoration: 'none', color:'black' }}> */}
               <Button
                 type="submit"
                 fullWidth
@@ -175,9 +227,11 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
                 className={classes.submit}
                 onClick={(e) => handleSignIn(e)}
               >
+                <RouteLink to={readyToPay? "/checkout" :  "/"} style={{ textDecoration: 'none', color:'black' }}>
                     Ingresar
+                </RouteLink>
               </Button>
-            </RouteLink>
+            {/* </RouteLink>
           ) : (
               <Button
                 type="submit"
@@ -190,7 +244,7 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
               >
                 Ingresar
               </Button>
-          )}
+          )} */}
           
           <Grid container>
             <Grid item xs>

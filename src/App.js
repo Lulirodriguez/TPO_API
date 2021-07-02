@@ -5,6 +5,7 @@ import productFile from './jsonFiles/products.json';
 import transactionsFile from './jsonFiles/transactions.json';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import React, {useState} from 'react';
+import history from './components/history';
 
 import HomePage from './components/HomePage.js';
 import TopBar from './components/topBar';
@@ -31,7 +32,7 @@ function App() {
   return (
     <div className="App">
       <div className="pageContainer">
-      <Router >
+      <Router history={history}>
         <Switch />
           <TopBar isLoggedIn={isLoggedIn} setIsLoggedIn={(value) => setIsLoggedIn(value)} isAdmin={isAdmin} setIsAdmin={(value)=> setIsAdmin(value)} cart={carrito} />
           <Route path="/" exact component={() => <HomePage />} />
