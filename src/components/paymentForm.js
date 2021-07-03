@@ -17,16 +17,12 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
   },[nameOnCard,cardNumber,expDate,cvv]);
 
   const validarCampos = () => {
-    return true;
+    return validarCaracteres(nameOnCard) && validarNumeros(cardNumber) && validarNumeros(cvv) && validarFormatoFecha(expDate);
   }
 
-  //  validarCaracteres(nameOnCard)  &&
-  //   validarNumeros(cardNumber) &&
-  //   validarNumeros(cvv);
-
-  function validarFormatoFecha(campo) {
-    var RegExPattern = /^\d{1,2}\/\d{1,2}\/$/;
-    if ((campo.match(RegExPattern)) && (campo!='')) {
+  function validarFormatoFecha(value) {
+    var RegExPattern = /^\d{1,2}\/\d{2}$/;
+    if ((value.match(RegExPattern)) && (value!='')) {
           return true;
     } else {
           return false;
@@ -34,8 +30,8 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
   }
 
   const validarNumeros = (value) => {
-    let valoresAceptados = /^[0-9]+$/;
-    if ( value.match(valoresAceptados) && (value!='') ){
+    let valoresAceptados = /^[0-9 ]+$/;
+    if ( value.match(valoresAceptados) && (value!='')){
       return true;
     }else {
       return false;
@@ -43,7 +39,7 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
   }
 
   const validarCaracteres = (value) => {
-    let posibles = /^[A-Z]+$/i;
+    let posibles = /^[a-zA-Z0-9_ ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {

@@ -17,6 +17,8 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   const validarCampos = () => {
     return validarCaracteres(firstName) &&
     validarCaracteres(lastName) &&
+    validarCaracteres(address1) &&
+    validarCaracteres(address1) &&
     validarCaracteres(city) &&
     validarCaracteres(state) &&
     validarCaracteres(country) &&
@@ -33,7 +35,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   }
 
   const validarNumeros = (value) => {
-    let valoresAceptados = /^[0-9]+$/;
+    let valoresAceptados = /^[0-9 ]+$/;
     if ( value.match(valoresAceptados) && (value!='') ){
       return true;
     }else {
@@ -42,7 +44,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   }
 
   const validarCaracteres = (value) => {
-    let posibles = /^[A-Z]+$/i;
+    let posibles = /^[a-zA-Z0-9_ ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {
