@@ -19,6 +19,7 @@ import { TextField } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import Typography from '@material-ui/core/Typography';
 
 
 // // Generate Order Data
@@ -266,6 +267,38 @@ const useStyles3 = makeStyles({
 
 function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto}) {
   const classes = useStyles3();
+  const [error, setError] = React.useState(false);
+
+  useEffect(()=> {
+    if(!validarCampos()){
+      setError(true);
+    }
+    else{
+      setError(false);
+    }
+  },[nombre,descripcion,precio]);
+
+  const validarCampos = () => {
+    return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio);
+  }
+
+  const validarNumeros = (value) => {
+    let valoresAceptados = /^[0-9]+$/;
+    if ( value.match(valoresAceptados) && (value!='')){
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[a-zA-Z0-9_ ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   const handleClose = () => {
     onClose(selectedValue);
@@ -275,9 +308,14 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
     onClose(value);
   };
 
+
+
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
       <DialogTitle id="simple-dialog-title">Agregar Producto</DialogTitle>
+      {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
+            Complete los campos en el formato adecuado
+          </Typography> : <></>}
       <List>
         <Table maxWidth="md" size="small">
           <TableHead>
@@ -298,7 +336,7 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
           </TableHead>
         </Table>
 
-        <ListItem autoFocus button onClick={() => handleListItemClick('addAccount')}>
+        <ListItem autoFocus button onClick={() => !error? handleListItemClick('addAccount') : console.log("datos invalidos")}>
           <ListItemAvatar>
             <Avatar>
               <AddIcon />
@@ -353,6 +391,38 @@ function SimpleDialogDemo({nombre,setNombre,descripcion,setDescripcion,precio,se
 // start
 function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
   const classes = useStyles3();
+  const [error, setError] = React.useState(false);
+
+  // useEffect(()=> {
+  //   if(!validarCampos()){
+  //     setError(true);
+  //   }
+  //   else{
+  //     setError(false);
+  //   }
+  // },[nombre,descripcion,precio]);
+
+  // const validarCampos = () => {
+  //   return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio);
+  // }
+
+  // const validarNumeros = (value) => {
+  //   let valoresAceptados = /^[0-9]+$/;
+  //   if ( value.match(valoresAceptados) && (value!='')){
+  //     return true;
+  //   }else {
+  //     return false;
+  //   }
+  // }
+
+  // const validarCaracteres = (value) => {
+  //   let posibles = /^[a-zA-Z0-9_ ]*$/i;
+  //   if ((value.match(posibles)) && (value!='')) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   const handleClose = () => {
     onClose(selectedValue);
@@ -365,6 +435,9 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
       <DialogTitle id="simple-dialog-title">Editar Producto</DialogTitle>
+      {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
+            Complete los campos en el formato adecuado
+          </Typography> : <></>}
       <List>
         <Table maxWidth="md" size="small">
           <TableHead>
@@ -385,7 +458,7 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
           </TableHead>
         </Table>
 
-        <ListItem autoFocus button onClick={() => handleListItemClick('addAccount')}>
+        <ListItem autoFocus button onClick={() => !error? handleListItemClick('addAccount') : console.log("datos invalidos")}>
           <ListItemAvatar>
             <Avatar>
               <AddIcon />
