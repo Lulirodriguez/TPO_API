@@ -17,8 +17,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   const validarCampos = () => {
     return validarCaracteres(firstName) &&
     validarCaracteres(lastName) &&
-    validarCaracteres(address1) &&
-    validarCaracteres(address1) &&
+    validarCaracteresYNumeros(address1) &&
     validarCaracteres(city) &&
     validarCaracteres(state) &&
     validarCaracteres(country) &&
@@ -44,6 +43,15 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   }
 
   const validarCaracteres = (value) => {
+    let posibles = /^[a-zA-Z_ ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const validarCaracteresYNumeros = (value) => {
     let posibles = /^[a-zA-Z0-9_ ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
@@ -51,6 +59,9 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
       return false;
     }
   }
+
+  
+  
 
   return (
     <React.Fragment>

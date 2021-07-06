@@ -39,7 +39,7 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
   }
 
   const validarCaracteres = (value) => {
-    let posibles = /^[a-zA-Z0-9_ ]*$/i;
+    let posibles = /^[a-zA-Z_ ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {
