@@ -1,7 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import productFile from './jsonFiles/products.json';
 import transactionsFile from './jsonFiles/transactions.json';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import React, {useState} from 'react';
@@ -43,7 +42,7 @@ function App() {
           </Route>
           <Route path="/cart" exact component={() => <Cart carrito={carrito} setCarrito={(value)=>setCarrito(value)} isLoggedIn={isLoggedIn} setReadyToPay={setReadyToPay} />} />
           <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
-          <Route path="/admin" exact component={() => <Admin products={productFile} transactions={transactions} />} />
+          <Route path="/admin" exact component={() => <Admin transactions={transactions} />} />
           <Route path="/profile" component={() => <UserProfile user={currentUser} />} />
       </Router>
       </div>

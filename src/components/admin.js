@@ -20,6 +20,9 @@ import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 import axios from 'axios';
 
@@ -31,23 +34,7 @@ const api = axios.create({
   }
 }); 
 
-
-// // Generate Order Data
-// function createData(id, date, name, shipTo, paymentMethod, amount) {
-//   return { id, date, name, shipTo, paymentMethod, amount };
-// }
-
-// const rows = [
-//   createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', 312.44),
-//   createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', 866.99),
-//   createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-//   createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', 654.39),
-//   createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', 212.79),
-// ];
-
-function preventDefault(event) {
-  event.preventDefault();
-}
+// Estilos
 
 const useStyles = makeStyles((theme) => ({
   seeMore: {
@@ -63,6 +50,31 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: '50px',
   }
 }));
+
+const useStyles2 = makeStyles((theme) => ({
+  seeMore: {
+    marginTop: theme.spacing(3),
+  },
+  whiteBlend: {
+      backgroundColor: 'ffffff',
+      color: 'black',
+  },
+  end: {
+      paddingBottom: '50px',
+  }
+}));
+
+const useStyles3 = makeStyles({
+  avatar: {
+    backgroundColor: 'ffffff',
+    color: 'black',
+  },
+  whiteBlend:{
+    backgroundColor: 'ffffff',
+    color: 'black',
+    fontColor: 'black',
+  }
+});
 
 function Transactions({transactions}) {
   const classes = useStyles();
@@ -98,85 +110,51 @@ function Transactions({transactions}) {
   );
 }
 
-const useStyles2 = makeStyles((theme) => ({
-    seeMore: {
-      marginTop: theme.spacing(3),
-    },
-    whiteBlend: {
-        backgroundColor: 'ffffff',
-        color: 'black',
-    },
-    end: {
-        paddingBottom: '50px',
-    }
-  }));
-
-function Products({productos}) {
+function Products() {
     const classes = useStyles2();
-
-    const [nuevoNombre, setNuevoNombre] = useState('');
-    const [nuevaDescripcion, setNuevaDescripcion] = useState('');
-    const [nuevoPrecio, setNuevoPrecio] =useState('');
-    const [nuevoId, setNuevoId] = useState(0);
-    const [nuevaImagen, setNuevaImagen] = useState('');
-    const [products, setProducts] = useState(productos);
-    const [idCounter, setIdCounter] = useState(0);
-    // const [productsToDisplay, setProductsToDisplay] = useState([]);
+    const [categorias, setCategorias] = useState([]);
+    const [products, setProducts] = useState([]);
 
     useEffect(()=> {
-      let cantidad = [...products];
-      setIdCounter(idCounter+cantidad.length+1);
-      console.log("Seteo display");
+      getProductos();
+      getCategorias();
     }, []);
 
-    const agregarProducto = async () => {
-      let newProduct = {
-        'nombre': '',
-        'descripcion': '',
-        'categoria':'',
-        'imagen': '',
-        'precioU': '',
-      };
-      newProduct.nombre = nuevoNombre;
-      newProduct.descripcion = nuevaDescripcion;
-      newProduct.precioU = nuevoPrecio;
-      newProduct.imagen = nuevaImagen;
-
-      await api.post("/items",newProduct).then(res => {
-        alert("Producto agregado");
-      }).catch(err => 
-        alert("Error al agregar producto"));
+    const getProductos = async () => {
+      try{
+        let productData = await api.get("/items");
+        setProducts(productData.data);
+      }catch(err){
+        alert(err + ": No se pudo caragr informacion de los productos");
+      }
     }
 
-    const editarProducto = async (edited) => {
-      let editedProduct = {
-          'nombre': '',
-          'descripcion': '',
-          'idCategoria': 0,
-          'imagen': '',
-          'precioU': '',
+    const getCategorias = async () => {
+      try{
+        let categoriasData = await api.get("/categorias");
+        setCategorias(categoriasData.data);
       }
-      editedProduct.nombre = edited.nombre;
-      editedProduct.descripcion = edited.descripcion;
-      editedProduct.precioU = edited.precio;
-      editedProduct.idCategoria = edited.idCategoria;
-      editedProduct.imagen = edited.imagen;
+      catch(err){
+        alert(err + "Error al cargar datos de categorias");
+      }
+    }
 
-      await api.put(`/items/${edited.id}`,editedProduct).then(res=> {
-        alert("Producto editado con éxito. ",res.success);
-      }).catch(err => {
-        alert("Error al editar producto. ",err);
-      });
+    const categoryIdToName = (id) => {
+      for(let i=0;i<categorias.length;i++){
+        if(id == categorias[i].idCategoria){
+          return categorias[i].nombre;
+        }
+      }
     }
 
     const eliminarProducto = async (id) => {
-      await api.delete(`/items/${id}`).then(res=> {
-        alert("Producto eliminado con éxito. ",res.success);
-      }).catch(err => {
-        alert("Error al eliminar producto. ",err);
-      });
+      try{
+        await api.delete(`/items/${id}`);
+        alert("Producto eliminado con éxito. Refresque la página para ver los cambios ");
+      }catch(err){
+        alert("Error al eliminar producto. " + err);
+      }
     }
-
 
     return (
       <React.Fragment >
@@ -187,7 +165,7 @@ function Products({productos}) {
             <TableHead>
                 <TableRow className={classes.whiteBlend}>
                     <TableCell className={classes.whiteBlend} align="right">
-                    <SimpleDialogDemo className={classes.button} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} agregarProducto={() => agregarProducto()}/>
+                    <AddProductModal className={classes.button}/>
                     </TableCell>
                 </TableRow>
             </TableHead>
@@ -199,6 +177,7 @@ function Products({productos}) {
               <TableCell className={classes.whiteBlend}>ID</TableCell>
               <TableCell className={classes.whiteBlend}>NOMBRE PRODUCTO</TableCell>
               <TableCell className={classes.whiteBlend}>DESCRIPCIÓN</TableCell>
+              <TableCell className={classes.whiteBlend}>CATEGORIA</TableCell>
               <TableCell className={classes.whiteBlend}>PRECIO</TableCell>
               <TableCell className={classes.whiteBlend} align="right"></TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
@@ -208,19 +187,17 @@ function Products({productos}) {
           <TableBody className={classes.whiteBlend}>
             {products.map((row) => (
               <TableRow key={row.id} className={classes.whiteBlend}>
-                <TableCell className={classes.whiteBlend}>{row.id}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.itemId}</TableCell>
                 <TableCell className={classes.whiteBlend}>{row.nombre}</TableCell>
                 <TableCell className={classes.whiteBlend}>{row.descripcion}</TableCell>
-                <TableCell className={classes.whiteBlend}>${row.precio}</TableCell>
+                <TableCell className={classes.whiteBlend}>{categoryIdToName(row.idCategoria)}</TableCell>
+                <TableCell className={classes.whiteBlend}>${row.precioU}</TableCell>
                 <TableCell className={classes.whiteBlend}> </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                  {/* <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
-                    <CreateIcon/>
-                  </Button> */}
-                  <SimpleDialogEditDemo className={classes.button} id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={(value) => editarProducto(value)} actual={row}/>
+                  <EditProductModal className={classes.button} editable={row}/>
                 </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                  <Button variant="secondary" onClick={() => eliminarProducto(row.id)} className={classes.button} style={{height: '95%'}}>
+                  <Button variant="secondary" onClick={(e) => eliminarProducto(row.itemId)} className={classes.button} style={{height: '90%'}}>
                       <DeleteIcon/>
                   </Button>
                 </TableCell>
@@ -233,23 +210,103 @@ function Products({productos}) {
     );
   }
 
+// Modal para Agregar Productos
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
-const useStyles3 = makeStyles({
-  avatar: {
-    backgroundColor: 'ffffff',
-    color: 'black',
-  },
-  whiteBlend:{
-    backgroundColor: 'ffffff',
-    color: 'black',
-    fontColor: 'black',
+function AddProductModal() {
+  const classes = useStyles3();
+  const [open, setOpen] = React.useState(false);
+
+  const [nuevoNombre, setNuevoNombre] = useState('');
+  const [nuevaDescripcion, setNuevaDescripcion] = useState('');
+  const [nuevoPrecio, setNuevoPrecio] =useState('');
+  const [nuevoIdCategoria, setNuevoIdCategoria] = useState(0);
+  const [nuevaImagen, setNuevaImagen] = useState('');
+
+  const handleClickOpen = () => {
+    setOpen(true);
+    setNuevoNombre('');
+    setNuevaDescripcion('');
+    setNuevoIdCategoria(0);
+    setNuevaImagen('');
+    setNuevoPrecio('');
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    if(nuevoNombre !== '' &&  nuevaDescripcion !== '' && nuevoPrecio !== '' && nuevoIdCategoria !== 0 && nuevaImagen !== ''){
+      agregarProducto();
+    }
+  };
+
+  const agregarProducto = () => {
+    let newProduct = {
+      'nombre': '',
+      'descripcion': '',
+      'idCategoria':0,
+      'imagen': '',
+      'precioU': '',
+    };
+    newProduct.nombre = nuevoNombre;
+    newProduct.descripcion = nuevaDescripcion;
+    newProduct.idCategoria = nuevoIdCategoria;
+    newProduct.precioU = nuevoPrecio;
+    newProduct.imagen = nuevaImagen;
+
+    api.post("/items",newProduct).then(res => {
+      alert("Producto agregado.  Recargue la página para ver los cambios");
+    }).catch(err => 
+      alert("Error al agregar producto")
+    );
   }
-});
 
-function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto}) {
+  return (
+    <div>
+      <Button className={classes.whiteBlend} color="secondary" onClick={handleClickOpen}>
+        <AddBoxIcon/>
+      </Button>
+      <AddProductDialog open={open} onClose={handleClose} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} idCat={nuevoIdCategoria} setIdCat={(value)=> setNuevoIdCategoria(value)} imagen={nuevaImagen} setImagen={(value) => setNuevaImagen(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} />
+    </div>
+  );
+}
+
+AddProductDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+};
+
+function AddProductDialog({ open, onClose, nombre,setNombre,descripcion,setDescripcion,idCat, setIdCat,imagen,setImagen,precio,setPrecio}) {
   const classes = useStyles3();
   const [error, setError] = React.useState(false);
+  const [categorias, setCategorias] = React.useState([]);
+  const [cat, setCat] = useState('');
+
+  useEffect(()=>{
+    getCategorias();
+  },[]);
+
+  const getCategorias = async () => {
+    try{
+      let categoriasData = await api.get("/categorias");
+      setCategorias(categoriasData.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de categorias");
+    }
+  }
+
+  const categoryNameToId = (nombre) => {
+    for(let i=0;i<categorias.length;i++){
+      if(nombre === categorias[i].nombre){
+        return categorias[i].idCategoria;
+      }
+    }
+  }
+
+  const handleCategoria = (nombre) => {
+    setCat(nombre);
+    let id = categoryNameToId(nombre);
+    setIdCat(id);
+  }
 
   useEffect(()=> {
     if(!validarCampos()){
@@ -258,10 +315,10 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
     else{
       setError(false);
     }
-  },[nombre,descripcion,precio]);
+  },[nombre,descripcion,idCat,imagen,precio]);
 
   const validarCampos = () => {
-    return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio);
+    return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio) && idCat !== 0 && imagen !== '';
   }
 
   const validarNumeros = (value) => {
@@ -283,14 +340,12 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
   }
 
   const handleClose = () => {
-    onClose(selectedValue);
+    onClose();
   };
 
-  const handleListItemClick = (value) => {
-    onClose(value);
+  const handleListItemClick = () => {
+    onClose();
   };
-
-
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
@@ -310,6 +365,22 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
                     Descripcion: 
                     <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
                   </TableCell>
+                  {categorias!==[] && 
+                  (<TableCell  align="center">
+                    <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={cat}
+                      onChange={(e) => handleCategoria(e.target.value)}
+                    >
+                      {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre}>{elem.nombre}</MenuItem>))}
+                    </Select>
+                  </TableCell>)}
+                  <TableCell  align="center">
+                    Imagen: 
+                    <TextField value={imagen} onChange={(e) => setImagen(e.target.value)} />
+                  </TableCell>
                   <TableCell  align="center">
                     Precio: 
                     <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
@@ -318,7 +389,7 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
           </TableHead>
         </Table>
 
-        <ListItem autoFocus button onClick={() => !error? handleListItemClick('addAccount') : console.log("datos invalidos")}>
+        <ListItem autoFocus button onClick={() => !error? handleListItemClick() : console.log("datos invalidos")}>
           <ListItemAvatar>
             <Avatar>
               <AddIcon />
@@ -334,82 +405,153 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
   );
 }
 
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
-};
+// Modal para Editar Productos
 
-function SimpleDialogDemo({nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto,actual}) {
+function EditProductModal({editable}) {
   const classes = useStyles3();
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  const [forcedClose, setForcedClose] = React.useState(false);
+
+  const [id, setId] = useState(editable.itemId);
+  const [nuevoNombre, setNuevoNombre] = useState('');
+  const [nuevaDescripcion, setNuevaDescripcion] = useState('');
+  const [nuevoIdCategoria, setNuevoIdCategoria] = useState(0);
+  const [nuevaImagen, setNuevaImagen] = useState('');
+  const [nuevoPrecio, setNuevoPrecio] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
-    setNombre('');
-    setDescripcion('');
-    setPrecio('');
-    setImagen('');
-    setIdCategoria(0);
+    setForcedClose(false);
+    setNuevoNombre(editable.nombre);
+    setNuevaDescripcion(editable.descripcion);
+    setNuevoIdCategoria(editable.idCategoria);
+    setNuevaImagen(editable.imagen);
+    setNuevoPrecio(editable.precioU);
   };
 
-  const handleClose = (value) => {
+  const closeModal = (e) => {
     setOpen(false);
-    setSelectedValue(value);
-    if(nombre!='' && descripcion!= '' && precio!='' && idCategoria!= 0 && imagen!=''){
-      agregarProducto();
+    setForcedClose(true);
+  }
+
+  const handleClose = () => {
+    if(!forcedClose){
+      setOpen(false);
+      editarProducto();
+      setForcedClose(false);
     }
   };
 
+  const editarProducto = () => {
+    let editedProduct = {
+        'nombre': '',
+        'descripcion': '',
+        'idCategoria': 0,
+        'imagen': '',
+        'precioU': '',
+    }
+    editedProduct.nombre = nuevoNombre;
+    editedProduct.descripcion = nuevaDescripcion;
+    editedProduct.idCategoria = nuevoIdCategoria;
+    editedProduct.imagen = nuevaImagen;
+    editedProduct.precioU = nuevoPrecio;
+
+    api.put(`/items/${id}`,editedProduct).then(res=> {
+      alert("Producto editado con éxito. Recargue la página para ver los cambios");
+    }).catch(err => {
+      alert("Error al editar producto. ",err);
+    });
+  }
+
   return (
     <div>
-      <Button className={classes.whiteBlend} color="secondary" onClick={handleClickOpen}>
-        <AddBoxIcon/>
+      <Button className={classes.whiteBlend} variant="secondary" variant="secondary" onClick={handleClickOpen}>
+        <CreateIcon/>
       </Button>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} agregarProducto={() => agregarProducto()} />
+      <EditProductDialog open={open} onClose={handleClose} closeModal={closeModal} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} idCat={nuevoIdCategoria} setIdCat={(value) => setNuevoIdCategoria(value)} imagen={nuevaImagen} setImagen={(value) => setNuevaImagen(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)}/>
     </div>
   );
 }
 
-// start
-function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
+function EditProductDialog({ open , onClose, closeModal, nombre,setNombre,descripcion,setDescripcion,idCat,setIdCat,imagen,setImagen,precio,setPrecio}) {
   const classes = useStyles3();
   const [error, setError] = React.useState(false);
+  const [categorias, setCategorias] = React.useState([]);
+  const [cat, setCat] = useState('');
 
-  // useEffect(()=> {
-  //   if(!validarCampos()){
-  //     setError(true);
-  //   }
-  //   else{
-  //     setError(false);
-  //   }
-  // },[nombre,descripcion,precio]);
+  useEffect(()=>{
+    getCategorias();
+  },[]);
 
-  // const validarCampos = () => {
-  //   return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio);
-  // }
+  useEffect(()=> {
+    if(!validarCampos()){
+      setError(true);
+    }
+    else{
+      setError(false);
+    }
+  },[nombre,descripcion,idCat,imagen,precio]);
 
-  // const validarNumeros = (value) => {
-  //   let valoresAceptados = /^[0-9]+$/;
-  //   if ( value.match(valoresAceptados) && (value!='')){
-  //     return true;
-  //   }else {
-  //     return false;
-  //   }
-  // }
+  const getCategorias = async () => {
+    try{
+      let categoriasData = await api.get("/categorias");
+      setCategorias(categoriasData.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de categorias");
+    }
+  }
 
-  // const validarCaracteres = (value) => {
-  //   let posibles = /^[a-zA-Z0-9_ ]*$/i;
-  //   if ((value.match(posibles)) && (value!='')) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+  const categoryIdToName = (id) => {
+    for(let i=0;i<categorias.length;i++){
+      if(id == categorias[i].idCategoria){
+        return categorias[i].nombre;
+      }
+    }
+  }
+
+  const categoryNameToId = (nombre) => {
+    for(let i=0;i<categorias.length;i++){
+      if(nombre === categorias[i].nombre){
+        return categorias[i].idCategoria;
+      }
+    }
+  }
+
+  const handleCategoria = (nombre) => {
+    setCat(nombre);
+    let id = categoryNameToId(nombre);
+    setIdCat(id);
+  }
+
+  const validarCampos = () => {
+    return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio) && idCat !== 0 && imagen !== '';
+  }
+
+  const validarNumeros = (value) => {
+    let valoresAceptados = /^[0-9]+$/;
+    try{
+      if ( value.match(valoresAceptados) && (value!='')){
+        return true;
+      }else {
+        return false;
+      }
+    }
+    catch(err){
+      return true;
+    }
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[a-zA-Z0-9_ ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   const handleClose = () => {
-    onClose(selectedValue);
   };
 
   const handleListItemClick = (value) => {
@@ -423,7 +565,7 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
             Complete los campos en el formato adecuado
           </Typography> : <></>}
       <List>
-        <Table maxWidth="md" size="small">
+      <Table maxWidth="md" size="small">
           <TableHead>
               <TableRow >
                   <TableCell  align="center">
@@ -434,6 +576,22 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
                     Descripcion: 
                     <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
                   </TableCell>
+                  {categorias!==[] && 
+                  (<TableCell  align="center">
+                    <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={categoryIdToName(idCat)}
+                      onChange={(e) => handleCategoria(e.target.value)}
+                    >
+                      {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre}>{elem.nombre}</MenuItem>))}
+                    </Select>
+                  </TableCell>)}
+                  <TableCell  align="center">
+                    Imagen: 
+                    <TextField value={imagen} onChange={(e) => setImagen(e.target.value)} />
+                  </TableCell>
                   <TableCell  align="center">
                     Precio: 
                     <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
@@ -442,7 +600,7 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
           </TableHead>
         </Table>
 
-        <ListItem autoFocus button onClick={() => !error? handleListItemClick('addAccount') : console.log("datos invalidos")}>
+        <ListItem autoFocus button onClick={() => !error? handleListItemClick() : console.log("datos invalidos")}>
           <ListItemAvatar>
             <Avatar>
               <AddIcon />
@@ -458,86 +616,28 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
   );
 }
 
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
-};
+// Principal
 
-function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto,actual}) {
-  const classes = useStyles3();
-  const [open, setOpen] = React.useState(false);
-  const [forcedClose, setForcedClose] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
-
-  const handleClickOpen = () => {
-    setId(actual.item.id);
-    setNombre(actual.item.nombre);
-    setDescripcion(actual.item.descripcion);
-    setPrecio(actual.item.precio);
-    setOpen(true);
-    setForcedClose(false);
-  };
-
-  const closeModal = (e) => {
-    setOpen(false);
-    setForcedClose(true);
-  }
-
-  const handleClose = (value) => {
-    if(!forcedClose){
-      setOpen(false);
-      setSelectedValue(value);
-      let current = {
-          'nombre': '',
-          'descripcion': '',
-          'idCategoria': '',
-          'imagen': "https://source.unsplash.com/random",
-          'precioU': '',
-      }
-      current.nombre = nombre;
-      current.descripcion = descripcion;
-      current.idCategoria = idCategoria;
-      current.imagen = imagen;
-      current.precioU = precio;
-      editarProducto(current);
-      setForcedClose(false);
-    }
-  };
-
-  return (
-    <div>
-      <Button className={classes.whiteBlend} variant="secondary" variant="secondary" onClick={handleClickOpen}>
-        <CreateIcon/>
-      </Button>
-      <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} closeModal={closeModal} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
-    </div>
-  );
-}
-
-//end
-
-const Admin = ({products,transactions}) => {
-  const [productos, setProductos] = useState([]);
-  // const [transactions,setTransactions] = useState([]);
+const Admin = ({transactions}) => {
+  // const [productos, setProductos] = useState([]);
+  // // const [transactions,setTransactions] = useState([]);
   
-  useEffect(()=> {
-    getProductos();
-  },[]);
+  // useEffect(()=> {
+  //   getProductos();
+  // },[]);
 
-  const getProductos = async () => {
-    try{
-      let productData = await api.get("/items");
-      setProductos(productData.data);
-    }catch(err){
-      alert(err, ": No se pudo caragr informacion de los productos");
-    }
-  }
-
+  // const getProductos = async () => {
+  //   try{
+  //     let productData = await api.get("/items");
+  //     setProductos(productData.data);
+  //   }catch(err){
+  //     alert(err, ": No se pudo caragr informacion de los productos");
+  //   }
+  // }
 
   return(
       <div style={{marginTop:'40px',marginLeft:'60px', marginRight:'60px'}}>
-          <Products productos={productos} />
+          <Products />
           <br/>
           <Transactions transactions={transactions}/>
           {/* <DataTableCrudDemo /> */}
