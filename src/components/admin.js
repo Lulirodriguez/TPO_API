@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,6 +24,7 @@ import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import Modal from '@material-ui/core/Modal';
 
 import axios from 'axios';
 
@@ -75,6 +77,36 @@ const useStyles3 = makeStyles({
     fontColor: 'black',
   }
 });
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+const useStyles4 = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+  whiteBlend:{
+    backgroundColor: 'ffffff',
+    color: 'black',
+    fontColor: 'black',
+  }
+}));
 
 function Transactions({transactions}) {
   const classes = useStyles();
@@ -147,15 +179,6 @@ function Products() {
       }
     }
 
-    const eliminarProducto = async (id) => {
-      try{
-        await api.delete(`/items/${id}`);
-        alert("Producto eliminado con éxito. Refresque la página para ver los cambios ");
-      }catch(err){
-        alert("Error al eliminar producto. " + err);
-      }
-    }
-
     return (
       <React.Fragment >
         <h1 className={classes.whiteBlend}>USUARIO ADMINISTRADOR</h1>
@@ -197,9 +220,7 @@ function Products() {
                   <EditProductModal className={classes.button} editable={row}/>
                 </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                  <Button variant="secondary" onClick={(e) => eliminarProducto(row.itemId)} className={classes.button} style={{height: '90%'}}>
-                      <DeleteIcon/>
-                  </Button>
+                  <DeleteProductModal id={row.itemId} className={classes.button} style={{height: '90%'}}/>
                 </TableCell>
               </TableRow>
             ))}
@@ -221,6 +242,7 @@ function AddProductModal() {
   const [nuevoPrecio, setNuevoPrecio] =useState('');
   const [nuevoIdCategoria, setNuevoIdCategoria] = useState(0);
   const [nuevaImagen, setNuevaImagen] = useState('');
+  let history = useHistory();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -253,7 +275,8 @@ function AddProductModal() {
     newProduct.imagen = nuevaImagen;
 
     api.post("/items",newProduct).then(res => {
-      alert("Producto agregado.  Recargue la página para ver los cambios");
+      alert("Producto agregado.");
+      history.push("/admin");
     }).catch(err => 
       alert("Error al agregar producto")
     );
@@ -418,6 +441,7 @@ function EditProductModal({editable}) {
   const [nuevoIdCategoria, setNuevoIdCategoria] = useState(0);
   const [nuevaImagen, setNuevaImagen] = useState('');
   const [nuevoPrecio, setNuevoPrecio] = useState('');
+  let history = useHistory();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -457,7 +481,8 @@ function EditProductModal({editable}) {
     editedProduct.precioU = nuevoPrecio;
 
     api.put(`/items/${id}`,editedProduct).then(res=> {
-      alert("Producto editado con éxito. Recargue la página para ver los cambios");
+      alert("Producto editado con éxito.");
+      history.push("/admin");
     }).catch(err => {
       alert("Error al editar producto. ",err);
     });
@@ -613,6 +638,68 @@ function EditProductDialog({ open , onClose, closeModal, nombre,setNombre,descri
           </Button>
       </List>
     </Dialog>
+  );
+}
+
+// Modal de eliminacion
+
+function DeleteProductModal({id}) {
+  const classes = useStyles4();
+  // getModalStyle is not a pure function, we roll the style only on the first render
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+  let history = useHistory();
+
+
+  const eliminarProducto = async (id) => {
+    try{
+      await api.delete(`/items/${id}`);
+      alert("Producto eliminado con éxito.");
+      history.push("/admin");
+    }catch(err){
+      alert("Error al eliminar producto. " + err);
+    }
+  }
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleAccept = () => {
+    eliminarProducto(id);
+    setOpen(false);
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <h5 id="simple-modal-title">¿Está seguro de que desea eliminar este producto?</h5>
+      <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleAccept}>
+        Aceptar
+      </Button>
+      <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleClose}>
+        Cancelar
+      </Button>
+    </div>
+  );
+
+  return (
+    <div>
+      <Button variant="secondary" onClick={handleOpen}>
+         <DeleteIcon/>
+      </Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal>
+    </div>
   );
 }
 

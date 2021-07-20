@@ -142,7 +142,7 @@ const Category = ({carrito, setCarrito}) => {
                 ]);
             }
             else{
-                item.cantidad += carrito[index].cantidad;
+                item.cantidad = cantidad;
                 alert("Cantidad actualizada");
                 setCarrito([
                     ...carrito.slice(0,index),

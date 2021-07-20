@@ -126,11 +126,17 @@ const CartCounter = ({product,cart,setCart}) => {
 export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
   const classes = useStyles();
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   if(!isLoggedIn){
+  //     setReadyToPay(true);
+  //   }
+  // },[]);
+
+  const handleClick = e => {
     if(!isLoggedIn){
       setReadyToPay(true);
     }
-  },[])
+  }
 
   const handleDeleteFromCart = (e,product) => {
     e.preventDefault();
@@ -179,17 +185,18 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
               ${total}
             </Typography>
           </ListItem>
-          <Link to= {isLoggedIn ? '/checkout' : '/sign-in'} style={{ textDecoration: 'none' }} >
-            <Button 
+          <Button 
                 type="submit"
                 align="center"
                 variant="contained"
                 color="secondary"
                 className={classes.submit}
+                onClick={e=>handleClick(e)}
               >
-                PAGAR
-            </Button>
+          <Link to= {isLoggedIn ? '/checkout' : '/sign-in'} style={{ textDecoration: 'none' }} >
+            PAGAR
           </Link>
+            </Button>
           </div>):(<p>Aún no hay productos en el carrito</p>)}
           </List>
         
