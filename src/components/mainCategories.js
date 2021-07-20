@@ -71,9 +71,9 @@ export default function CategoryBar(){
                     {cat.nombre}</Button>{' '}
                 </Link>
             ))}
-            <Link key={0} to={`/category/sale`} style={{ textDecoration: 'none' }}>
+            {/* <Link key={0} to={`/category/sale`} style={{ textDecoration: 'none' }}>
                 <Button size="large" className={classes.saleButton} >SALE</Button>{' '}
-            </Link>
+            </Link> */}
         </div>
     );
 }

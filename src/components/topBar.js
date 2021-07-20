@@ -6,10 +6,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import Typography from '@material-ui/core/Typography';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import logo from '../images/mysportKit-logo.jpeg';
 // import Login from './App.js';
@@ -48,9 +50,13 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  nameDisplay: {
+    fontSize: '15px',
+    color: 'black',
+  }
 }));
 
-export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart,setCart,setReadyToPay}) {
+export default function TopBar({isLoggedIn,setIsLoggedIn,user,setUser,isAdmin,setIsAdmin,cart,setCart,setReadyToPay}) {
   const classes = useStyles();
   // const { admin } = useContext(Login);
   // const [isAdmin, setIsAdmin] = admin;
@@ -87,6 +93,7 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
 
   const handleLogOut = () => {
     setIsLoggedIn(false);
+    setUser(null);
     setIsAdmin(false);
     setCart([]);
     setReadyToPay(false);
@@ -111,9 +118,11 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
     >
       {!!isLoggedIn ? (
         <div>
-          <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770' }}>
-            <MenuItem onClick={handleMenuClose}>Ver Perfil</MenuItem>
-          </Link>
+          <Tooltip  placement="left" title={user!=null? `${user.nombre} ${user.apellido}`:''}>
+            <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770' }}>
+              <MenuItem onClick={handleMenuClose}>Ver Perfil </MenuItem>
+            </Link>
+          </Tooltip>
           {isAdmin ? (
           <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
             <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
@@ -199,9 +208,6 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
           <Link to="/" >
             <img alt="" src={logo} className={classes.image} />
           </Link>
-          {/* <Typography className={classes.title} variant="h6" noWrap> 
-            MYSPORT KIT
-          </Typography>  */}
           
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
@@ -239,6 +245,9 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
           </div>
         </Toolbar>
       </AppBar>
+      {/* {user!=null && <Typography className={classes.nameDisplay} variant="h9"> 
+        ¡Hola {user.nombre} {user.apellido}!
+      </Typography>} */}
       {renderMobileMenu}
       {renderMenu}
     </div>
