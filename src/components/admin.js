@@ -21,6 +21,16 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
 
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+}); 
+
 
 // // Generate Order Data
 // function createData(id, date, name, shipTo, paymentMethod, amount) {
@@ -108,6 +118,7 @@ function Products({productos}) {
     const [nuevaDescripcion, setNuevaDescripcion] = useState('');
     const [nuevoPrecio, setNuevoPrecio] =useState('');
     const [nuevoId, setNuevoId] = useState(0);
+    const [nuevaImagen, setNuevaImagen] = useState('');
     const [products, setProducts] = useState(productos);
     const [idCounter, setIdCounter] = useState(0);
     // const [productsToDisplay, setProductsToDisplay] = useState([]);
@@ -118,81 +129,52 @@ function Products({productos}) {
       console.log("Seteo display");
     }, []);
 
-    let newProduct = {
-      item: {
-        'id': idCounter,
+    const agregarProducto = async () => {
+      let newProduct = {
         'nombre': '',
-        'imagen': "https://source.unsplash.com/random",
         'descripcion': '',
-        'precio': '',
-      }
-    };
+        'categoria':'',
+        'imagen': '',
+        'precioU': '',
+      };
+      newProduct.nombre = nuevoNombre;
+      newProduct.descripcion = nuevaDescripcion;
+      newProduct.precioU = nuevoPrecio;
+      newProduct.imagen = nuevaImagen;
 
-    const getIndexForItem = (id) => {
-      let productos = [...products];
-      for (let i = 0; i<productos.length ; i++){
-        if(productos[i].item.id == id){
-          return i;
-        }
-      }
-      return 0;
+      await api.post("/items",newProduct).then(res => {
+        alert("Producto agregado");
+      }).catch(err => 
+        alert("Error al agregar producto"));
     }
 
-    const agregarProducto = () => {
-      newProduct.item.nombre = nuevoNombre;
-      newProduct.item.descripcion = nuevaDescripcion;
-      newProduct.item.precio = nuevoPrecio;
-      newProduct.item.id = idCounter;
-
-      console.log('prev:', products);
-
-      setProducts([
-        ...products,
-        newProduct,
-      ]);
-      setIdCounter(idCounter+1);
-
-      console.log('prev:', products);
-    }
-
-    const editarProducto = (edited) => {
+    const editarProducto = async (edited) => {
       let editedProduct = {
-        item: {
-          'id': 0,
           'nombre': '',
-          'imagen': "https://source.unsplash.com/random",
           'descripcion': '',
-          'precio': '',
-        }
+          'idCategoria': 0,
+          'imagen': '',
+          'precioU': '',
       }
-      editedProduct.item.id = edited.item.id;
-      editedProduct.item.nombre = edited.item.nombre;
-      editedProduct.item.descripcion = edited.item.descripcion;
-      editedProduct.item.precio = edited.item.precio;
-      let index = getIndexForItem(edited.item.id);
-        
-      let editedProducts = [
-        ...products.slice(0, index),
-        editedProduct,
-        ...products.slice(index+1)
-      ];
+      editedProduct.nombre = edited.nombre;
+      editedProduct.descripcion = edited.descripcion;
+      editedProduct.precioU = edited.precio;
+      editedProduct.idCategoria = edited.idCategoria;
+      editedProduct.imagen = edited.imagen;
 
-      setProducts(editedProducts);
-
-      console.log('post:', products);
+      await api.put(`/items/${edited.id}`,editedProduct).then(res=> {
+        alert("Producto editado con éxito. ",res.success);
+      }).catch(err => {
+        alert("Error al editar producto. ",err);
+      });
     }
 
-    const eliminarProducto = (id) => {
-      console.log('prev:', products);
-
-      let updatedProducts = [...products];
-      let index = getIndexForItem(id);
-      updatedProducts.splice(index,1);
-      console.log(updatedProducts);
-
-      setProducts(updatedProducts);
-      
-      console.log('post:', products);
+    const eliminarProducto = async (id) => {
+      await api.delete(`/items/${id}`).then(res=> {
+        alert("Producto eliminado con éxito. ",res.success);
+      }).catch(err => {
+        alert("Error al eliminar producto. ",err);
+      });
     }
 
 
@@ -200,7 +182,7 @@ function Products({productos}) {
       <React.Fragment >
         <h1 className={classes.whiteBlend}>USUARIO ADMINISTRADOR</h1>
         <br/>
-        <h4 className={classes.whiteBlend} align= "left">ABM PRODUCTOS</h4>
+        <h4 className={classes.whiteBlend} align= "left">PRODUCTOS</h4>
         <Table maxWidth="lg" size="small">
             <TableHead>
                 <TableRow className={classes.whiteBlend}>
@@ -226,10 +208,10 @@ function Products({productos}) {
           <TableBody className={classes.whiteBlend}>
             {products.map((row) => (
               <TableRow key={row.id} className={classes.whiteBlend}>
-                <TableCell className={classes.whiteBlend}>{row.item.id}</TableCell>
-                <TableCell className={classes.whiteBlend}>{row.item.nombre}</TableCell>
-                <TableCell className={classes.whiteBlend}>{row.item.descripcion}</TableCell>
-                <TableCell className={classes.whiteBlend}>${row.item.precio}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.id}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.nombre}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.descripcion}</TableCell>
+                <TableCell className={classes.whiteBlend}>${row.precio}</TableCell>
                 <TableCell className={classes.whiteBlend}> </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
                   {/* <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
@@ -238,7 +220,7 @@ function Products({productos}) {
                   <SimpleDialogEditDemo className={classes.button} id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={(value) => editarProducto(value)} actual={row}/>
                 </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                  <Button variant="secondary" onClick={() => eliminarProducto(row.item.id)} className={classes.button} style={{height: '95%'}}>
+                  <Button variant="secondary" onClick={() => eliminarProducto(row.id)} className={classes.button} style={{height: '95%'}}>
                       <DeleteIcon/>
                   </Button>
                 </TableCell>
@@ -368,12 +350,14 @@ function SimpleDialogDemo({nombre,setNombre,descripcion,setDescripcion,precio,se
     setNombre('');
     setDescripcion('');
     setPrecio('');
+    setImagen('');
+    setIdCategoria(0);
   };
 
   const handleClose = (value) => {
     setOpen(false);
     setSelectedValue(value);
-    if(nombre!='' && descripcion!= '' && precio!=''){
+    if(nombre!='' && descripcion!= '' && precio!='' && idCategoria!= 0 && imagen!=''){
       agregarProducto();
     }
   };
@@ -505,18 +489,17 @@ function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripc
       setOpen(false);
       setSelectedValue(value);
       let current = {
-        item: {
-          'id': 0,
           'nombre': '',
-          'imagen': "https://source.unsplash.com/random",
           'descripcion': '',
-          'precio': '',
-        }
+          'idCategoria': '',
+          'imagen': "https://source.unsplash.com/random",
+          'precioU': '',
       }
-      current.item.id = id;
-      current.item.nombre = nombre;
-      current.item.descripcion = descripcion; 
-      current.item.precio = precio;
+      current.nombre = nombre;
+      current.descripcion = descripcion;
+      current.idCategoria = idCategoria;
+      current.imagen = imagen;
+      current.precioU = precio;
       editarProducto(current);
       setForcedClose(false);
     }
@@ -535,9 +518,26 @@ function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripc
 //end
 
 const Admin = ({products,transactions}) => {
+  const [productos, setProductos] = useState([]);
+  // const [transactions,setTransactions] = useState([]);
+  
+  useEffect(()=> {
+    getProductos();
+  },[]);
+
+  const getProductos = async () => {
+    try{
+      let productData = await api.get("/items");
+      setProductos(productData.data);
+    }catch(err){
+      alert(err, ": No se pudo caragr informacion de los productos");
+    }
+  }
+
+
   return(
       <div style={{marginTop:'40px',marginLeft:'60px', marginRight:'60px'}}>
-          <Products productos={products} />
+          <Products productos={productos} />
           <br/>
           <Transactions transactions={transactions}/>
           {/* <DataTableCrudDemo /> */}

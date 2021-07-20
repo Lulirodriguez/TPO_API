@@ -187,6 +187,7 @@ const Category = ({carrito, setCarrito}) => {
                     ))}
                 </Grid>
                 </Container>
+                {itemList===[] ? <div style={{marginTop: '2%', fontSize: '16px'}}><p>No hay productos disponibles para esta categoría</p></div> : <></>}
             </main>
         </div>
     );
