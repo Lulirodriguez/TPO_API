@@ -78,7 +78,7 @@ const CartCounter = ({product,cart,setCart}) => {
 
   const setNewAmount = (counter) => {
     for(let i=0;i<cart.length;i++){
-      if(cart[i].id == product.id){
+      if(cart[i].itemId == product.itemId){
         let item = cart[i];
         item.cantidad = counter;
         setCart([
@@ -96,7 +96,7 @@ const CartCounter = ({product,cart,setCart}) => {
       }
       else if(counter === 1){
         for(let i=0;i<cart.length;i++){
-          if(cart[i].id == product.id){
+          if(cart[i].itemId == product.itemId){
             setCart([
               ...cart.slice(0,i),
               ...cart.slice(i+1),
@@ -135,7 +135,7 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
   const handleDeleteFromCart = (e,product) => {
     e.preventDefault();
     for(let i=0;i<carrito.length;i++){
-      if(carrito[i].id == product.id){
+      if(carrito[i].itemId == product.itemId){
         setCarrito([
           ...carrito.slice(0,i),
           ...carrito.slice(i+1),
@@ -146,7 +146,7 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
 
   let total = 0;
   const _ = carrito.map((item) => {
-    total += (item.precio * item.cantidad);
+    total += (item.precioU * item.cantidad);
   });
 
   return (
@@ -156,10 +156,10 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
       </Typography>
       <List disablePadding>
         {carrito.map((product) => (
-            <ListItem className={classes.listItem} key={product.nombre}>
+            <ListItem className={classes.listItem} key={product.itemId}>
               <ListItemText primary={product.nombre} secondary={`${product.descripcion}`} />
               <CartCounter key={product.nombre} product={product} cart={carrito} setCart={(value) => setCarrito(value)} />
-              <Typography style={{marginLeft: '25px'}} variant="body2">${product.precio}</Typography>
+              <Typography style={{marginLeft: '25px'}} variant="body2">${product.precioU}</Typography>
               <Button 
                 variant="secondary"
                 size='small'

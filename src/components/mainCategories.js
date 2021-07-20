@@ -1,6 +1,17 @@
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+}); 
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,52 +46,29 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+// 
+
 
 export default function CategoryBar(){
     const classes = useStyles();
-    const categories = [
-        {
-            'id': 1,
-            'name': 'TENIS',
-            'path': '/category/tenis',
-        },
-        {
-            'id': 2,
-            'name': 'FUTBOL',
-            'path': '/category/futbol',
-        },
-        {
-            'id': 3,
-            'name': 'HOCKEY',
-            'path': '/category/hockey',
-        },
-        {
-            'id': 4,
-            'name': 'RUGBY',
-            'path': '/category/rugby',
-        },
-        {
-            'id': 5,
-            'name': 'VOLEY',
-            'path': '/category/voley',
-        },
-        {
-            'id': 6,
-            'name': 'GOLF',
-            'path': '/category/golf',
-        },
-        {
-            'id': 7,
-            'name': 'GYM',
-            'path': '/category/gym',
-        },
-    ];
+    const [categories, setCategories] = useState([]);
+    
+    useEffect(()=> {
+        getCategories();
+        console.log(categories);
+    },[]);
+
+    const getCategories = async () => {
+        let categoryData = await api.get("/categorias");
+        setCategories(categoryData.data);
+    }
+
     return (
         <div className={classes.root}>
-            {categories.map(cat => (
-                <Link key={cat.id} to={cat.path} style={{ textDecoration: 'none' }}>
+            {categories && categories.map(cat => (
+                <Link key={cat.idCategoria} to={`/category/${cat.idCategoria}`} style={{ textDecoration: 'none' }}>
                     <Button size="large" className={classes.margin} > 
-                    {cat.name}</Button>{' '}
+                    {cat.nombre}</Button>{' '}
                 </Link>
             ))}
             <Link key={0} to={`/category/sale`} style={{ textDecoration: 'none' }}>
@@ -89,3 +77,41 @@ export default function CategoryBar(){
         </div>
     );
 }
+
+// const categories = [
+    //     {
+    //         'id': 1,
+    //         'name': 'TENIS',
+    //         'path': '/category/tenis',
+    //     },
+    //     {
+    //         'id': 2,
+    //         'name': 'FUTBOL',
+    //         'path': '/category/futbol',
+    //     },
+    //     {
+    //         'id': 3,
+    //         'name': 'HOCKEY',
+    //         'path': '/category/hockey',
+    //     },
+    //     {
+    //         'id': 4,
+    //         'name': 'RUGBY',
+    //         'path': '/category/rugby',
+    //     },
+    //     {
+    //         'id': 5,
+    //         'name': 'VOLEY',
+    //         'path': '/category/voley',
+    //     },
+    //     {
+    //         'id': 6,
+    //         'name': 'GOLF',
+    //         'path': '/category/golf',
+    //     },
+    //     {
+    //         'id': 7,
+    //         'name': 'GYM',
+    //         'path': '/category/gym',
+    //     },
+    // ];

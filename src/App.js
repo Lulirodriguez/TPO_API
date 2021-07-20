@@ -1,7 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import productFile from './jsonFiles/products.json';
 import transactionsFile from './jsonFiles/transactions.json';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import React, {useState} from 'react';
@@ -38,10 +37,12 @@ function App() {
           <Route path="/sign-up" exact component={() => <SignUp />} />
           <Route path="/passwordRecovery" exact component={() => <PasswordRecovery />} />
           <Route path="/sign-in" exact component={() => <SignIn setIsLoggedIn={(value) => setIsLoggedIn(value)} setIsAdmin={(value)=> setIsAdmin(value)} setCurrentUser={(value)=> setCurrentUser(value)} readyToPay={readyToPay} />} />
-          <Route path="/category/:category" exact component={() => <Category carrito={carrito} setCarrito={(value) => setCarrito(value)} items={productFile}/>} />
+          <Route path="/category/:categoryId" exact>
+            <Category carrito={carrito} setCarrito={(value) => setCarrito(value)} />
+          </Route>
           <Route path="/cart" exact component={() => <Cart carrito={carrito} setCarrito={(value)=>setCarrito(value)} isLoggedIn={isLoggedIn} setReadyToPay={setReadyToPay} />} />
           <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
-          <Route path="/admin" exact component={() => <Admin products={productFile} transactions={transactions} />} />
+          <Route path="/admin" exact component={() => <Admin transactions={transactions} />} />
           <Route path="/profile" component={() => <UserProfile user={currentUser} />} />
       </Router>
       </div>

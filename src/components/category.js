@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -9,6 +10,16 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+}); 
 
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Counter = ({card, addToCart}) => {
     const classes = useStyles();
-    const [counter, setCounter] = React.useState(card.item.cantidad ? card.item.cantidad : 1);
+    const [counter, setCounter] = React.useState(card.cantidad ? card.cantidad : 1);
 
     const decreaseCount = () => {
         if(counter > 1){
@@ -98,54 +109,47 @@ const Counter = ({card, addToCart}) => {
     );
 }
 
-const Category = ({carrito, setCarrito,items}) => {
+const Category = ({carrito, setCarrito}) => {
     const classes = useStyles();
-    const [itemList, setItemList] = useState(items);
+    const [itemList, setItemList] = useState([]);
+    let {categoryId} = useParams();
 
     useEffect(() => {
-        console.log(items);
+        getItemsForCategory();
+        console.log(itemList);
     },[]);
+
+    const getItemsForCategory = async () => {
+        let itemsData = await api.get(`items/${categoryId}`);
+        setItemList(itemsData.data);
+    }
 
     const handleOnAddToCart = (card,cantidad) => {
         if(cantidad > 0){
-            let item = card.item;
+            let item = card;
             item.cantidad = cantidad;
-            if(carrito===[]){
-                setCarrito(item);
+            let index = -1;
+            for(let i=0; i<carrito.length;i++){
+                if(carrito[i].itemId === item.itemId){
+                    index = i;
+                }
+            }
+            if(index === -1){
+                alert("Nuevo item agregado");
+                setCarrito([
+                    ...carrito,
+                    item,
+                ]);
             }
             else{
-                let index = -1;
-                for(let i=0; i<carrito.length;i++){
-                    if(carrito[i].id === item.id){
-                        index = i;
-                    }
-                }
-                if(index === -1){
-                    setCarrito([
-                        ...carrito,
-                        item,
-                    ]);
-                }
-                else{
-                    // item.cantidad += carrito[index].cantidad;
-                    setCarrito([
-                        ...carrito.slice(0,index),
-                        item,
-                        ...carrito.slice(index+1),
-                    ]);
-                }
+                item.cantidad += carrito[index].cantidad;
+                alert("Cantidad actualizada");
+                setCarrito([
+                    ...carrito.slice(0,index),
+                    item,
+                    ...carrito.slice(index+1),
+                ]);
             }
-            let listIndex = -1;
-            for(let i=0; i<itemList.length;i++){
-                if(itemList[i].id === item.id){
-                    listIndex = i;
-                }
-            }
-            setItemList([
-                ...itemList.slice(0,listIndex),
-                item,
-                ...itemList.slice(listIndex+1),
-            ]);
         }
     }
 
@@ -157,34 +161,33 @@ const Category = ({carrito, setCarrito,items}) => {
                 </Grid>
                 <Grid container spacing={4}>
                     {itemList.map((card) => (
-                    <Grid key={card.item.id} xs={12} sm={6} md={3}>
+                    <Grid key={card.itemId} xs={12} sm={6} md={3}>
                         <Card className={classes.card}>
                         <CardMedia
                             className={classes.cardMedia}
-                            image={card.item.imagen}
+                            image={card.imagen}
                             title="Imagen"
                         />
                         <CardContent className={classes.cardContent}>
                             <Typography className={classes.whiteBlend} gutterBottom variant="h5" component="h2">
-                            {card.item.nombre}
+                            {card.nombre}
                             </Typography>
                             <Typography className={classes.whiteBlend}>
-                            {card.item.descripcion}
+                            {card.descripcion}
                             </Typography>
                             <Typography className={classes.whiteBlend}>
-                            ${card.item.precio}
+                            ${card.precioU}
                             </Typography>
                         </CardContent>
                         <CardActions className={classes.whiteBlend}>
-                            <Counter id={card.item.id} card={card} addToCart={handleOnAddToCart}/>
+                            <Counter id={card.itemId} card={card} addToCart={handleOnAddToCart}/>
                         </CardActions>
                         </Card>
                     </Grid>
                     ))}
                 </Grid>
                 </Container>
-                
-                
+                {itemList===[] ? <div style={{marginTop: '2%', fontSize: '16px'}}><p>No hay productos disponibles para esta categoría</p></div> : <></>}
             </main>
         </div>
     );

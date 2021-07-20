@@ -20,24 +20,21 @@ import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
+import axios from 'axios';
 
-// // Generate Order Data
-// function createData(id, date, name, shipTo, paymentMethod, amount) {
-//   return { id, date, name, shipTo, paymentMethod, amount };
-// }
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+}); 
 
-// const rows = [
-//   createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', 312.44),
-//   createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', 866.99),
-//   createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-//   createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', 654.39),
-//   createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', 212.79),
-// ];
-
-function preventDefault(event) {
-  event.preventDefault();
-}
+// Estilos
 
 const useStyles = makeStyles((theme) => ({
   seeMore: {
@@ -53,6 +50,31 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: '50px',
   }
 }));
+
+const useStyles2 = makeStyles((theme) => ({
+  seeMore: {
+    marginTop: theme.spacing(3),
+  },
+  whiteBlend: {
+      backgroundColor: 'ffffff',
+      color: 'black',
+  },
+  end: {
+      paddingBottom: '50px',
+  }
+}));
+
+const useStyles3 = makeStyles({
+  avatar: {
+    backgroundColor: 'ffffff',
+    color: 'black',
+  },
+  whiteBlend:{
+    backgroundColor: 'ffffff',
+    color: 'black',
+    fontColor: 'black',
+  }
+});
 
 function Transactions({transactions}) {
   const classes = useStyles();
@@ -88,124 +110,62 @@ function Transactions({transactions}) {
   );
 }
 
-const useStyles2 = makeStyles((theme) => ({
-    seeMore: {
-      marginTop: theme.spacing(3),
-    },
-    whiteBlend: {
-        backgroundColor: 'ffffff',
-        color: 'black',
-    },
-    end: {
-        paddingBottom: '50px',
-    }
-  }));
-
-function Products({productos}) {
+function Products() {
     const classes = useStyles2();
-
-    const [nuevoNombre, setNuevoNombre] = useState('');
-    const [nuevaDescripcion, setNuevaDescripcion] = useState('');
-    const [nuevoPrecio, setNuevoPrecio] =useState('');
-    const [nuevoId, setNuevoId] = useState(0);
-    const [products, setProducts] = useState(productos);
-    const [idCounter, setIdCounter] = useState(0);
-    // const [productsToDisplay, setProductsToDisplay] = useState([]);
+    const [categorias, setCategorias] = useState([]);
+    const [products, setProducts] = useState([]);
 
     useEffect(()=> {
-      let cantidad = [...products];
-      setIdCounter(idCounter+cantidad.length+1);
-      console.log("Seteo display");
+      getProductos();
+      getCategorias();
     }, []);
 
-    let newProduct = {
-      item: {
-        'id': idCounter,
-        'nombre': '',
-        'imagen': "https://source.unsplash.com/random",
-        'descripcion': '',
-        'precio': '',
+    const getProductos = async () => {
+      try{
+        let productData = await api.get("/items");
+        setProducts(productData.data);
+      }catch(err){
+        alert(err + ": No se pudo caragr informacion de los productos");
       }
-    };
+    }
 
-    const getIndexForItem = (id) => {
-      let productos = [...products];
-      for (let i = 0; i<productos.length ; i++){
-        if(productos[i].item.id == id){
-          return i;
+    const getCategorias = async () => {
+      try{
+        let categoriasData = await api.get("/categorias");
+        setCategorias(categoriasData.data);
+      }
+      catch(err){
+        alert(err + "Error al cargar datos de categorias");
+      }
+    }
+
+    const categoryIdToName = (id) => {
+      for(let i=0;i<categorias.length;i++){
+        if(id == categorias[i].idCategoria){
+          return categorias[i].nombre;
         }
       }
-      return 0;
     }
 
-    const agregarProducto = () => {
-      newProduct.item.nombre = nuevoNombre;
-      newProduct.item.descripcion = nuevaDescripcion;
-      newProduct.item.precio = nuevoPrecio;
-      newProduct.item.id = idCounter;
-
-      console.log('prev:', products);
-
-      setProducts([
-        ...products,
-        newProduct,
-      ]);
-      setIdCounter(idCounter+1);
-
-      console.log('prev:', products);
-    }
-
-    const editarProducto = (edited) => {
-      let editedProduct = {
-        item: {
-          'id': 0,
-          'nombre': '',
-          'imagen': "https://source.unsplash.com/random",
-          'descripcion': '',
-          'precio': '',
-        }
+    const eliminarProducto = async (id) => {
+      try{
+        await api.delete(`/items/${id}`);
+        alert("Producto eliminado con éxito. Refresque la página para ver los cambios ");
+      }catch(err){
+        alert("Error al eliminar producto. " + err);
       }
-      editedProduct.item.id = edited.item.id;
-      editedProduct.item.nombre = edited.item.nombre;
-      editedProduct.item.descripcion = edited.item.descripcion;
-      editedProduct.item.precio = edited.item.precio;
-      let index = getIndexForItem(edited.item.id);
-        
-      let editedProducts = [
-        ...products.slice(0, index),
-        editedProduct,
-        ...products.slice(index+1)
-      ];
-
-      setProducts(editedProducts);
-
-      console.log('post:', products);
     }
-
-    const eliminarProducto = (id) => {
-      console.log('prev:', products);
-
-      let updatedProducts = [...products];
-      let index = getIndexForItem(id);
-      updatedProducts.splice(index,1);
-      console.log(updatedProducts);
-
-      setProducts(updatedProducts);
-      
-      console.log('post:', products);
-    }
-
 
     return (
       <React.Fragment >
         <h1 className={classes.whiteBlend}>USUARIO ADMINISTRADOR</h1>
         <br/>
-        <h4 className={classes.whiteBlend} align= "left">ABM PRODUCTOS</h4>
+        <h4 className={classes.whiteBlend} align= "left">PRODUCTOS</h4>
         <Table maxWidth="lg" size="small">
             <TableHead>
                 <TableRow className={classes.whiteBlend}>
                     <TableCell className={classes.whiteBlend} align="right">
-                    <SimpleDialogDemo className={classes.button} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} agregarProducto={() => agregarProducto()}/>
+                    <AddProductModal className={classes.button}/>
                     </TableCell>
                 </TableRow>
             </TableHead>
@@ -217,6 +177,7 @@ function Products({productos}) {
               <TableCell className={classes.whiteBlend}>ID</TableCell>
               <TableCell className={classes.whiteBlend}>NOMBRE PRODUCTO</TableCell>
               <TableCell className={classes.whiteBlend}>DESCRIPCIÓN</TableCell>
+              <TableCell className={classes.whiteBlend}>CATEGORIA</TableCell>
               <TableCell className={classes.whiteBlend}>PRECIO</TableCell>
               <TableCell className={classes.whiteBlend} align="right"></TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
@@ -226,19 +187,17 @@ function Products({productos}) {
           <TableBody className={classes.whiteBlend}>
             {products.map((row) => (
               <TableRow key={row.id} className={classes.whiteBlend}>
-                <TableCell className={classes.whiteBlend}>{row.item.id}</TableCell>
-                <TableCell className={classes.whiteBlend}>{row.item.nombre}</TableCell>
-                <TableCell className={classes.whiteBlend}>{row.item.descripcion}</TableCell>
-                <TableCell className={classes.whiteBlend}>${row.item.precio}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.itemId}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.nombre}</TableCell>
+                <TableCell className={classes.whiteBlend}>{row.descripcion}</TableCell>
+                <TableCell className={classes.whiteBlend}>{categoryIdToName(row.idCategoria)}</TableCell>
+                <TableCell className={classes.whiteBlend}>${row.precioU}</TableCell>
                 <TableCell className={classes.whiteBlend}> </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                  {/* <Button className={classes.whiteBlend} variant="secondary" color="secondary" >
-                    <CreateIcon/>
-                  </Button> */}
-                  <SimpleDialogEditDemo className={classes.button} id={nuevoId} setId={(value) => setNuevoId(value)} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} editarProducto={(value) => editarProducto(value)} actual={row}/>
+                  <EditProductModal className={classes.button} editable={row}/>
                 </TableCell>
                 <TableCell className={classes.whiteBlend} align="right">
-                  <Button variant="secondary" onClick={() => eliminarProducto(row.item.id)} className={classes.button} style={{height: '95%'}}>
+                  <Button variant="secondary" onClick={(e) => eliminarProducto(row.itemId)} className={classes.button} style={{height: '90%'}}>
                       <DeleteIcon/>
                   </Button>
                 </TableCell>
@@ -251,23 +210,103 @@ function Products({productos}) {
     );
   }
 
+// Modal para Agregar Productos
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
-const useStyles3 = makeStyles({
-  avatar: {
-    backgroundColor: 'ffffff',
-    color: 'black',
-  },
-  whiteBlend:{
-    backgroundColor: 'ffffff',
-    color: 'black',
-    fontColor: 'black',
+function AddProductModal() {
+  const classes = useStyles3();
+  const [open, setOpen] = React.useState(false);
+
+  const [nuevoNombre, setNuevoNombre] = useState('');
+  const [nuevaDescripcion, setNuevaDescripcion] = useState('');
+  const [nuevoPrecio, setNuevoPrecio] =useState('');
+  const [nuevoIdCategoria, setNuevoIdCategoria] = useState(0);
+  const [nuevaImagen, setNuevaImagen] = useState('');
+
+  const handleClickOpen = () => {
+    setOpen(true);
+    setNuevoNombre('');
+    setNuevaDescripcion('');
+    setNuevoIdCategoria(0);
+    setNuevaImagen('');
+    setNuevoPrecio('');
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    if(nuevoNombre !== '' &&  nuevaDescripcion !== '' && nuevoPrecio !== '' && nuevoIdCategoria !== 0 && nuevaImagen !== ''){
+      agregarProducto();
+    }
+  };
+
+  const agregarProducto = () => {
+    let newProduct = {
+      'nombre': '',
+      'descripcion': '',
+      'idCategoria':0,
+      'imagen': '',
+      'precioU': '',
+    };
+    newProduct.nombre = nuevoNombre;
+    newProduct.descripcion = nuevaDescripcion;
+    newProduct.idCategoria = nuevoIdCategoria;
+    newProduct.precioU = nuevoPrecio;
+    newProduct.imagen = nuevaImagen;
+
+    api.post("/items",newProduct).then(res => {
+      alert("Producto agregado.  Recargue la página para ver los cambios");
+    }).catch(err => 
+      alert("Error al agregar producto")
+    );
   }
-});
 
-function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto}) {
+  return (
+    <div>
+      <Button className={classes.whiteBlend} color="secondary" onClick={handleClickOpen}>
+        <AddBoxIcon/>
+      </Button>
+      <AddProductDialog open={open} onClose={handleClose} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} idCat={nuevoIdCategoria} setIdCat={(value)=> setNuevoIdCategoria(value)} imagen={nuevaImagen} setImagen={(value) => setNuevaImagen(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)} />
+    </div>
+  );
+}
+
+AddProductDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+};
+
+function AddProductDialog({ open, onClose, nombre,setNombre,descripcion,setDescripcion,idCat, setIdCat,imagen,setImagen,precio,setPrecio}) {
   const classes = useStyles3();
   const [error, setError] = React.useState(false);
+  const [categorias, setCategorias] = React.useState([]);
+  const [cat, setCat] = useState('');
+
+  useEffect(()=>{
+    getCategorias();
+  },[]);
+
+  const getCategorias = async () => {
+    try{
+      let categoriasData = await api.get("/categorias");
+      setCategorias(categoriasData.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de categorias");
+    }
+  }
+
+  const categoryNameToId = (nombre) => {
+    for(let i=0;i<categorias.length;i++){
+      if(nombre === categorias[i].nombre){
+        return categorias[i].idCategoria;
+      }
+    }
+  }
+
+  const handleCategoria = (nombre) => {
+    setCat(nombre);
+    let id = categoryNameToId(nombre);
+    setIdCat(id);
+  }
 
   useEffect(()=> {
     if(!validarCampos()){
@@ -276,10 +315,10 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
     else{
       setError(false);
     }
-  },[nombre,descripcion,precio]);
+  },[nombre,descripcion,idCat,imagen,precio]);
 
   const validarCampos = () => {
-    return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio);
+    return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio) && idCat !== 0 && imagen !== '';
   }
 
   const validarNumeros = (value) => {
@@ -301,14 +340,12 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
   }
 
   const handleClose = () => {
-    onClose(selectedValue);
+    onClose();
   };
 
-  const handleListItemClick = (value) => {
-    onClose(value);
+  const handleListItemClick = () => {
+    onClose();
   };
-
-
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
@@ -328,6 +365,22 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
                     Descripcion: 
                     <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
                   </TableCell>
+                  {categorias!==[] && 
+                  (<TableCell  align="center">
+                    <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={cat}
+                      onChange={(e) => handleCategoria(e.target.value)}
+                    >
+                      {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre}>{elem.nombre}</MenuItem>))}
+                    </Select>
+                  </TableCell>)}
+                  <TableCell  align="center">
+                    Imagen: 
+                    <TextField value={imagen} onChange={(e) => setImagen(e.target.value)} />
+                  </TableCell>
                   <TableCell  align="center">
                     Precio: 
                     <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
@@ -336,7 +389,7 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
           </TableHead>
         </Table>
 
-        <ListItem autoFocus button onClick={() => !error? handleListItemClick('addAccount') : console.log("datos invalidos")}>
+        <ListItem autoFocus button onClick={() => !error? handleListItemClick() : console.log("datos invalidos")}>
           <ListItemAvatar>
             <Avatar>
               <AddIcon />
@@ -352,80 +405,153 @@ function SimpleDialog({ onClose, selectedValue, open ,nombre,setNombre,descripci
   );
 }
 
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
-};
+// Modal para Editar Productos
 
-function SimpleDialogDemo({nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,agregarProducto,actual}) {
+function EditProductModal({editable}) {
   const classes = useStyles3();
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  const [forcedClose, setForcedClose] = React.useState(false);
+
+  const [id, setId] = useState(editable.itemId);
+  const [nuevoNombre, setNuevoNombre] = useState('');
+  const [nuevaDescripcion, setNuevaDescripcion] = useState('');
+  const [nuevoIdCategoria, setNuevoIdCategoria] = useState(0);
+  const [nuevaImagen, setNuevaImagen] = useState('');
+  const [nuevoPrecio, setNuevoPrecio] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
-    setNombre('');
-    setDescripcion('');
-    setPrecio('');
+    setForcedClose(false);
+    setNuevoNombre(editable.nombre);
+    setNuevaDescripcion(editable.descripcion);
+    setNuevoIdCategoria(editable.idCategoria);
+    setNuevaImagen(editable.imagen);
+    setNuevoPrecio(editable.precioU);
   };
 
-  const handleClose = (value) => {
+  const closeModal = (e) => {
     setOpen(false);
-    setSelectedValue(value);
-    if(nombre!='' && descripcion!= '' && precio!=''){
-      agregarProducto();
+    setForcedClose(true);
+  }
+
+  const handleClose = () => {
+    if(!forcedClose){
+      setOpen(false);
+      editarProducto();
+      setForcedClose(false);
     }
   };
 
+  const editarProducto = () => {
+    let editedProduct = {
+        'nombre': '',
+        'descripcion': '',
+        'idCategoria': 0,
+        'imagen': '',
+        'precioU': '',
+    }
+    editedProduct.nombre = nuevoNombre;
+    editedProduct.descripcion = nuevaDescripcion;
+    editedProduct.idCategoria = nuevoIdCategoria;
+    editedProduct.imagen = nuevaImagen;
+    editedProduct.precioU = nuevoPrecio;
+
+    api.put(`/items/${id}`,editedProduct).then(res=> {
+      alert("Producto editado con éxito. Recargue la página para ver los cambios");
+    }).catch(err => {
+      alert("Error al editar producto. ",err);
+    });
+  }
+
   return (
     <div>
-      <Button className={classes.whiteBlend} color="secondary" onClick={handleClickOpen}>
-        <AddBoxIcon/>
+      <Button className={classes.whiteBlend} variant="secondary" variant="secondary" onClick={handleClickOpen}>
+        <CreateIcon/>
       </Button>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} agregarProducto={() => agregarProducto()} />
+      <EditProductDialog open={open} onClose={handleClose} closeModal={closeModal} nombre={nuevoNombre} setNombre={(value)=> setNuevoNombre(value)} descripcion={nuevaDescripcion} setDescripcion={(value)=> setNuevaDescripcion(value)} idCat={nuevoIdCategoria} setIdCat={(value) => setNuevoIdCategoria(value)} imagen={nuevaImagen} setImagen={(value) => setNuevaImagen(value)} precio={nuevoPrecio} setPrecio={(value)=> setNuevoPrecio(value)}/>
     </div>
   );
 }
 
-// start
-function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto}) {
+function EditProductDialog({ open , onClose, closeModal, nombre,setNombre,descripcion,setDescripcion,idCat,setIdCat,imagen,setImagen,precio,setPrecio}) {
   const classes = useStyles3();
   const [error, setError] = React.useState(false);
+  const [categorias, setCategorias] = React.useState([]);
+  const [cat, setCat] = useState('');
 
-  // useEffect(()=> {
-  //   if(!validarCampos()){
-  //     setError(true);
-  //   }
-  //   else{
-  //     setError(false);
-  //   }
-  // },[nombre,descripcion,precio]);
+  useEffect(()=>{
+    getCategorias();
+  },[]);
 
-  // const validarCampos = () => {
-  //   return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio);
-  // }
+  useEffect(()=> {
+    if(!validarCampos()){
+      setError(true);
+    }
+    else{
+      setError(false);
+    }
+  },[nombre,descripcion,idCat,imagen,precio]);
 
-  // const validarNumeros = (value) => {
-  //   let valoresAceptados = /^[0-9]+$/;
-  //   if ( value.match(valoresAceptados) && (value!='')){
-  //     return true;
-  //   }else {
-  //     return false;
-  //   }
-  // }
+  const getCategorias = async () => {
+    try{
+      let categoriasData = await api.get("/categorias");
+      setCategorias(categoriasData.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de categorias");
+    }
+  }
 
-  // const validarCaracteres = (value) => {
-  //   let posibles = /^[a-zA-Z0-9_ ]*$/i;
-  //   if ((value.match(posibles)) && (value!='')) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+  const categoryIdToName = (id) => {
+    for(let i=0;i<categorias.length;i++){
+      if(id == categorias[i].idCategoria){
+        return categorias[i].nombre;
+      }
+    }
+  }
+
+  const categoryNameToId = (nombre) => {
+    for(let i=0;i<categorias.length;i++){
+      if(nombre === categorias[i].nombre){
+        return categorias[i].idCategoria;
+      }
+    }
+  }
+
+  const handleCategoria = (nombre) => {
+    setCat(nombre);
+    let id = categoryNameToId(nombre);
+    setIdCat(id);
+  }
+
+  const validarCampos = () => {
+    return validarCaracteres(nombre) && validarCaracteres(descripcion) && validarNumeros(precio) && idCat !== 0 && imagen !== '';
+  }
+
+  const validarNumeros = (value) => {
+    let valoresAceptados = /^[0-9]+$/;
+    try{
+      if ( value.match(valoresAceptados) && (value!='')){
+        return true;
+      }else {
+        return false;
+      }
+    }
+    catch(err){
+      return true;
+    }
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[a-zA-Z0-9_ ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   const handleClose = () => {
-    onClose(selectedValue);
   };
 
   const handleListItemClick = (value) => {
@@ -439,7 +565,7 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
             Complete los campos en el formato adecuado
           </Typography> : <></>}
       <List>
-        <Table maxWidth="md" size="small">
+      <Table maxWidth="md" size="small">
           <TableHead>
               <TableRow >
                   <TableCell  align="center">
@@ -450,6 +576,22 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
                     Descripcion: 
                     <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
                   </TableCell>
+                  {categorias!==[] && 
+                  (<TableCell  align="center">
+                    <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={categoryIdToName(idCat)}
+                      onChange={(e) => handleCategoria(e.target.value)}
+                    >
+                      {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre}>{elem.nombre}</MenuItem>))}
+                    </Select>
+                  </TableCell>)}
+                  <TableCell  align="center">
+                    Imagen: 
+                    <TextField value={imagen} onChange={(e) => setImagen(e.target.value)} />
+                  </TableCell>
                   <TableCell  align="center">
                     Precio: 
                     <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
@@ -458,7 +600,7 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
           </TableHead>
         </Table>
 
-        <ListItem autoFocus button onClick={() => !error? handleListItemClick('addAccount') : console.log("datos invalidos")}>
+        <ListItem autoFocus button onClick={() => !error? handleListItemClick() : console.log("datos invalidos")}>
           <ListItemAvatar>
             <Avatar>
               <AddIcon />
@@ -474,70 +616,28 @@ function SimpleDialogEdit({closeModal, onClose, selectedValue, open ,id,setId,no
   );
 }
 
-SimpleDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
-};
+// Principal
 
-function SimpleDialogEditDemo({id,setId,nombre,setNombre,descripcion,setDescripcion,precio,setPrecio,editarProducto,actual}) {
-  const classes = useStyles3();
-  const [open, setOpen] = React.useState(false);
-  const [forcedClose, setForcedClose] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+const Admin = ({transactions}) => {
+  // const [productos, setProductos] = useState([]);
+  // // const [transactions,setTransactions] = useState([]);
+  
+  // useEffect(()=> {
+  //   getProductos();
+  // },[]);
 
-  const handleClickOpen = () => {
-    setId(actual.item.id);
-    setNombre(actual.item.nombre);
-    setDescripcion(actual.item.descripcion);
-    setPrecio(actual.item.precio);
-    setOpen(true);
-    setForcedClose(false);
-  };
+  // const getProductos = async () => {
+  //   try{
+  //     let productData = await api.get("/items");
+  //     setProductos(productData.data);
+  //   }catch(err){
+  //     alert(err, ": No se pudo caragr informacion de los productos");
+  //   }
+  // }
 
-  const closeModal = (e) => {
-    setOpen(false);
-    setForcedClose(true);
-  }
-
-  const handleClose = (value) => {
-    if(!forcedClose){
-      setOpen(false);
-      setSelectedValue(value);
-      let current = {
-        item: {
-          'id': 0,
-          'nombre': '',
-          'imagen': "https://source.unsplash.com/random",
-          'descripcion': '',
-          'precio': '',
-        }
-      }
-      current.item.id = id;
-      current.item.nombre = nombre;
-      current.item.descripcion = descripcion; 
-      current.item.precio = precio;
-      editarProducto(current);
-      setForcedClose(false);
-    }
-  };
-
-  return (
-    <div>
-      <Button className={classes.whiteBlend} variant="secondary" variant="secondary" onClick={handleClickOpen}>
-        <CreateIcon/>
-      </Button>
-      <SimpleDialogEdit selectedValue={selectedValue} open={open} onClose={handleClose} closeModal={closeModal} id={id} setId={(value) => setId(value)} nombre={nombre} setNombre={(value)=> setNombre(value)} descripcion={descripcion} setDescripcion={(value)=> setDescripcion(value)} precio={precio} setPrecio={(value)=> setPrecio(value)} editarProducto={() => editarProducto()} actual={actual} />
-    </div>
-  );
-}
-
-//end
-
-const Admin = ({products,transactions}) => {
   return(
       <div style={{marginTop:'40px',marginLeft:'60px', marginRight:'60px'}}>
-          <Products productos={products} />
+          <Products />
           <br/>
           <Transactions transactions={transactions}/>
           {/* <DataTableCrudDemo /> */}
