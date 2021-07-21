@@ -8,11 +8,15 @@ import Checkbox from '@material-ui/core/Checkbox';
 export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCardNumber,expDate,setExpDate,cvv,setCvv,setError}) {
 
   useEffect(()=> {
-    if(!validarCampos()){
+    try{
+      if(!validarCampos()){
+        setError(true);
+      }
+      else{
+        setError(false);
+      }
+    }catch(err){
       setError(true);
-    }
-    else{
-      setError(false);
     }
   },[nameOnCard,cardNumber,expDate,cvv]);
 

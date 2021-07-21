@@ -23,8 +23,6 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [carrito, setCarrito] = useState([]);
   const [readyToPay, setReadyToPay] = useState(false);
-  const [shippingData, setShippingData] = useState([]);
-  const [paymentData, setPaymentData] = useState([]);
   const [transactions, setTransactions] = useState(transactionsFile);
 
   return (
@@ -41,7 +39,7 @@ function App() {
             <Category carrito={carrito} setCarrito={(value) => setCarrito(value)} />
           </Route>
           <Route path="/cart" exact component={() => <Cart carrito={carrito} setCarrito={(value)=>setCarrito(value)} isLoggedIn={isLoggedIn} setReadyToPay={setReadyToPay} />} />
-          <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
+          <Route path="/checkout" exact component={() => <Checkout carrito={carrito} user={currentUser}/>} />
           <Route path="/admin" exact component={() => <Admin transactions={transactions} />} />
           <Route path="/profile" component={() => <UserProfile user={currentUser} setUser={(value) => setCurrentUser(value)} />} />
       </Router>

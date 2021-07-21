@@ -6,11 +6,15 @@ import TextField from '@material-ui/core/TextField';
 export default function AddressForm({firstName,setFirstName,lastName,setLastName,address1,setAddress1,address2,setAddress2,city,setCity,state,setState,zipCode,setZipCode,country,setCountry,setError}) {
 
   useEffect(()=> {
-    if(!validarCampos()){
+    try{
+      if(!validarCampos()){
+        setError(true);
+      }
+      else{
+        setError(false);
+      }
+    }catch(err){
       setError(true);
-    }
-    else{
-      setError(false);
     }
   },[firstName,lastName,address1,address2,city,state,zipCode,country]);
 
@@ -59,9 +63,6 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
       return false;
     }
   }
-
-  
-  
 
   return (
     <React.Fragment>
@@ -124,13 +125,13 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
             label="Localidad"
             fullWidth
             autoComplete="shipping address-level2"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
+            value={state}
+            onChange={(e) => setState(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField id="state" name="state" label="Provincia" fullWidth value={state}
-            onChange={(e) => setState(e.target.value)}/>
+          <TextField id="state" name="state" label="Provincia" fullWidth value={city}
+            onChange={(e) => setCity(e.target.value)}/>
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField

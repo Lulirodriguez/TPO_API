@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {useHistory} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -126,15 +127,16 @@ const CartCounter = ({product,cart,setCart}) => {
 export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
   const classes = useStyles();
 
-  // useEffect(() => {
-  //   if(!isLoggedIn){
-  //     setReadyToPay(true);
-  //   }
-  // },[]);
+  let history = useHistory();
 
   const handleClick = e => {
+    e.preventDefault()
     if(!isLoggedIn){
       setReadyToPay(true);
+      history.push('/sign-in');
+    }
+    else{
+      history.push('/checkout');
     }
   }
 
@@ -193,9 +195,7 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
                 className={classes.submit}
                 onClick={e=>handleClick(e)}
               >
-          <Link to= {isLoggedIn ? '/checkout' : '/sign-in'} style={{ textDecoration: 'none' }} >
             PAGAR
-          </Link>
             </Button>
           </div>):(<p>Aún no hay productos en el carrito</p>)}
           </List>
