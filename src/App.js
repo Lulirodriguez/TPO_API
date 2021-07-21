@@ -43,7 +43,7 @@ function App() {
           <Route path="/cart" exact component={() => <Cart carrito={carrito} setCarrito={(value)=>setCarrito(value)} isLoggedIn={isLoggedIn} setReadyToPay={setReadyToPay} />} />
           <Route path="/checkout" exact component={() => <Checkout carrito={carrito} shippingData={shippingData} setShippingData={(value) => setShippingData(value)} paymentData={paymentData} setPaymentData={(value) => setPaymentData(value)} transactions={transactions} setTransactions={(value) => setTransactions(value)}/>} />
           <Route path="/admin" exact component={() => <Admin transactions={transactions} />} />
-          <Route path="/profile" component={() => <UserProfile user={currentUser} />} />
+          <Route path="/profile" component={() => <UserProfile user={currentUser} setUser={(value) => setCurrentUser(value)} />} />
       </Router>
       </div>
       <StickyFooter />

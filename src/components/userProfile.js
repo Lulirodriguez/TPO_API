@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from 'react-router-dom';
@@ -25,6 +25,15 @@ import avatar from "../images/marc.jpg";
 import transactionsFile from '../jsonFiles/transactions.json';
 
 import './userProfile.css';
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+});
 
 const styles = {
   cardCategoryWhite: {
@@ -47,8 +56,56 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-const EditProfile = ({user}) => {
+const EditProfile = ({usuario, setUsuario}) => {
   const classes = useStyles();
+
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [username,setUsername] = useState('');
+  
+  useEffect(()=> {
+    getProfile();
+  },[]);
+
+  const getProfile = async () => {
+    try{
+      let res = await api.get(`/usuarios/${usuario.id}`);
+      console.log(res);
+      let user = res.data;
+      setNombre(user.nombre);
+      setApellido(user.apellido);
+      setUsername(user.username);
+      return user;
+    }catch(err){
+      console.log(err);
+      alert("Error al obtener datos del perfil");
+    }
+  }
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    let user = {
+      'nombre': nombre,
+      'apellido': apellido,
+      'username': username,
+    }
+    try{
+      let res = await api.put(`/usuarios/${usuario.id}`,user);
+      if(res.status == 200){
+        getProfile().then(user =>{
+          setUsuario(user);
+          alert("Información de perfil actualizada con éxito");
+        }).catch(err => {
+          alert(err);
+        });
+      }
+      else{
+        alert("Ocurrio un error al actualizar la informacion de perfil");
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de Perfil")
+    };
+  }
 
   return(
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
@@ -56,7 +113,7 @@ const EditProfile = ({user}) => {
         <Card>
           <CardHeader style={{backgroundColor:'pink'}}>
             <h4 className={classes.cardTitleWhite}>Editar Perfil</h4>
-            <p className={classes.cardCategoryWhite}>Complete su perfil</p>
+            <p className={classes.cardCategoryWhite}>Edite su información de perfil aquí</p>
           </CardHeader>
           <CardBody>
             <GridContainer>
@@ -66,8 +123,11 @@ const EditProfile = ({user}) => {
                   id="email-address"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : username,
+                    onChange: (e) => setUsername(e.target.value)
                   }}>
-                    {user ? user.email : ''}
                 </CustomInput>
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -77,8 +137,11 @@ const EditProfile = ({user}) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : nombre,
+                    onChange: (e) => setNombre(e.target.value)
+                  }}
                   >
-                  {user ? user.firstName : ''}
                 </CustomInput>
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -88,14 +151,17 @@ const EditProfile = ({user}) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : apellido,
+                    onChange: (e) => setApellido(e.target.value)
+                  }}
                   >
-                  {user ? user.lastName : ''}
                 </CustomInput>
               </GridItem>
             </GridContainer>
           </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Perfil</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdateProfile(e)}>Actualizar Perfil</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -103,7 +169,7 @@ const EditProfile = ({user}) => {
   );
 }
 
-const DireccionEnvio = () => {
+const DireccionEnvio = (usuario) => {
   const classes = useStyles();
   return (
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
@@ -111,7 +177,7 @@ const DireccionEnvio = () => {
         <Card>
           <CardHeader style={{backgroundColor:'pink', color: 'black'}}>
             <h4 className={classes.cardTitleWhite}>Dirección de Envío</h4>
-            <p className={classes.cardCategoryWhite}>Cambiar preferencias de envío</p>
+            <p className={classes.cardCategoryWhite}>Cambie sus preferencias de envío aquí</p>
           </CardHeader>
           <CardBody>
             <GridContainer>
@@ -180,7 +246,7 @@ const DireccionEnvio = () => {
   );
 }
 
-const MetodoDePago = () => {
+const MetodoDePago = (usuario) => {
   const classes = useStyles();
   return (
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
@@ -188,7 +254,7 @@ const MetodoDePago = () => {
         <Card>
           <CardHeader style={{backgroundColor:'pink', color: 'black'}}>
             <h4 className={classes.cardTitleWhite}>Método de Pago</h4>
-            <p className={classes.cardCategoryWhite}>Cambiar preferencias de pago</p>
+            <p className={classes.cardCategoryWhite}>Cambie sus preferencias de pago aquí</p>
           </CardHeader>
           <CardBody>
             <GridContainer>
@@ -286,7 +352,7 @@ const MisCompras = ({transactions}) => {
 }
 
 
-export default function UserProfile({user}) {
+export default function UserProfile({user,setUser}) {
   const classes = useStyles();
   const [display, setDisplay] = useState(1);
 
@@ -302,9 +368,9 @@ export default function UserProfile({user}) {
             </CardAvatar>
             <CardBody profile>
               <h6 className={classes.cardCategory}>{user && user.isAdmin ? "Administrador": "Cliente"}</h6>
-              <h4 className={classes.cardTitle}>{user? user.firstName + user.lastName : "Not logged in"}</h4>
+              <h4 className={classes.cardTitle}>{user? user.nombre + " " + user.apellido : "Not logged in"}</h4>
               <p className={classes.description}>
-                Dirección de correo electrónico: {user? user.email : "-"}
+                Dirección de correo electrónico: {user? user.username : "-"}
               </p>
               <Button color="primary" round style={{backgroundColor:'pink', color: 'black', minWidth:'35%'}} onClick={(e) => setDisplay(1)}>
                 <Link to="#" style={{textDecoration: 'none', color: 'inherit'}}>
@@ -333,9 +399,9 @@ export default function UserProfile({user}) {
             </CardBody>
           </Card>
         </GridItem>
-        {display===1?<EditProfile user={user}/>:<></>}
-        {display===2?<DireccionEnvio user={user}/>:<></>}
-        {display===3?<MetodoDePago user={user}/>:<></>}
+        {display===1?<EditProfile usuario={user} setUsuario={(value) => setUser(value)}/>:<></>}
+        {display===2?<DireccionEnvio usuario={user}/>:<></>}
+        {display===3?<MetodoDePago usuario={user}/>:<></>}
         {display===4?<MisCompras transactions={transactionsFile}/>:<></>}
       </GridContainer>
     </div>

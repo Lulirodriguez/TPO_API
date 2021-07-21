@@ -78,13 +78,9 @@ const useStyles3 = makeStyles({
   }
 });
 
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
 function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
+  const top = 50;
+  const left = 50;
 
   return {
     top: `${top}%`,
@@ -372,44 +368,62 @@ function AddProductDialog({ open, onClose, nombre,setNombre,descripcion,setDescr
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-      <DialogTitle id="simple-dialog-title">Agregar Producto</DialogTitle>
+      <DialogTitle id="simple-dialog-title">Usuario Administrador - Agregar Producto</DialogTitle>
       {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
             Complete los campos en el formato adecuado
           </Typography> : <></>}
       <List>
-        <Table maxWidth="md" size="small">
-          <TableHead>
+        <Table maxWidth="lg" size="large">
+          <TableHead style={{margin: '100%'}}/>
+          <TableBody>
               <TableRow >
-                  <TableCell  align="center">
-                    Nombre: 
-                    <TextField value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                  </TableCell>
-                  <TableCell align="center">
-                    Descripcion: 
-                    <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-                  </TableCell>
-                  {categorias!==[] && 
-                  (<TableCell  align="center">
-                    <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={cat}
-                      onChange={(e) => handleCategoria(e.target.value)}
-                    >
-                      {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre}>{elem.nombre}</MenuItem>))}
-                    </Select>
-                  </TableCell>)}
-                  <TableCell  align="center">
-                    Imagen: 
-                    <TextField value={imagen} onChange={(e) => setImagen(e.target.value)} />
-                  </TableCell>
-                  <TableCell  align="center">
-                    Precio: 
-                    <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
-                  </TableCell>
+                <TableCell  align="center">
+                <Typography component="h5" variant="h5" align="center" style={{fontSize: '14px'}}>
+                  Nombre: 
+                </Typography>
+                  <TextField style={{minWidth: '100%'}} value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                </TableCell>
               </TableRow>
-          </TableHead>
+              <TableRow >
+                <TableCell align="center">
+                <Typography component="h5" variant="h5" align="center" style={{fontSize: '14px'}}>
+                  Descripcion: 
+                </Typography>
+                  <TextField style={{minWidth: '100%'}} value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+                </TableCell>
+              </TableRow>
+              <TableRow >
+                {categorias!==[] && 
+                (<TableCell align="center">
+                  <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
+                  <Select
+                    style={{minWidth: '100%'}}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={cat}
+                    onChange={(e) => handleCategoria(e.target.value)}
+                  >
+                    {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre} >{elem.nombre}</MenuItem>))}
+                  </Select>
+                </TableCell>)}
+              </TableRow>
+              <TableRow >
+                <TableCell  align="center">
+                <Typography component="h5" variant="h5" align="center" style={{fontSize: '14px'}}>
+                  URL de la Imagen: 
+                </Typography>
+                  <TextField style={{minWidth: '100%'}} value={imagen} onChange={(e) => setImagen(e.target.value)} />
+                </TableCell>
+              </TableRow>
+              <TableRow >
+                <TableCell  align="center">
+                  <Typography component="h5" variant="h5" align="center" style={{fontSize: '14px'}}>
+                    Precio: 
+                  </Typography>
+                  <TextField style={{minWidth: '100%'}} value={precio} onChange={(e) => setPrecio(e.target.value)} />
+                </TableCell>
+              </TableRow>
+          </TableBody>
         </Table>
 
         <ListItem autoFocus button onClick={() => !error? handleListItemClick() : console.log("datos invalidos")}>
@@ -420,9 +434,9 @@ function AddProductDialog({ open, onClose, nombre,setNombre,descripcion,setDescr
           </ListItemAvatar>
           <ListItemText primary="Agregar Producto" />
         </ListItem>
-        <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleClose}>
-            Cancelar
-          </Button>
+        <Button style={{width: '100%'}} className={classes.whiteBlend} align="center" color="secondary" onClick={handleClose}>
+          Cancelar
+        </Button>
       </List>
     </Dialog>
   );
@@ -585,57 +599,75 @@ function EditProductDialog({ open , onClose, closeModal, nombre,setNombre,descri
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-      <DialogTitle id="simple-dialog-title">Editar Producto</DialogTitle>
+      <DialogTitle id="simple-dialog-title">Usuario Administrador - Editar Producto</DialogTitle>
       {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
             Complete los campos en el formato adecuado
           </Typography> : <></>}
       <List>
-      <Table maxWidth="md" size="small">
-          <TableHead>
-              <TableRow >
-                  <TableCell  align="center">
-                    Nombre: 
-                    <TextField value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                  </TableCell>
-                  <TableCell align="center">
-                    Descripcion: 
-                    <TextField  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-                  </TableCell>
-                  {categorias!==[] && 
-                  (<TableCell  align="center">
-                    <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={categoryIdToName(idCat)}
-                      onChange={(e) => handleCategoria(e.target.value)}
-                    >
-                      {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre}>{elem.nombre}</MenuItem>))}
-                    </Select>
-                  </TableCell>)}
-                  <TableCell  align="center">
-                    Imagen: 
-                    <TextField value={imagen} onChange={(e) => setImagen(e.target.value)} />
-                  </TableCell>
-                  <TableCell  align="center">
-                    Precio: 
-                    <TextField value={precio} onChange={(e) => setPrecio(e.target.value)} />
-                  </TableCell>
+      <Table maxWidth="150%" size="large" >
+        <TableHead style={{margin:'100%'}} />
+          <TableBody>
+            <TableRow >
+                <TableCell  align="center">
+                  <Typography component="h5" variant="h5" align="left" style={{ fontSize: '14px'}}>
+                    Nombre:
+                  </Typography>
+                  <TextField  style={{minWidth:'100%'}} value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                </TableCell>
               </TableRow>
-          </TableHead>
+              <TableRow >
+                <TableCell align="center">
+                  <Typography component="h5" variant="h5" align="left" style={{ fontSize: '14px'}}>
+                    Descripcion:
+                  </Typography>
+                  <TextField  style={{minWidth:'100%'}}  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+                </TableCell>
+              </TableRow>
+              <TableRow >
+                {categorias!==[] && 
+                (<TableCell  align="center">
+                  <InputLabel id="demo-simple-select-label">Categoria:</InputLabel>
+                  <Select
+                    style={{minWidth:'100%'}}
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={categoryIdToName(idCat)}
+                    onChange={(e) => handleCategoria(e.target.value)}
+                  >
+                    {categorias.map(elem => (<MenuItem key={elem.id} value={elem.nombre}>{elem.nombre}</MenuItem>))}
+                  </Select>
+                </TableCell>)}
+              </TableRow>
+              <TableRow >
+                <TableCell  align="center">
+                  <Typography component="h5" variant="h5" align="left" style={{ fontSize: '14px'}}>
+                    URL de la Imagen: 
+                  </Typography>
+                  <TextField  style={{minWidth:'100%'}} value={imagen} onChange={(e) => setImagen(e.target.value)} />
+                </TableCell>
+              </TableRow>
+              <TableRow >
+                <TableCell  align="center">
+                  <Typography component="h5" variant="h5" align="left" style={{ fontSize: '14px'}}>
+                    Precio:
+                  </Typography>
+                  <TextField  style={{minWidth:'100%'}} value={precio} onChange={(e) => setPrecio(e.target.value)} />
+                </TableCell>
+            </TableRow>
+          </TableBody>
         </Table>
 
         <ListItem autoFocus button onClick={() => !error? handleListItemClick() : console.log("datos invalidos")}>
-          <ListItemAvatar>
+          <ListItemAvatar >
             <Avatar>
               <AddIcon />
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="Editar Producto" />
         </ListItem>
-        <Button className={classes.whiteBlend} align="right" color="secondary" onClick={closeModal}>
-            Cancelar
-          </Button>
+        <Button style={{width: '100%'}} className={classes.whiteBlend} align="center" color="secondary" onClick={closeModal}>
+          Cancelar
+        </Button>
       </List>
     </Dialog>
   );
@@ -680,7 +712,7 @@ function DeleteProductModal({id}) {
       <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleAccept}>
         Aceptar
       </Button>
-      <Button className={classes.whiteBlend} align="right" color="secondary" onClick={handleClose}>
+      <Button className={classes.whiteBlend} align="right" color="secondary" align="right" onClick={handleClose}>
         Cancelar
       </Button>
     </div>
