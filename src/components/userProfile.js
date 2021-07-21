@@ -78,7 +78,6 @@ const EditProfile = ({usuario, setUsuario}) => {
       return user;
     }catch(err){
       console.log(err);
-      alert("Error al obtener datos del perfil");
     }
   }
 
@@ -103,7 +102,7 @@ const EditProfile = ({usuario, setUsuario}) => {
         alert("Ocurrio un error al actualizar la informacion de perfil");
       }
     }catch(err){
-      alert("Error al actualizar informacion de Perfil")
+      alert("Error al actualizar informacion de Perfil");
     };
   }
 
@@ -169,8 +168,74 @@ const EditProfile = ({usuario, setUsuario}) => {
   );
 }
 
-const DireccionEnvio = (usuario) => {
+const DireccionEnvio = ({usuario}) => {
   const classes = useStyles();
+
+  const [firstRes, setFirstRes] = useState(null);
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [country, setCountry] = useState('');
+
+  useEffect(()=> {
+    getAddress();
+  },[]);
+
+  const getAddress = async () => {
+    try{
+      let res = await api.get(`/direccionesDeEnvio/${usuario.id}`);
+      console.log(res);
+      let address = res.data;
+      setFirstRes(address);
+      setAddress1(address.direccion1);
+      setAddress2(address.direccion2);
+      setCity(address.provincia);
+      setState(address.localidad);
+      setZipCode(address.codigoPostal);
+      setCountry(address.pais);
+      // return address;
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleUpdateAddress = async (e) => {
+    e.preventDefault();
+    let address = {
+      'idCliente': usuario.id,
+      'direccion1': address1,
+      'direccion2': address2,
+      'provincia': city,
+      'localidad': state,
+      'codigoPostal': zipCode,
+      'country': country,
+    }
+    try{
+      if(firstRes == null){
+        let res = await api.post(`/direccionesDeEnvio`,address);
+        if(res.status == 200){
+          alert("Información de envio actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de envio");
+        }
+      }
+      else{
+        let res = await api.put(`/direccionesDeEnvio/${usuario.id}`,address);
+        if(res.status == 200){
+          alert("Información de envio actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de envio");
+        }
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de envio");
+    };
+  }
+
   return (
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={12}>
@@ -188,6 +253,10 @@ const DireccionEnvio = (usuario) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : address1,
+                    onChange: (e) => setAddress1(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -196,6 +265,10 @@ const DireccionEnvio = (usuario) => {
                   id="direx2"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : address2,
+                    onChange: (e) => setAddress2(e.target.value)
                   }}
                 />
               </GridItem>
@@ -206,6 +279,10 @@ const DireccionEnvio = (usuario) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : state,
+                    onChange: (e) => setState(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -214,6 +291,10 @@ const DireccionEnvio = (usuario) => {
                   id="provincia"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : city,
+                    onChange: (e) => setCity(e.target.value)
                   }}
                 />
               </GridItem>
@@ -224,6 +305,10 @@ const DireccionEnvio = (usuario) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : zipCode,
+                    onChange: (e) => setZipCode(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -233,12 +318,16 @@ const DireccionEnvio = (usuario) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : country,
+                    onChange: (e) => setCountry(e.target.value)
+                  }}
                 />
               </GridItem>
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Detalles de Envío</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdateAddress(e)}>Actualizar Detalles de Envío</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -246,8 +335,67 @@ const DireccionEnvio = (usuario) => {
   );
 }
 
-const MetodoDePago = (usuario) => {
+const MetodoDePago = ({usuario}) => {
   const classes = useStyles();
+
+  const [firstRes, setFirstRes] = useState(null);
+  const [nameOnCard, setNameOnCard] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [cvv, setCvv] = useState('');
+
+  useEffect(()=> {
+    getPayment();
+  },[]);
+
+  const getPayment = async () => {
+    try{
+      let res = await api.get(`/metodosDePago/${usuario.id}`);
+      console.log(res);
+      let payment = res.data;
+      setFirstRes(payment);
+      setNameOnCard(payment.nombre);
+      setCardNumber(payment.numero);
+      setExpDate(payment.vencimiento);
+      setCvv(payment.codigo);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleUpdatePayment = async (e) => {
+    e.preventDefault();
+    let payment = {
+      'idCliente': usuario.id,
+      'nombre': nameOnCard,
+      'numero': cardNumber,
+      'codigo': cvv,
+      'vencimiento': expDate,
+    }
+    try{
+      if(firstRes == null){
+        let res = await api.post(`/metodosDePago`,payment);
+        if(res.status == 200){
+          alert("Información de pago actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de pago");
+        }
+      }
+      else{
+        let res = await api.put(`/metodosDePago/${usuario.id}`,payment);
+        if(res.status == 200){
+          alert("Información de pago actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de pago");
+        }
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de pago");
+    };
+  }
+
   return (
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={12}>
@@ -265,6 +413,10 @@ const MetodoDePago = (usuario) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : nameOnCard,
+                    onChange: (e) => setNameOnCard(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -273,6 +425,10 @@ const MetodoDePago = (usuario) => {
                   id="cardNumber"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : cardNumber,
+                    onChange: (e) => setCardNumber(e.target.value)
                   }}
                 />
               </GridItem>
@@ -283,6 +439,10 @@ const MetodoDePago = (usuario) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : expDate,
+                    onChange: (e) => setExpDate(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -292,12 +452,16 @@ const MetodoDePago = (usuario) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : cvv,
+                    onChange: (e) => setCvv(e.target.value)
+                  }}
                 />
               </GridItem>
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Método de Pago</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdatePayment(e)}>Actualizar Método de Pago</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -352,7 +516,7 @@ const MisCompras = ({transactions}) => {
 }
 
 
-export default function UserProfile({user,setUser}) {
+const UserProfile = ({user,setUser}) => {
   const classes = useStyles();
   const [display, setDisplay] = useState(1);
 
@@ -408,3 +572,4 @@ export default function UserProfile({user,setUser}) {
   );
 }
 
+export default UserProfile;
