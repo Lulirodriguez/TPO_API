@@ -14,7 +14,10 @@ import CardHeader from "./Card/CardHeader.js";
 import CardAvatar from "./Card/CardAvatar.js";
 import CardBody from "./Card/CardBody.js";
 import CardFooter from "./Card/CardFooter.js";
-
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,7 +25,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import avatar from "../images/marc.jpg";
-import transactionsFile from '../jsonFiles/transactions.json';
 
 import './userProfile.css';
 import axios from 'axios';
@@ -52,7 +54,26 @@ const styles = {
     marginBottom: "3px",
     textDecoration: "none",
   },
+  whiteBlend: {
+    backgroundColor: 'ffffff',
+    color: 'black',
+  },
 };
+
+const useStyles5 = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  whiteBlend: {
+    backgroundColor: 'ffffff',
+    color: 'black',
+  },
+}));
+
 
 const useStyles = makeStyles(styles);
 
@@ -210,7 +231,7 @@ const DireccionEnvio = ({usuario}) => {
       'provincia': city,
       'localidad': state,
       'codigoPostal': zipCode,
-      'country': country,
+      'pais': country,
     }
     try{
       if(firstRes == null){
@@ -408,7 +429,7 @@ const MetodoDePago = ({usuario}) => {
             <GridContainer>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Nombre en la Targeta"
+                  labelText="Nombre en la Tarjeta"
                   id="cardName"
                   formControlProps={{
                     fullWidth: true,
@@ -421,7 +442,7 @@ const MetodoDePago = ({usuario}) => {
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Numero de la Tarjeta"
+                  labelText="Numero de la Tarjeta (sin espacios)"
                   id="cardNumber"
                   formControlProps={{
                     fullWidth: true,
@@ -434,7 +455,7 @@ const MetodoDePago = ({usuario}) => {
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Fecha Vencimiento"
+                  labelText="Fecha Vencimiento (mm/yy)"
                   id="expiredDate"
                   formControlProps={{
                     fullWidth: true,
@@ -447,7 +468,7 @@ const MetodoDePago = ({usuario}) => {
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Código de Seguridad"
+                  labelText="Código de Seguridad (3 o 4 dígitos)"
                   id="securityCode"
                   formControlProps={{
                     fullWidth: true,
@@ -469,8 +490,24 @@ const MetodoDePago = ({usuario}) => {
   );
 }
 
-const MisCompras = ({transactions}) => {
+const MisCompras = ({usuario}) => {
   const classes = useStyles();
+
+  const [transacciones, setTransacciones] = useState([]);
+
+  useEffect(()=> {
+    getTransactions();
+  },[]);
+
+  const getTransactions = async () => {
+    try{
+      let res = await api.get(`/transacciones/${usuario.id}`);
+      setTransacciones(res.data);
+    }catch(err){
+      alert("Error al recuperar transacciones");
+    }
+  }
+
   return(
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={12}>
@@ -481,30 +518,13 @@ const MisCompras = ({transactions}) => {
           </CardHeader>
           <CardBody>
             <GridContainer>
-              <Table maxWidth="lg" size="small">
-                <TableHead>
-                  <TableRow >
-                    <TableCell >Producto</TableCell>
-                    <TableCell >Cantidad</TableCell>
-                    <TableCell >Precio</TableCell>
-                    <TableCell >Destinatario</TableCell>
-                    <TableCell >Dirección de entrega</TableCell>
-                    <TableCell >Numero de Tarjeta</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody >
-                  {transactions.map((row) => (
-                    <TableRow key={row.id} >
-                      <TableCell >{row.compra.item.nombre}</TableCell>
-                      <TableCell >{row.compra.item.cantidad}</TableCell>
-                      <TableCell >{row.compra.item.precio}</TableCell>
-                      <TableCell >{row.shippment.firstName} {row.shippment.lastName}</TableCell>
-                      <TableCell >{row.shippment.address1} {row.shippment.address2}, C.P: {row.shippment.zipCode}, {row.shippment.city} {row.shippment.state}, {row.shippment.country}</TableCell>
-                      <TableCell >{row.payment.cardNumber}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            {transacciones && transacciones.length!=0 ? transacciones.map((transaccion) => (
+              <TransactionAccordion transaccion={transaccion} />
+            )) : (
+              <GridItem xs={12} sm={12} md={12}>
+              <h5 style={{marginTop:'1%', alignItems: 'center'}} align="center">- Aún no se registran compras -</h5>
+              </GridItem>
+            )}
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
@@ -515,8 +535,161 @@ const MisCompras = ({transactions}) => {
   );  
 }
 
+const TransactionAccordion = ({transaccion}) => {
+  const classes = useStyles5();
 
-const UserProfile = ({user,setUser}) => {
+  const [categorias, setCategorias] = useState([]);
+  const [usuario, setUsuario] = useState({});
+  const [productos, setProductos] = useState([]);
+  const [metodoDePago, setMetodoDePago] = useState({});
+  const [direccionEnvio, setDireccionEnvio] = useState({});
+
+  const [total, setTotal] = useState(0);
+
+  useEffect(()=> {
+    getCategorias();
+    getClienteTransaccion();
+    getProductosTransaccion();
+    getMetodoPagoTransaccion();
+    getDireccionEnvioTransaccion();
+  }, []);
+
+  const getProductosTransaccion = async () => {
+    api.get(`/itemsXCompra/${transaccion.idCompra}`).then(productosCompra => {
+      setProductos(productosCompra.data);
+      calcularTotal(productosCompra.data);
+    }).catch(err => {
+      alert(err + "Error al cargar datos de items");
+    });
+  }
+
+  const getClienteTransaccion = async () => {
+    try{
+      let cliente = await api.get(`/usuarios/${transaccion.idCliente}`);
+      setUsuario(cliente.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de usuario");
+    }
+  }
+
+  const getMetodoPagoTransaccion = async () => {
+    try{
+      let metodoPago = await api.get(`/metodosDePago/${transaccion.idCliente}`);
+      setMetodoDePago(metodoPago.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de pago");
+    }
+  }
+
+  const getDireccionEnvioTransaccion = async () => {
+    try{
+      let direccion = await api.get(`/direccionesDeEnvio/${transaccion.idCliente}`);
+      setDireccionEnvio(direccion.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de direccion");
+    }
+  }
+
+  const getCategorias = async () => {
+    try{
+      let categoriasData = await api.get("/categorias");
+      setCategorias(categoriasData.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de categorias");
+    }
+  }
+
+  const categoryIdToName = (id) => {
+    for(let i=0;i<categorias.length;i++){
+      if(id == categorias[i].idCategoria){
+        return categorias[i].nombre;
+      }
+    }
+  }
+
+  const calcularTotal = (productos) => {
+    let total = 0;
+    for(let i=0;i<productos.length;i++){
+      total = total + productos[i].precioU * productos[i].cantidad;
+    }
+    setTotal(total);
+  }
+
+  const parseCardNumber = (value) => {
+    return "**** **** **** " + value.slice(12);
+  }
+
+  return (
+    <div className={classes.root}>
+      {!!transaccion && 
+        <Accordion style={{borderColor: 'black', marginBottom: '1%'}}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel-content"
+          id="panel-header"
+        >
+          <Table maxWidth="lg" size="small">
+            <TableHead>
+              <TableRow >
+                <TableCell ><b>Número de Compra</b></TableCell>
+                <TableCell ><b>Fecha</b></TableCell>
+                <TableCell ><b>Importe Total</b></TableCell>
+                <TableCell ><b>Destinatario</b></TableCell>
+                <TableCell ><b>Dirección de entrega</b></TableCell>
+                <TableCell ><b>Numero de Tarjeta</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow key={transaccion.idCompra} >
+                <TableCell >{transaccion.idCompra}</TableCell>
+                <TableCell >{transaccion.createdAt.slice(0,10)}</TableCell>
+                <TableCell >${total}</TableCell>
+                <TableCell >{usuario.nombre} {usuario.apellido}</TableCell>
+                <TableCell >{direccionEnvio.direccion1} {direccionEnvio.direccion2}, C.P: {direccionEnvio.codigoPostal}, {direccionEnvio.provincia}, {direccionEnvio.localidad}, {direccionEnvio.pais}</TableCell>
+                <TableCell >{metodoDePago && metodoDePago.numero? parseCardNumber(metodoDePago.numero) : ''}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </AccordionSummary>
+        <AccordionDetails>
+          <h5  align= "center" style={{fontSize: '15px', fontWeight: 'bold', minWidth: '20%'}}> Productos Adquiridos</h5>
+          <br/>
+          <Table maxWidth="md" size="lg" style={{minWidth: '75%'}}>
+            <TableHead>
+              <TableRow className={classes.whiteBlend}>
+                <TableCell className={classes.whiteBlend}><b>Id Producto</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Nombre del Producto</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Descripcion</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Categoria</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Cantidad</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Precio Unitario</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody className={classes.whiteBlend}>
+              {productos.map((row) => (
+                <TableRow key={row.id} className={classes.whiteBlend}>
+                  <TableCell className={classes.whiteBlend}>{row.itemId}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.nombre}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.descripcion}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{categoryIdToName(row.idCategoria)}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.cantidad}</TableCell>
+                  <TableCell className={classes.whiteBlend}>${row.precioU}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </AccordionDetails>
+      </Accordion>}
+    </div>
+  );
+}
+
+
+const UserProfile = ({user,setUser,setCarrito}) => {
   const classes = useStyles();
   const [display, setDisplay] = useState(1);
 
@@ -566,7 +739,7 @@ const UserProfile = ({user,setUser}) => {
         {display===1?<EditProfile usuario={user} setUsuario={(value) => setUser(value)}/>:<></>}
         {display===2?<DireccionEnvio usuario={user}/>:<></>}
         {display===3?<MetodoDePago usuario={user}/>:<></>}
-        {display===4?<MisCompras transactions={transactionsFile}/>:<></>}
+        {display===4?<MisCompras usuario={user}/>:<></>}
       </GridContainer>
     </div>
   );

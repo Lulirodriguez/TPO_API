@@ -25,6 +25,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Modal from '@material-ui/core/Modal';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import axios from 'axios';
 
@@ -104,36 +108,205 @@ const useStyles4 = makeStyles((theme) => ({
   }
 }));
 
-function Transactions({transactions}) {
+const useStyles5 = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  whiteBlend: {
+    backgroundColor: 'ffffff',
+    color: 'black',
+  },
+}));
+
+// Acordeon
+
+const TransactionAccordion = ({transaccion}) => {
+  const classes = useStyles5();
+
+  const [categorias, setCategorias] = useState([]);
+  const [usuario, setUsuario] = useState({});
+  const [productos, setProductos] = useState([]);
+  const [metodoDePago, setMetodoDePago] = useState({});
+  const [direccionEnvio, setDireccionEnvio] = useState({});
+
+  const [total, setTotal] = useState(0);
+
+  useEffect(()=> {
+    getCategorias();
+    getClienteTransaccion();
+    getProductosTransaccion();
+    getMetodoPagoTransaccion();
+    getDireccionEnvioTransaccion();
+  }, []);
+
+  const getProductosTransaccion = async () => {
+    api.get(`/itemsXCompra/${transaccion.idCompra}`).then(productosCompra => {
+      setProductos(productosCompra.data);
+      calcularTotal(productosCompra.data);
+    }).catch(err => {
+      alert(err + "Error al cargar datos de items");
+    });
+  }
+
+  const getClienteTransaccion = async () => {
+    try{
+      let cliente = await api.get(`/usuarios/${transaccion.idCliente}`);
+      setUsuario(cliente.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de usuario");
+    }
+  }
+
+  const getMetodoPagoTransaccion = async () => {
+    try{
+      let metodoPago = await api.get(`/metodosDePago/${transaccion.idCliente}`);
+      setMetodoDePago(metodoPago.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de pago");
+    }
+  }
+
+  const getDireccionEnvioTransaccion = async () => {
+    try{
+      let direccion = await api.get(`/direccionesDeEnvio/${transaccion.idCliente}`);
+      setDireccionEnvio(direccion.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de direccion");
+    }
+  }
+
+  const getCategorias = async () => {
+    try{
+      let categoriasData = await api.get("/categorias");
+      setCategorias(categoriasData.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de categorias");
+    }
+  }
+
+  const categoryIdToName = (id) => {
+    for(let i=0;i<categorias.length;i++){
+      if(id == categorias[i].idCategoria){
+        return categorias[i].nombre;
+      }
+    }
+  }
+
+  const calcularTotal = (productos) => {
+    let total = 0;
+    for(let i=0;i<productos.length;i++){
+      total = total + productos[i].precioU * productos[i].cantidad;
+    }
+    setTotal(total);
+  }
+
+  const parseCardNumber = (value) => {
+    return "**** **** **** " + value.slice(12);
+  }
+
+  return (
+    <div className={classes.root}>
+      {!!transaccion && 
+        <Accordion style={{borderColor: 'black', marginBottom: '1%'}}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel-content"
+          id="panel-header"
+        >
+          <Table maxWidth="lg" size="small">
+            <TableHead>
+              <TableRow >
+                <TableCell ><b>Número de Compra</b></TableCell>
+                <TableCell ><b>Fecha</b></TableCell>
+                <TableCell ><b>Importe Total</b></TableCell>
+                <TableCell ><b>Destinatario</b></TableCell>
+                <TableCell ><b>Dirección de entrega</b></TableCell>
+                <TableCell ><b>Numero de Tarjeta</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow key={transaccion.idCompra} >
+                <TableCell >{transaccion.idCompra}</TableCell>
+                <TableCell >{transaccion.createdAt.slice(0,10)}</TableCell>
+                <TableCell >${total}</TableCell>
+                <TableCell >{usuario.nombre} {usuario.apellido}</TableCell>
+                <TableCell >{direccionEnvio.direccion1} {direccionEnvio.direccion2}, C.P: {direccionEnvio.codigoPostal}, {direccionEnvio.provincia}, {direccionEnvio.localidad}, {direccionEnvio.pais}</TableCell>
+                <TableCell >{metodoDePago && metodoDePago.numero? parseCardNumber(metodoDePago.numero) : ''}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </AccordionSummary>
+        <AccordionDetails>
+          <h5  align= "center" style={{fontSize: '15px', fontWeight: 'bold', minWidth: '20%'}}> Productos Adquiridos</h5>
+          <br/>
+          <Table maxWidth="md" size="lg" style={{minWidth: '75%'}}>
+            <TableHead>
+              <TableRow className={classes.whiteBlend}>
+                <TableCell className={classes.whiteBlend}><b>Id Producto</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Nombre del Producto</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Descripcion</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Categoria</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Cantidad</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Precio Unitario</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody className={classes.whiteBlend}>
+              {productos.map((row) => (
+                <TableRow key={row.id} className={classes.whiteBlend}>
+                  <TableCell className={classes.whiteBlend}>{row.itemId}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.nombre}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.descripcion}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{categoryIdToName(row.idCategoria)}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.cantidad}</TableCell>
+                  <TableCell className={classes.whiteBlend}>${row.precioU}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </AccordionDetails>
+      </Accordion>}
+    </div>
+  );
+}
+
+// Transacciones
+
+function Transactions() {
   const classes = useStyles();
+
+  const [transacciones, setTransacciones] = useState([]);
+
+  useEffect(()=> {
+    getTransactions();
+  },[]);
+
+  const getTransactions = async () => {
+    try{
+      let res = await api.get('/transacciones');
+      setTransacciones(res.data);
+    }catch(err){
+      alert("Error al recuperar transacciones");
+    }
+  }
+
+
   return (
     <React.Fragment >
       <h4  align= "center"  >TRANSACCIONES RECIENTES</h4>
       <br/>
-      <Table maxWidth="lg" size="small">
-        <TableHead>
-          <TableRow >
-            <TableCell >Producto</TableCell>
-            <TableCell >Cantidad</TableCell>
-            <TableCell >Precio</TableCell>
-            <TableCell >Destinatario</TableCell>
-            <TableCell >Dirección de entrega</TableCell>
-            <TableCell >Numero de Tarjeta</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody >
-          {transactions.map((row) => (
-            <TableRow key={row.id} >
-              <TableCell >{row.compra.item.nombre}</TableCell>
-              <TableCell >{row.compra.item.cantidad}</TableCell>
-              <TableCell >{row.compra.item.precio}</TableCell>
-              <TableCell >{row.shippment.firstName} {row.shippment.lastName}</TableCell>
-              <TableCell >{row.shippment.address1} {row.shippment.address2}, C.P: {row.shippment.zipCode}, {row.shippment.city} {row.shippment.state}, {row.shippment.country}</TableCell>
-              <TableCell >{row.payment.cardNumber}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {transacciones && transacciones.length!=0 ? transacciones.map((transaccion) => (
+        <TransactionAccordion transaccion={transaccion} />
+      )) : (
+        <h5 style={{marginTop:'1%'}} align="center">- Aún no se registran transacciones -</h5>
+      )}
     </React.Fragment>
   );
 }
@@ -180,7 +353,7 @@ function Products() {
       <React.Fragment >
         <h1 className={classes.whiteBlend}>USUARIO ADMINISTRADOR</h1>
         <br/>
-        <h4 className={classes.whiteBlend} align= "left">PRODUCTOS</h4>
+        <h4 className={classes.whiteBlend} align= "center">ABM PRODUCTOS</h4>
         <Table maxWidth="lg" size="small">
             <TableHead>
                 <TableRow className={classes.whiteBlend}>
@@ -194,14 +367,13 @@ function Products() {
         <Table maxWidth="lg" size="small">
           <TableHead>
             <TableRow className={classes.whiteBlend}>
-              <TableCell className={classes.whiteBlend}>ID</TableCell>
-              <TableCell className={classes.whiteBlend}>NOMBRE PRODUCTO</TableCell>
-              <TableCell className={classes.whiteBlend}>DESCRIPCIÓN</TableCell>
-              <TableCell className={classes.whiteBlend}>CATEGORIA</TableCell>
-              <TableCell className={classes.whiteBlend}>PRECIO</TableCell>
+              <TableCell className={classes.whiteBlend}><b>Id Producto</b></TableCell>
+              <TableCell className={classes.whiteBlend}><b>Nombre del Producto</b></TableCell>
+              <TableCell className={classes.whiteBlend}><b>Descripcion</b></TableCell>
+              <TableCell className={classes.whiteBlend}><b>Categoria</b></TableCell>
+              <TableCell className={classes.whiteBlend}><b>Precio Unitario</b></TableCell>
               <TableCell className={classes.whiteBlend} align="right"></TableCell>
-                <TableCell className={classes.whiteBlend} align="right">
-                </TableCell>
+              <TableCell className={classes.whiteBlend} align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody className={classes.whiteBlend}>
@@ -735,29 +907,12 @@ function DeleteProductModal({id}) {
 
 // Principal
 
-const Admin = ({transactions}) => {
-  // const [productos, setProductos] = useState([]);
-  // // const [transactions,setTransactions] = useState([]);
-  
-  // useEffect(()=> {
-  //   getProductos();
-  // },[]);
-
-  // const getProductos = async () => {
-  //   try{
-  //     let productData = await api.get("/items");
-  //     setProductos(productData.data);
-  //   }catch(err){
-  //     alert(err, ": No se pudo caragr informacion de los productos");
-  //   }
-  // }
-
+const Admin = () => {
   return(
       <div style={{marginTop:'40px',marginLeft:'60px', marginRight:'60px'}}>
           <Products />
           <br/>
-          <Transactions transactions={transactions}/>
-          {/* <DataTableCrudDemo /> */}
+          <Transactions/>
       </div>
   );
 }

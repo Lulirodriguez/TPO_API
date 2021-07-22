@@ -53,12 +53,12 @@ export default function Review({carrito,firstName,lastName,address1,address2,car
       <List disablePadding>
         {carrito.map((product) => (
           <ListItem className={classes.listItem} key={product.nombre}>
-            <ListItemText primary={product.nombre} secondary={`${product.descripcion} , Cantidad: ${product.cantidad} ($${product.cantidad*product.precioU})`} />
-            <Typography variant="body2">${product.precioU}</Typography>
+            <ListItemText primary={`${product.nombre} (${product.cantidad} x $${product.precioU})`}  secondary={`${product.descripcion}`} />
+            <Typography variant="body2">${product.cantidad*product.precioU}</Typography>
           </ListItem>
         ))}
         <ListItem className={classes.listItem}>
-          <ListItemText primary="Total" />
+          <ListItemText primary="Importe Total" />
           <Typography variant="subtitle1" className={classes.total}>
             ${total}
           </Typography>

@@ -15,6 +15,7 @@ import Review from './review.js';
 import './checkout.css';
 
 import axios from 'axios';
+import { SubdirectoryArrowRightOutlined } from '@material-ui/icons';
 
 const api = axios.create({
   baseURL: 'http://localhost:8000/api',
@@ -65,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = ['Dirección de envío', 'Datos de pago', 'Revise su orden'];
 
-export default function Checkout({carrito,user}) {
+export default function Checkout({carrito,user,setCarrito}) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [error, setError] = React.useState(false);
@@ -93,10 +94,8 @@ export default function Checkout({carrito,user}) {
   const [numeroCompra, setNumeroCompra] = useState(0);
 
   useEffect(()=> {
-    let idEnvio = getAddress();
-    let idPago = getPayment();
-    setNewAddressId(idEnvio);
-    setNewPaymentId(idPago);
+    getAddress();
+    getPayment();
   },[]);
 
   const getAddress = async () => {
@@ -112,7 +111,7 @@ export default function Checkout({carrito,user}) {
       setZipCode(address.codigoPostal);
       setCountry(address.pais);
       setError(false);
-      return address.idDireccionEnvio;
+      setNewAddressId(address.idDireccionEnvio);
     }catch(err){
       console.log(err);
     }
@@ -129,7 +128,7 @@ export default function Checkout({carrito,user}) {
       setExpDate(payment.vencimiento);
       setCvv(payment.codigo);
       setError(false);
-      return payment.idMetodoPago;
+      setNewPaymentId(payment.idMetodoPago);
     }catch(err){
       console.log(err);
     }
@@ -146,19 +145,13 @@ export default function Checkout({carrito,user}) {
     try{
       if(firstPaymentRes == null){
         let res = await api.post(`/metodosDePago`,payment);
-        if(res.status == 200){
-          alert("Información de pago actualizada con éxito");
-        }
-        else{
+        if(res.status != 200){
           alert("Ocurrio un error al actualizar la informacion de pago");
         }
       }
       else{
         let res = await api.put(`/metodosDePago/${user.id}`,payment);
-        if(res.status == 200){
-          alert("Información de pago actualizada con éxito");
-        }
-        else{
+        if(res.status != 200){
           alert("Ocurrio un error al actualizar la informacion de pago");
         }
       }
@@ -176,24 +169,18 @@ export default function Checkout({carrito,user}) {
       'provincia': city,
       'localidad': state,
       'codigoPostal': zipCode,
-      'country': country,
+      'pais': country,
     }
     try{
       if(firstAddressRes == null){
         let res = await api.post(`/direccionesDeEnvio`,address);
-        if(res.status == 200){
-          alert("Información de envio actualizada con éxito");
-        }
-        else{
+        if(res.status!= 200){
           alert("Ocurrio un error al actualizar la informacion de envio");
         }
       }
       else{
         let res = await api.put(`/direccionesDeEnvio/${user.id}`,address);
-        if(res.status == 200){
-          alert("Información de envio actualizada con éxito");
-        }
-        else{
+        if(!res.status == 200){
           alert("Ocurrio un error al actualizar la informacion de envio");
         }
       }
@@ -221,7 +208,7 @@ export default function Checkout({carrito,user}) {
     try{
       // generar una compra asociado al idUsuario
       let compra = {
-        idUsuario: user.id
+        'idCliente': user.id
       }
       let res = await api.post("/compras",compra);
       let idCompra = res.data.idCompra;
@@ -231,18 +218,30 @@ export default function Checkout({carrito,user}) {
         let itemXCompra = {
           'idCompra': idCompra,
           'itemId': carrito[i].itemId,
+          'nombre': carrito[i].nombre,
+          'descripcion': carrito[i].descripcion,
+          'idCategoria': carrito[i].idCategoria,
+          'imagen': carrito[i].imagen,
+          'precioU': carrito[i].precioU,
           'cantidad': carrito[i].cantidad,
         }
         await api.post("/itemsXCompra",itemXCompra);
       }
       // crear la transaccion asociada a los ids de la forma de pago, la direccion de envio y el usuario
-      let transacciones = {
-        'idCliente': user.id,
+      let transaccion = {
         'idCompra': idCompra,
-        'idDirecionEnvio': newAddressId,
+        'idCliente': user.id,
+        'idDireccionEnvio': newAddressId,
         'idMetodoPago': newPaymentId,
       }
-      await api.post("/transacciones",transacciones);
+      api.post("/transacciones",transaccion).then(newTransaction => {
+        if(newTransaction.status == 200){
+          console.log(newTransaction.data);
+          alert("Transaccion creada!");
+        }
+      }).catch(err => {
+        alert(err);
+      });
     }catch(err){
       alert("Error al crear la transferencia");
     }
@@ -269,7 +268,7 @@ export default function Checkout({carrito,user}) {
   };
 
   const finishCheckout = () => {
-
+    setCarrito([]);
   }
 
   return (

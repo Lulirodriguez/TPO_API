@@ -1,7 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import transactionsFile from './jsonFiles/transactions.json';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import React, {useState} from 'react';
 
@@ -23,7 +22,6 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [carrito, setCarrito] = useState([]);
   const [readyToPay, setReadyToPay] = useState(false);
-  const [transactions, setTransactions] = useState(transactionsFile);
 
   return (
     <div className="App">
@@ -39,8 +37,8 @@ function App() {
             <Category carrito={carrito} setCarrito={(value) => setCarrito(value)} />
           </Route>
           <Route path="/cart" exact component={() => <Cart carrito={carrito} setCarrito={(value)=>setCarrito(value)} isLoggedIn={isLoggedIn} setReadyToPay={setReadyToPay} />} />
-          <Route path="/checkout" exact component={() => <Checkout carrito={carrito} user={currentUser}/>} />
-          <Route path="/admin" exact component={() => <Admin transactions={transactions} />} />
+          <Route path="/checkout" exact component={() => <Checkout carrito={carrito} user={currentUser} setCarrito={(value)=> setCarrito(value)}/>} />
+          <Route path="/admin" exact component={() => <Admin />} />
           <Route path="/profile" component={() => <UserProfile user={currentUser} setUser={(value) => setCurrentUser(value)} />} />
       </Router>
       </div>

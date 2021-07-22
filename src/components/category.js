@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import {Link as RouteLink} from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -57,25 +59,19 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor : 'white',
     color: 'black',
     margin:'auto',
-
-
   },
-
   pinkButton: {
     backgroundColor : 'pink',
     color: 'black',
     margin: 'auto',
-
   },
-
   cart: {
       fontSize: '30px',
       alignItems: 'center',
       paddingBottom: '10px'
   },
   counterButton: {
-      marginBottom:'10.px'
-
+      marginBottom:'10px',
   },
 }));
 
@@ -155,40 +151,51 @@ const Category = ({carrito, setCarrito}) => {
 
     return (
         <div className={classes.counterbutton}>
-            <main>
-                <Container className={classes.cardGrid} maxWidth="lg">
-                <Grid container spacing={8}>
-                </Grid>
-                <Grid container spacing={4}>
-                    {itemList.map((card) => (
-                    <Grid key={card.itemId} xs={12} sm={6} md={3}>
-                        <Card className={classes.card}>
-                        <CardMedia
-                            className={classes.cardMedia}
-                            image={card.imagen}
-                            title="Imagen"
-                        />
-                        <CardContent className={classes.cardContent}>
-                            <Typography className={classes.whiteBlend} gutterBottom variant="h5" component="h2">
-                            {card.nombre}
-                            </Typography>
-                            <Typography className={classes.whiteBlend}>
-                            {card.descripcion}
-                            </Typography>
-                            <Typography className={classes.whiteBlend}>
-                            ${card.precioU}
-                            </Typography>
-                        </CardContent>
-                        <CardActions className={classes.whiteBlend}>
-                            <Counter id={card.itemId} card={card} addToCart={handleOnAddToCart}/>
-                        </CardActions>
-                        </Card>
-                    </Grid>
-                    ))}
-                </Grid>
-                </Container>
-                {itemList===[] ? <div style={{marginTop: '2%', fontSize: '16px'}}><p>No hay productos disponibles para esta categoría</p></div> : <></>}
-            </main>
+            <RouteLink to="/" style={{textDecoration : 'none'}}>
+                <Button className={classes.darkBlend} variant="body2">
+                    {" Volver al Inicio "}
+                </Button>
+            </RouteLink>
+            {itemList && itemList.length!=0? (
+                <div>
+                    <h3 align="center" style={{marginBottom:'-1.5%'}}>Productos</h3>
+                    <main>
+                        <Container className={classes.cardGrid} maxWidth="lg">
+                        <Grid container spacing={4}>
+                            {itemList.map((card) => (
+                            <Grid key={card.itemId} xs={12} sm={6} md={3}>
+                                <Card className={classes.card}>
+                                <CardMedia
+                                    className={classes.cardMedia}
+                                    image={card.imagen}
+                                    title="Imagen"
+                                />
+                                <CardContent className={classes.cardContent}>
+                                    <Typography className={classes.whiteBlend} gutterBottom variant="h5" component="h2">
+                                    {card.nombre}
+                                    </Typography>
+                                    <Typography className={classes.whiteBlend}>
+                                    {card.descripcion}
+                                    </Typography>
+                                    <Typography className={classes.whiteBlend}>
+                                    ${card.precioU}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions className={classes.whiteBlend}>
+                                    <Counter id={card.itemId} card={card} addToCart={handleOnAddToCart}/>
+                                </CardActions>
+                                </Card>
+                            </Grid>
+                            ))}
+                        </Grid>
+                        </Container>
+                    </main>
+                </div>
+            ): (
+            <div>
+                <h5 style={{marginTop:'1%'}}>- No hay productos disponibles para esta categoría -</h5>
+            </div>
+            )}
         </div>
     );
 }

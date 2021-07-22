@@ -159,11 +159,11 @@ function RecoverPassword() {
         </form> }
         <Grid container style={{marginTop:'10px'}}>
             <Grid item>
-              <RouteLink to="/" >
-                <Link className={classes.darkBlend} variant="body2" >
-                  {" Volver al Inicio "}
-                </Link>
-                </RouteLink>
+            <RouteLink to="/" >
+              <Link className={classes.darkBlend} variant="body2" >
+                {" Volver al Inicio "}
+              </Link>
+            </RouteLink>
             </Grid>
           </Grid>
       </div>

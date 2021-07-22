@@ -197,7 +197,7 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
               >
             PAGAR
             </Button>
-          </div>):(<p>Aún no hay productos en el carrito</p>)}
+          </div>):(<h5 style={{marginTop:'1%'}}>- Aún no hay productos en el carrito -</h5>)}
           </List>
         
           <Grid container spacing={2} className= {classes.checkoutButton}>
