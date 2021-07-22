@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from 'react-router-dom';
@@ -14,7 +14,10 @@ import CardHeader from "./Card/CardHeader.js";
 import CardAvatar from "./Card/CardAvatar.js";
 import CardBody from "./Card/CardBody.js";
 import CardFooter from "./Card/CardFooter.js";
-
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,9 +25,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import avatar from "../images/marc.jpg";
-import transactionsFile from '../jsonFiles/transactions.json';
 
 import './userProfile.css';
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+});
 
 const styles = {
   cardCategoryWhite: {
@@ -43,12 +54,78 @@ const styles = {
     marginBottom: "3px",
     textDecoration: "none",
   },
+  whiteBlend: {
+    backgroundColor: 'ffffff',
+    color: 'black',
+  },
 };
+
+const useStyles5 = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  whiteBlend: {
+    backgroundColor: 'ffffff',
+    color: 'black',
+  },
+}));
+
 
 const useStyles = makeStyles(styles);
 
-const EditProfile = ({user}) => {
+const EditProfile = ({usuario, setUsuario}) => {
   const classes = useStyles();
+
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [username,setUsername] = useState('');
+  
+  useEffect(()=> {
+    getProfile();
+  },[]);
+
+  const getProfile = async () => {
+    try{
+      let res = await api.get(`/usuarios/${usuario.id}`);
+      console.log(res);
+      let user = res.data;
+      setNombre(user.nombre);
+      setApellido(user.apellido);
+      setUsername(user.username);
+      return user;
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    let user = {
+      'nombre': nombre,
+      'apellido': apellido,
+      'username': username,
+    }
+    try{
+      let res = await api.put(`/usuarios/${usuario.id}`,user);
+      if(res.status == 200){
+        getProfile().then(user =>{
+          setUsuario(user);
+          alert("Información de perfil actualizada con éxito");
+        }).catch(err => {
+          alert(err);
+        });
+      }
+      else{
+        alert("Ocurrio un error al actualizar la informacion de perfil");
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de Perfil");
+    };
+  }
 
   return(
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
@@ -56,7 +133,7 @@ const EditProfile = ({user}) => {
         <Card>
           <CardHeader style={{backgroundColor:'pink'}}>
             <h4 className={classes.cardTitleWhite}>Editar Perfil</h4>
-            <p className={classes.cardCategoryWhite}>Complete su perfil</p>
+            <p className={classes.cardCategoryWhite}>Edite su información de perfil aquí</p>
           </CardHeader>
           <CardBody>
             <GridContainer>
@@ -66,8 +143,11 @@ const EditProfile = ({user}) => {
                   id="email-address"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : username,
+                    onChange: (e) => setUsername(e.target.value)
                   }}>
-                    {user ? user.email : ''}
                 </CustomInput>
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -77,8 +157,11 @@ const EditProfile = ({user}) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : nombre,
+                    onChange: (e) => setNombre(e.target.value)
+                  }}
                   >
-                  {user ? user.firstName : ''}
                 </CustomInput>
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -88,14 +171,17 @@ const EditProfile = ({user}) => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : apellido,
+                    onChange: (e) => setApellido(e.target.value)
+                  }}
                   >
-                  {user ? user.lastName : ''}
                 </CustomInput>
               </GridItem>
             </GridContainer>
           </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Perfil</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdateProfile(e)}>Actualizar Perfil</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -103,15 +189,81 @@ const EditProfile = ({user}) => {
   );
 }
 
-const DireccionEnvio = () => {
+const DireccionEnvio = ({usuario}) => {
   const classes = useStyles();
+
+  const [firstRes, setFirstRes] = useState(null);
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [country, setCountry] = useState('');
+
+  useEffect(()=> {
+    getAddress();
+  },[]);
+
+  const getAddress = async () => {
+    try{
+      let res = await api.get(`/direccionesDeEnvio/${usuario.id}`);
+      console.log(res);
+      let address = res.data;
+      setFirstRes(address);
+      setAddress1(address.direccion1);
+      setAddress2(address.direccion2);
+      setCity(address.provincia);
+      setState(address.localidad);
+      setZipCode(address.codigoPostal);
+      setCountry(address.pais);
+      // return address;
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleUpdateAddress = async (e) => {
+    e.preventDefault();
+    let address = {
+      'idCliente': usuario.id,
+      'direccion1': address1,
+      'direccion2': address2,
+      'provincia': city,
+      'localidad': state,
+      'codigoPostal': zipCode,
+      'pais': country,
+    }
+    try{
+      if(firstRes == null){
+        let res = await api.post(`/direccionesDeEnvio`,address);
+        if(res.status == 200){
+          alert("Información de envio actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de envio");
+        }
+      }
+      else{
+        let res = await api.put(`/direccionesDeEnvio/${usuario.id}`,address);
+        if(res.status == 200){
+          alert("Información de envio actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de envio");
+        }
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de envio");
+    };
+  }
+
   return (
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader style={{backgroundColor:'pink', color: 'black'}}>
             <h4 className={classes.cardTitleWhite}>Dirección de Envío</h4>
-            <p className={classes.cardCategoryWhite}>Cambiar preferencias de envío</p>
+            <p className={classes.cardCategoryWhite}>Cambie sus preferencias de envío aquí</p>
           </CardHeader>
           <CardBody>
             <GridContainer>
@@ -122,6 +274,10 @@ const DireccionEnvio = () => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : address1,
+                    onChange: (e) => setAddress1(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -130,6 +286,10 @@ const DireccionEnvio = () => {
                   id="direx2"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : address2,
+                    onChange: (e) => setAddress2(e.target.value)
                   }}
                 />
               </GridItem>
@@ -140,6 +300,10 @@ const DireccionEnvio = () => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : state,
+                    onChange: (e) => setState(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -148,6 +312,10 @@ const DireccionEnvio = () => {
                   id="provincia"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : city,
+                    onChange: (e) => setCity(e.target.value)
                   }}
                 />
               </GridItem>
@@ -158,6 +326,10 @@ const DireccionEnvio = () => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : zipCode,
+                    onChange: (e) => setZipCode(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
@@ -167,12 +339,16 @@ const DireccionEnvio = () => {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : country,
+                    onChange: (e) => setCountry(e.target.value)
+                  }}
                 />
               </GridItem>
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Detalles de Envío</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdateAddress(e)}>Actualizar Detalles de Envío</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -180,58 +356,133 @@ const DireccionEnvio = () => {
   );
 }
 
-const MetodoDePago = () => {
+const MetodoDePago = ({usuario}) => {
   const classes = useStyles();
+
+  const [firstRes, setFirstRes] = useState(null);
+  const [nameOnCard, setNameOnCard] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [cvv, setCvv] = useState('');
+
+  useEffect(()=> {
+    getPayment();
+  },[]);
+
+  const getPayment = async () => {
+    try{
+      let res = await api.get(`/metodosDePago/${usuario.id}`);
+      console.log(res);
+      let payment = res.data;
+      setFirstRes(payment);
+      setNameOnCard(payment.nombre);
+      setCardNumber(payment.numero);
+      setExpDate(payment.vencimiento);
+      setCvv(payment.codigo);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleUpdatePayment = async (e) => {
+    e.preventDefault();
+    let payment = {
+      'idCliente': usuario.id,
+      'nombre': nameOnCard,
+      'numero': cardNumber,
+      'codigo': cvv,
+      'vencimiento': expDate,
+    }
+    try{
+      if(firstRes == null){
+        let res = await api.post(`/metodosDePago`,payment);
+        if(res.status == 200){
+          alert("Información de pago actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de pago");
+        }
+      }
+      else{
+        let res = await api.put(`/metodosDePago/${usuario.id}`,payment);
+        if(res.status == 200){
+          alert("Información de pago actualizada con éxito");
+        }
+        else{
+          alert("Ocurrio un error al actualizar la informacion de pago");
+        }
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de pago");
+    };
+  }
+
   return (
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader style={{backgroundColor:'pink', color: 'black'}}>
             <h4 className={classes.cardTitleWhite}>Método de Pago</h4>
-            <p className={classes.cardCategoryWhite}>Cambiar preferencias de pago</p>
+            <p className={classes.cardCategoryWhite}>Cambie sus preferencias de pago aquí</p>
           </CardHeader>
           <CardBody>
             <GridContainer>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Nombre en la Targeta"
+                  labelText="Nombre en la Tarjeta"
                   id="cardName"
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  inputProps={{
+                    value : nameOnCard,
+                    onChange: (e) => setNameOnCard(e.target.value)
+                  }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Numero de la Tarjeta"
+                  labelText="Numero de la Tarjeta (sin espacios)"
                   id="cardNumber"
                   formControlProps={{
                     fullWidth: true,
                   }}
-                />
-              </GridItem>
-              <GridItem xs={12} sm={12} md={6}>
-                <CustomInput
-                  labelText="Fecha Vencimiento"
-                  id="expiredDate"
-                  formControlProps={{
-                    fullWidth: true,
+                  inputProps={{
+                    value : cardNumber,
+                    onChange: (e) => setCardNumber(e.target.value)
                   }}
                 />
               </GridItem>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
-                  labelText="Código de Seguridad"
+                  labelText="Fecha Vencimiento (mm/yy)"
+                  id="expiredDate"
+                  formControlProps={{
+                    fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : expDate,
+                    onChange: (e) => setExpDate(e.target.value)
+                  }}
+                />
+              </GridItem>
+              <GridItem xs={12} sm={12} md={6}>
+                <CustomInput
+                  labelText="Código de Seguridad (3 o 4 dígitos)"
                   id="securityCode"
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    value : cvv,
+                    onChange: (e) => setCvv(e.target.value)
                   }}
                 />
               </GridItem>
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}}>Actualizar Método de Pago</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdatePayment(e)}>Actualizar Método de Pago</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -239,8 +490,24 @@ const MetodoDePago = () => {
   );
 }
 
-const MisCompras = ({transactions}) => {
+const MisCompras = ({usuario}) => {
   const classes = useStyles();
+
+  const [transacciones, setTransacciones] = useState([]);
+
+  useEffect(()=> {
+    getTransactions();
+  },[]);
+
+  const getTransactions = async () => {
+    try{
+      let res = await api.get(`/transacciones/${usuario.id}`);
+      setTransacciones(res.data);
+    }catch(err){
+      alert("Error al recuperar transacciones");
+    }
+  }
+
   return(
     <div style={{marginTop: '8%', minWidth:'60%', maxWidth:'60%'}}>
       <GridItem xs={12} sm={12} md={12}>
@@ -251,30 +518,13 @@ const MisCompras = ({transactions}) => {
           </CardHeader>
           <CardBody>
             <GridContainer>
-              <Table maxWidth="lg" size="small">
-                <TableHead>
-                  <TableRow >
-                    <TableCell >Producto</TableCell>
-                    <TableCell >Cantidad</TableCell>
-                    <TableCell >Precio</TableCell>
-                    <TableCell >Destinatario</TableCell>
-                    <TableCell >Dirección de entrega</TableCell>
-                    <TableCell >Numero de Tarjeta</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody >
-                  {transactions.map((row) => (
-                    <TableRow key={row.id} >
-                      <TableCell >{row.compra.item.nombre}</TableCell>
-                      <TableCell >{row.compra.item.cantidad}</TableCell>
-                      <TableCell >{row.compra.item.precio}</TableCell>
-                      <TableCell >{row.shippment.firstName} {row.shippment.lastName}</TableCell>
-                      <TableCell >{row.shippment.address1} {row.shippment.address2}, C.P: {row.shippment.zipCode}, {row.shippment.city} {row.shippment.state}, {row.shippment.country}</TableCell>
-                      <TableCell >{row.payment.cardNumber}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            {transacciones && transacciones.length!=0 ? transacciones.map((transaccion) => (
+              <TransactionAccordion transaccion={transaccion} />
+            )) : (
+              <GridItem xs={12} sm={12} md={12}>
+              <h5 style={{marginTop:'1%', alignItems: 'center'}} align="center">- Aún no se registran compras -</h5>
+              </GridItem>
+            )}
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
@@ -285,8 +535,161 @@ const MisCompras = ({transactions}) => {
   );  
 }
 
+const TransactionAccordion = ({transaccion}) => {
+  const classes = useStyles5();
 
-export default function UserProfile({user}) {
+  const [categorias, setCategorias] = useState([]);
+  const [usuario, setUsuario] = useState({});
+  const [productos, setProductos] = useState([]);
+  const [metodoDePago, setMetodoDePago] = useState({});
+  const [direccionEnvio, setDireccionEnvio] = useState({});
+
+  const [total, setTotal] = useState(0);
+
+  useEffect(()=> {
+    getCategorias();
+    getClienteTransaccion();
+    getProductosTransaccion();
+    getMetodoPagoTransaccion();
+    getDireccionEnvioTransaccion();
+  }, []);
+
+  const getProductosTransaccion = async () => {
+    api.get(`/itemsXCompra/${transaccion.idCompra}`).then(productosCompra => {
+      setProductos(productosCompra.data);
+      calcularTotal(productosCompra.data);
+    }).catch(err => {
+      alert(err + "Error al cargar datos de items");
+    });
+  }
+
+  const getClienteTransaccion = async () => {
+    try{
+      let cliente = await api.get(`/usuarios/${transaccion.idCliente}`);
+      setUsuario(cliente.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de usuario");
+    }
+  }
+
+  const getMetodoPagoTransaccion = async () => {
+    try{
+      let metodoPago = await api.get(`/metodosDePago/${transaccion.idCliente}`);
+      setMetodoDePago(metodoPago.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de pago");
+    }
+  }
+
+  const getDireccionEnvioTransaccion = async () => {
+    try{
+      let direccion = await api.get(`/direccionesDeEnvio/${transaccion.idCliente}`);
+      setDireccionEnvio(direccion.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de direccion");
+    }
+  }
+
+  const getCategorias = async () => {
+    try{
+      let categoriasData = await api.get("/categorias");
+      setCategorias(categoriasData.data);
+    }
+    catch(err){
+      alert(err + "Error al cargar datos de categorias");
+    }
+  }
+
+  const categoryIdToName = (id) => {
+    for(let i=0;i<categorias.length;i++){
+      if(id == categorias[i].idCategoria){
+        return categorias[i].nombre;
+      }
+    }
+  }
+
+  const calcularTotal = (productos) => {
+    let total = 0;
+    for(let i=0;i<productos.length;i++){
+      total = total + productos[i].precioU * productos[i].cantidad;
+    }
+    setTotal(total);
+  }
+
+  const parseCardNumber = (value) => {
+    return "**** **** **** " + value.slice(12);
+  }
+
+  return (
+    <div className={classes.root}>
+      {!!transaccion && 
+        <Accordion style={{borderColor: 'black', marginBottom: '1%'}}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel-content"
+          id="panel-header"
+        >
+          <Table maxWidth="lg" size="small">
+            <TableHead>
+              <TableRow >
+                <TableCell ><b>Número de Compra</b></TableCell>
+                <TableCell ><b>Fecha</b></TableCell>
+                <TableCell ><b>Importe Total</b></TableCell>
+                <TableCell ><b>Destinatario</b></TableCell>
+                <TableCell ><b>Dirección de entrega</b></TableCell>
+                <TableCell ><b>Numero de Tarjeta</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow key={transaccion.idCompra} >
+                <TableCell >{transaccion.idCompra}</TableCell>
+                <TableCell >{transaccion.createdAt.slice(0,10)}</TableCell>
+                <TableCell >${total}</TableCell>
+                <TableCell >{usuario.nombre} {usuario.apellido}</TableCell>
+                <TableCell >{direccionEnvio.direccion1} {direccionEnvio.direccion2}, C.P: {direccionEnvio.codigoPostal}, {direccionEnvio.provincia}, {direccionEnvio.localidad}, {direccionEnvio.pais}</TableCell>
+                <TableCell >{metodoDePago && metodoDePago.numero? parseCardNumber(metodoDePago.numero) : ''}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </AccordionSummary>
+        <AccordionDetails>
+          <h5  align= "center" style={{fontSize: '15px', fontWeight: 'bold', minWidth: '20%'}}> Productos Adquiridos</h5>
+          <br/>
+          <Table maxWidth="md" size="lg" style={{minWidth: '75%'}}>
+            <TableHead>
+              <TableRow className={classes.whiteBlend}>
+                <TableCell className={classes.whiteBlend}><b>Id Producto</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Nombre del Producto</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Descripcion</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Categoria</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Cantidad</b></TableCell>
+                <TableCell className={classes.whiteBlend}><b>Precio Unitario</b></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody className={classes.whiteBlend}>
+              {productos.map((row) => (
+                <TableRow key={row.id} className={classes.whiteBlend}>
+                  <TableCell className={classes.whiteBlend}>{row.itemId}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.nombre}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.descripcion}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{categoryIdToName(row.idCategoria)}</TableCell>
+                  <TableCell className={classes.whiteBlend}>{row.cantidad}</TableCell>
+                  <TableCell className={classes.whiteBlend}>${row.precioU}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </AccordionDetails>
+      </Accordion>}
+    </div>
+  );
+}
+
+
+const UserProfile = ({user,setUser,setCarrito}) => {
   const classes = useStyles();
   const [display, setDisplay] = useState(1);
 
@@ -302,9 +705,9 @@ export default function UserProfile({user}) {
             </CardAvatar>
             <CardBody profile>
               <h6 className={classes.cardCategory}>{user && user.isAdmin ? "Administrador": "Cliente"}</h6>
-              <h4 className={classes.cardTitle}>{user? user.firstName + user.lastName : "Not logged in"}</h4>
+              <h4 className={classes.cardTitle}>{user? user.nombre + " " + user.apellido : "Not logged in"}</h4>
               <p className={classes.description}>
-                Dirección de correo electrónico: {user? user.email : "-"}
+                Dirección de correo electrónico: {user? user.username : "-"}
               </p>
               <Button color="primary" round style={{backgroundColor:'pink', color: 'black', minWidth:'35%'}} onClick={(e) => setDisplay(1)}>
                 <Link to="#" style={{textDecoration: 'none', color: 'inherit'}}>
@@ -333,12 +736,13 @@ export default function UserProfile({user}) {
             </CardBody>
           </Card>
         </GridItem>
-        {display===1?<EditProfile user={user}/>:<></>}
-        {display===2?<DireccionEnvio user={user}/>:<></>}
-        {display===3?<MetodoDePago user={user}/>:<></>}
-        {display===4?<MisCompras transactions={transactionsFile}/>:<></>}
+        {display===1?<EditProfile usuario={user} setUsuario={(value) => setUser(value)}/>:<></>}
+        {display===2?<DireccionEnvio usuario={user}/>:<></>}
+        {display===3?<MetodoDePago usuario={user}/>:<></>}
+        {display===4?<MisCompras usuario={user}/>:<></>}
       </GridContainer>
     </div>
   );
 }
 
+export default UserProfile;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {useHistory} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -126,11 +127,18 @@ const CartCounter = ({product,cart,setCart}) => {
 export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
   const classes = useStyles();
 
-  useEffect(() => {
+  let history = useHistory();
+
+  const handleClick = e => {
+    e.preventDefault()
     if(!isLoggedIn){
       setReadyToPay(true);
+      history.push('/sign-in');
     }
-  },[])
+    else{
+      history.push('/checkout');
+    }
+  }
 
   const handleDeleteFromCart = (e,product) => {
     e.preventDefault();
@@ -179,18 +187,17 @@ export default function Cart({carrito,setCarrito,isLoggedIn,setReadyToPay}) {
               ${total}
             </Typography>
           </ListItem>
-          <Link to= {isLoggedIn ? '/checkout' : '/sign-in'} style={{ textDecoration: 'none' }} >
-            <Button 
+          <Button 
                 type="submit"
                 align="center"
                 variant="contained"
                 color="secondary"
                 className={classes.submit}
+                onClick={e=>handleClick(e)}
               >
-                PAGAR
+            PAGAR
             </Button>
-          </Link>
-          </div>):(<p>Aún no hay productos en el carrito</p>)}
+          </div>):(<h5 style={{marginTop:'1%'}}>- Aún no hay productos en el carrito -</h5>)}
           </List>
         
           <Grid container spacing={2} className= {classes.checkoutButton}>

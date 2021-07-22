@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Link as RouteLink} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +13,16 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+});
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -59,15 +70,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToPay}) {
   const classes = useStyles();
-
+  
+  let history = useHistory();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
-
-  const showError = (e) => {
-    e.preventDefault();
-    setError(true);
-  }
 
   const handleSetUsername = (e) => {
     setUsername(e.target.value);
@@ -77,48 +84,44 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
     setPassword(e.target.value);
   }
 
-  const match = () => {
-    let isMatch = false;
-    if(getMatchedUser() != null){
-      isMatch = true;
-    }
-    return isMatch;
+  const redirect = () => {
+    let path = readyToPay? "/checkout" : "/";
+    history.push(path);
   }
 
-  const getMatchedUser = () => {
-    for(let i=0;i<users.length;i++){
-      if(users[i].email === username && users[i].password === password){
-        return users[i];
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    let body = {
+      'username': username,
+      'password': password,
+    }
+    try{
+      let res = await api.post('/usuarios/login',body);
+      console.log(res);
+      if(res.status == 200){
+        console.log("entra a 200");
+        setIsLoggedIn(true);
+        console.log("Pasa setIsLoggedIn");
+        let user = res.data;
+        console.log("Pasa info user");
+        setCurrentUser(user);
+        console.log("Pasa set user");
+        setIsAdmin(user.isAdmin);
+        console.log("Pasa set isAdmin");
+        redirect();
       }
+      else if(res.status == 404){
+        setError(true);
+        if(res.data.error){
+          alert(res.data.error);
+        }
+      }
+      else{
+      }
+    }catch(err){
+      setError(true);
     }
-    return null;
   }
-
-  const handleSignIn = (e) => {
-    setIsLoggedIn(true);
-    setCurrentUser(getMatchedUser());
-    setIsAdmin(getMatchedUser().isAdmin);
-  }
-
-  const customer = {
-    'firstName': 'Juan',
-    'lastName': 'Gomez',
-    'email': 'customer@uade.edu.ar',
-    'password': 'uade1234',
-    'isAdmin': false,
-  };
-
-  const admin = {
-    'firstName': 'Admin',
-    'lastName': 'Teacher',
-    'email': 'admin@uade.edu.ar',
-    'password': 'uade1234',
-    'isAdmin': true,
-  };
-
-  const users = [
-      customer,admin
-  ]
 
   return (
     <Container className={classes.greyBorder} component="main" maxWidth="xs">
@@ -164,34 +167,17 @@ export default function SignIn({setIsLoggedIn,setIsAdmin,setCurrentUser,readyToP
             value={password}
             onChange={(e) => handleSetPassword(e)}
           />
-          {!!match() ? (
-            <RouteLink to={readyToPay? "/checkout" :  "/"} style={{ textDecoration: 'none', color:'black' }}>
-              <Button
-                type="submit"
-                fullWidth
-                backgroundColor= "black"
-                color="secondary"
-                variant="contained"
-                className={classes.submit}
-                onClick={(e) => handleSignIn(e)}
-              >
-                    Ingresar
-              </Button>
-            </RouteLink>
-          ) : (
-              <Button
-                type="submit"
-                fullWidth
-                backgroundColor= "black"
-                color="secondary"
-                variant="contained"
-                className={classes.submit}
-                onClick={(e) => showError(e)}
-              >
-                Ingresar
-              </Button>
-          )}
-          
+          <Button
+            type="submit"
+            fullWidth
+            backgroundColor= "black"
+            color="secondary"
+            variant="contained"
+            className={classes.submit}
+            onClick={(e) => handleSignIn(e)}
+          >
+            Ingresar
+          </Button>
           <Grid container>
             <Grid item xs>
             <RouteLink to="/passwordRecovery" >

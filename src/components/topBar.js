@@ -6,10 +6,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import Typography from '@material-ui/core/Typography';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
+import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
+import SupervisorAccountRoundedIcon from '@material-ui/icons/SupervisorAccountRounded';
 
 import logo from '../images/mysportKit-logo.jpeg';
 // import Login from './App.js';
@@ -48,9 +52,13 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  nameDisplay: {
+    fontSize: '15px',
+    color: 'black',
+  }
 }));
 
-export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart,setCart,setReadyToPay}) {
+export default function TopBar({isLoggedIn,setIsLoggedIn,user,setUser,isAdmin,setIsAdmin,cart,setCart,setReadyToPay}) {
   const classes = useStyles();
   // const { admin } = useContext(Login);
   // const [isAdmin, setIsAdmin] = admin;
@@ -87,6 +95,7 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
 
   const handleLogOut = () => {
     setIsLoggedIn(false);
+    setUser(null);
     setIsAdmin(false);
     setCart([]);
     setReadyToPay(false);
@@ -111,9 +120,11 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
     >
       {!!isLoggedIn ? (
         <div>
-          <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770' }}>
-            <MenuItem onClick={handleMenuClose}>Ver Perfil</MenuItem>
-          </Link>
+          <Tooltip  placement="left" title={user!=null? `${user.nombre} ${user.apellido}`:''}>
+            <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770' }}>
+              <MenuItem onClick={handleMenuClose}>Ver Perfil </MenuItem>
+            </Link>
+          </Tooltip>
           {isAdmin ? (
           <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
             <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
@@ -147,8 +158,8 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
       
       <MenuItem>
         <Link to='/cart' style={{ textDecoration: 'none', color: color}}>
-          <IconButton aria-label="show 4 items in cart"
-            aria-controls="primary-account-menu"
+          <IconButton aria-label="cart"
+            aria-controls="cart"
             aria-haspopup="true" 
             className={classes.color}>
               <ShoppingCartIcon />
@@ -159,34 +170,62 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
       {isLoggedIn ? (
         <div>
           <MenuItem onClick={handleProfileMenuOpen}>
-            <Link to='/profile' style={{ textDecoration: 'none', color: '#da3770'}}>
+            <Link to='/profile' style={{ textDecoration: 'none'}}>
               <IconButton
                 aria-label="account of current user"
                 aria-controls="primary-account-menu"
                 aria-haspopup="true"
                 className={classes.color}
-
               >
                 <AccountCircle />
               </IconButton>
             </Link>
-            {/* <p>Ver Perfil</p> */}
           </MenuItem>
-          <MenuItem style={{ textDecoration: 'none', color: '#da3770'}} onClick={() => handleLogOut()}>Cerrar Sesión</MenuItem>
-          
+          {isAdmin ? (
+            <Link to='/admin' style={{ textDecoration: 'none' }}>
+              <MenuItem onClick={handleMenuClose}>
+              <IconButton
+                      aria-label="admin panel"
+                      aria-controls="admin-panel"
+                      aria-haspopup="true"
+                      className={classes.color}
+
+                    >
+                  <SupervisorAccountRoundedIcon />
+                </IconButton>
+              </MenuItem>
+            </Link>
+            ) : (<></>)}
+          <Link to='/' style={{ textDecoration: 'none'}}>
+            <MenuItem style={{ textDecoration: 'none', color: '#000000'}} onClick={() => handleLogOut()}>
+              <IconButton
+                aria-label="log out"
+                aria-controls="log-out"
+                aria-haspopup="true"
+                className={classes.color}
+              >
+                <ExitToAppRoundedIcon/>
+              </IconButton>
+            </MenuItem>
+          </Link>
         </div>
       ) : (
         <div>
           <Link to='/sign-in' style={{ textDecoration: 'none', color: '#da3770' }}>
-            <MenuItem onClick={handleMenuClose}>Iniciar sesión / Crear una cuenta</MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+            <IconButton
+                aria-label="account of current user"
+                aria-controls="primary-account-menu"
+                aria-haspopup="true"
+                className={classes.color}
+              >
+                <AccountCircle />
+              </IconButton>
+            </MenuItem>
           </Link>
         </div>
       )}
-      {/* {isAdmin ? (
-      <Link to='/admin' style={{ textDecoration: 'none', color: '#da3770' }}>
-        <MenuItem onClick={handleMenuClose}>Administrador</MenuItem>
-      </Link>
-      ) : (<></>)} */}
+      
       
     </Menu>
   );
@@ -199,32 +238,25 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
           <Link to="/" >
             <img alt="" src={logo} className={classes.image} />
           </Link>
-          {/* <Typography className={classes.title} variant="h6" noWrap> 
-            MYSPORT KIT
-          </Typography>  */}
           
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {/* <IconButton aria-label="show 17 new notifications" color="inherit">
-                <NotificationsIcon />
-              
-            </IconButton> */}
-              <Link to= '/cart' style={{color: color}}>
-                <IconButton aria-label="show 4 items in the cart" style={{color: color}}>
-                    <ShoppingCartIcon />
-                </IconButton>
-              </Link>
-            <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-          
+
+          <Link to= '/cart' style={{color: color}}>
+            <IconButton aria-label="cart" style={{color: color}}>
+                <ShoppingCartIcon />
+            </IconButton>
+          </Link>
+          <IconButton
+            edge="end"
+            aria-label="account of current user"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={handleProfileMenuOpen}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
@@ -239,6 +271,9 @@ export default function TopBar({isLoggedIn,setIsLoggedIn,isAdmin,setIsAdmin,cart
           </div>
         </Toolbar>
       </AppBar>
+      {/* {user!=null && <Typography className={classes.nameDisplay} variant="h9"> 
+        ¡Hola {user.nombre} {user.apellido}!
+      </Typography>} */}
       {renderMobileMenu}
       {renderMenu}
     </div>

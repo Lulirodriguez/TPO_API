@@ -38,8 +38,12 @@ export default function Review({carrito,firstName,lastName,address1,address2,car
 
   let total = 0;
   const _ = carrito.map((item) => {
-    total += (item.precio * item.cantidad);
+    total += (item.precioU * item.cantidad);
   });
+
+  const parseCardNumber = (value) => {
+    return "**** **** **** " + value.slice(12);
+  }
 
   return (
     <React.Fragment>
@@ -49,12 +53,12 @@ export default function Review({carrito,firstName,lastName,address1,address2,car
       <List disablePadding>
         {carrito.map((product) => (
           <ListItem className={classes.listItem} key={product.nombre}>
-            <ListItemText primary={product.nombre} secondary={`${product.descripcion} , Cantidad: ${product.cantidad} ($${product.cantidad*product.precio})`} />
-            <Typography variant="body2">${product.precio}</Typography>
+            <ListItemText primary={`${product.nombre} (${product.cantidad} x $${product.precioU})`}  secondary={`${product.descripcion}`} />
+            <Typography variant="body2">${product.cantidad*product.precioU}</Typography>
           </ListItem>
         ))}
         <ListItem className={classes.listItem}>
-          <ListItemText primary="Total" />
+          <ListItemText primary="Importe Total" />
           <Typography variant="subtitle1" className={classes.total}>
             ${total}
           </Typography>
@@ -75,7 +79,7 @@ export default function Review({carrito,firstName,lastName,address1,address2,car
           <Grid container>
               <div>
                 <Grid item xs={12}>
-                  <Typography gutterBottom>Numero de Tarjeta: {cardNumber}</Typography>
+                  <Typography gutterBottom>Numero de Tarjeta: {parseCardNumber(cardNumber)}</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography gutterBottom>Propietario: {nameOnCard}</Typography>

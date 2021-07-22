@@ -95,7 +95,7 @@ export default function SignUp() {
     }
     try{
       let res = await api.post('/usuarios/register',body);
-      // console.log(res);
+      alert("Usuario creado con éxito");
       setError(false);
       // toastr.success("Usuario Registrado con éxito");
     } catch(err) {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link as RouteLink} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,12 +14,20 @@ import PaymentForm from './paymentForm.js';
 import Review from './review.js';
 import './checkout.css';
 
+import axios from 'axios';
+import { SubdirectoryArrowRightOutlined } from '@material-ui/icons';
 
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Access-Control-Allow-Origin": '*',
+    // "Access-Control-Allow-Methods": GET,POST,PUT,DELETE,
+  }
+});
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
-
   },
   layout: {
     width: 'auto',
@@ -43,10 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   stepper: {
     padding: theme.spacing(3, 0, 5),
-
-  
   },
-
   buttons: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -57,43 +62,132 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor:'pink',
     color: 'black',
   },
-
-
 }));
 
 const steps = ['Dirección de envío', 'Datos de pago', 'Revise su orden'];
 
-// function getStepContent(step) {
-//   switch (step) {
-//     case 0:
-//       return <AddressForm />;
-//     case 1:
-//       return <PaymentForm />;
-//     case 2:
-//       return <Review carrito={carrito} />;
-//     default:
-//       throw new Error('Unknown step');
-//   }
-// }
-
-export default function Checkout({carrito, shippingData, setShippingData, paymentData, setPaymentData, transactions, setTransactions}) {
+export default function Checkout({carrito,user,setCarrito}) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [error, setError] = React.useState(false);
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [address1, setAddress1] = useState("");
-  const [address2, setAddress2] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [country, setCountry] = useState("");
+  const [firstName, setFirstName] = useState(user.nombre);
+  const [lastName, setLastName] = useState(user.apellido);
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [country, setCountry] = useState('');
 
-  const [nameOnCard, setNameOnCard] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expDate, setExpDate] = useState("");
-  const [cvv, setCvv] = useState("");
+  const [nameOnCard, setNameOnCard] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [cvv, setCvv] = useState('');
+
+  const [firstAddressRes, setfirstAddressRes] = useState(null);
+  const [firstPaymentRes, setfirstPaymentRes] = useState(null);
+
+  const [newAddressId, setNewAddressId] = useState(0);
+  const [newPaymentId, setNewPaymentId] = useState(0);
+
+  const [numeroCompra, setNumeroCompra] = useState(0);
+
+  useEffect(()=> {
+    getAddress();
+    getPayment();
+  },[]);
+
+  const getAddress = async () => {
+    try{
+      let res = await api.get(`/direccionesDeEnvio/${user.id}`);
+      console.log(res);
+      let address = res.data;
+      setfirstAddressRes(address);
+      setAddress1(address.direccion1);
+      setAddress2(address.direccion2);
+      setCity(address.provincia);
+      setState(address.localidad);
+      setZipCode(address.codigoPostal);
+      setCountry(address.pais);
+      setError(false);
+      setNewAddressId(address.idDireccionEnvio);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const getPayment = async () => {
+    try{
+      let res = await api.get(`/metodosDePago/${user.id}`);
+      console.log(res);
+      let payment = res.data;
+      setfirstPaymentRes(payment);
+      setNameOnCard(payment.nombre);
+      setCardNumber(payment.numero);
+      setExpDate(payment.vencimiento);
+      setCvv(payment.codigo);
+      setError(false);
+      setNewPaymentId(payment.idMetodoPago);
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  const updatePayment = async () => {
+    let payment = {
+      'idCliente': user.id,
+      'nombre': nameOnCard,
+      'numero': cardNumber,
+      'codigo': cvv,
+      'vencimiento': expDate,
+    }
+    try{
+      if(firstPaymentRes == null){
+        let res = await api.post(`/metodosDePago`,payment);
+        if(res.status != 200){
+          alert("Ocurrio un error al actualizar la informacion de pago");
+        }
+      }
+      else{
+        let res = await api.put(`/metodosDePago/${user.id}`,payment);
+        if(res.status != 200){
+          alert("Ocurrio un error al actualizar la informacion de pago");
+        }
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de pago");
+    };
+  }
+
+
+  const updateAddress = async () => {
+    let address = {
+      'idCliente': user.id,
+      'direccion1': address1,
+      'direccion2': address2,
+      'provincia': city,
+      'localidad': state,
+      'codigoPostal': zipCode,
+      'pais': country,
+    }
+    try{
+      if(firstAddressRes == null){
+        let res = await api.post(`/direccionesDeEnvio`,address);
+        if(res.status!= 200){
+          alert("Ocurrio un error al actualizar la informacion de envio");
+        }
+      }
+      else{
+        let res = await api.put(`/direccionesDeEnvio/${user.id}`,address);
+        if(!res.status == 200){
+          alert("Ocurrio un error al actualizar la informacion de envio");
+        }
+      }
+    }catch(err){
+      alert("Error al actualizar informacion de envio");
+    };
+  }
 
   let counter = 0;
 
@@ -110,66 +204,59 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
     }
   }
 
-  let newShipping = {
-    'firstName': '',
-    'lastName': '',
-    'address1': '',
-    'address2': '',
-    'city': '',
-    'state': '',
-    'zipCode': '',
-    'country': '',
-  }
-
-  let newPayment = {
-    'nameOnCard': '',
-    'cardNumber': '',
-    'expDate': '',
-    'cvv': '',
-  }
-
-  let newTransaction = {
-    'purchase': '',
-    'shipping': '',
-    'payment': '',
-  }
-
-  const save = () => {
-    newShipping.firstName = firstName;
-    newShipping.lastName = lastName;
-    newShipping.address1 = address1;
-    newShipping.address2 = address2;
-    newShipping.city = city;
-    newShipping.state = state;
-    newShipping.zipCode = zipCode;
-    newShipping.country = country;
-
-    setShippingData([
-      ...shippingData,
-      newShipping
-    ]);
-    console.log(shippingData);
-    setPaymentData([
-      ...paymentData,{
-      'nameOnCard': nameOnCard,
-      'cardNumber': cardNumber,
-      'expDate': expDate,
-      'cvv': cvv,
+  const crearTransaccion = async () => {
+    try{
+      // generar una compra asociado al idUsuario
+      let compra = {
+        'idCliente': user.id
       }
-    ]);
-    console.log(paymentData);
-    setTransactions([
-      ...transactions,
-      {
-        'purchase': carrito,
-        'shipping': shippingData,
-        'payment': paymentData,
+      let res = await api.post("/compras",compra);
+      let idCompra = res.data.idCompra;
+      setNumeroCompra(idCompra);
+      // por cada item del carrito: generar un itemXCompra
+      for(let i=0;i<carrito.length;i++){
+        let itemXCompra = {
+          'idCompra': idCompra,
+          'itemId': carrito[i].itemId,
+          'nombre': carrito[i].nombre,
+          'descripcion': carrito[i].descripcion,
+          'idCategoria': carrito[i].idCategoria,
+          'imagen': carrito[i].imagen,
+          'precioU': carrito[i].precioU,
+          'cantidad': carrito[i].cantidad,
+        }
+        await api.post("/itemsXCompra",itemXCompra);
       }
-    ]);
-    console.log(transactions);
+      // crear la transaccion asociada a los ids de la forma de pago, la direccion de envio y el usuario
+      let transaccion = {
+        'idCompra': idCompra,
+        'idCliente': user.id,
+        'idDireccionEnvio': newAddressId,
+        'idMetodoPago': newPaymentId,
+      }
+      api.post("/transacciones",transaccion).then(newTransaction => {
+        if(newTransaction.status == 200){
+          console.log(newTransaction.data);
+          alert("Transaccion creada!");
+        }
+      }).catch(err => {
+        alert(err);
+      });
+    }catch(err){
+      alert("Error al crear la transferencia");
+    }
   }
 
   const handleNext = () => {
+    if(activeStep==0){
+      updateAddress();
+    }
+    else if(activeStep==1){
+      updatePayment();
+    }
+    else if(activeStep == steps.length - 1){
+      crearTransaccion();
+    }
     setActiveStep(activeStep + 1);
   };
 
@@ -179,6 +266,10 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
       counter -= 1
     }
   };
+
+  const finishCheckout = () => {
+    setCarrito([]);
+  }
 
   return (
     <React.Fragment>
@@ -207,10 +298,10 @@ export default function Checkout({carrito, shippingData, setShippingData, paymen
                   Muchas gracias por su compra.
                 </Typography>
                 <Typography variant="subtitle1">
-                  ¡La compra ha sido realizada con éxito! Su número de orden es el #2001539. Le estaremos enviando un email de confirmación de compra con todos los detalles a su correo electrónico.
+                  {`¡La compra ha sido realizada con éxito! Su número de orden es el #${numeroCompra ? numeroCompra : '290984'}.`}
                 </Typography>
                 <RouteLink to="/" style={{ textDecoration: 'none' }} >
-                  <Button variant="contained" className={classes.linkButton} color="secondary" onClick={() => save()} className={classes.button}>
+                  <Button variant="contained" className={classes.linkButton} color="secondary" onClick={() => finishCheckout()} className={classes.button}>
                     Volver a la página de inicio
                   </Button>
                 </RouteLink>
