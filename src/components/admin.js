@@ -151,7 +151,8 @@ function Products() {
     const getProductos = async () => {
       try{
         let productData = await api.get("/items");
-        setProducts(productData.data);
+        let data = productData.data;
+        setProducts(data);
       }catch(err){
         alert(err + ": No se pudo caragr informacion de los productos");
       }
@@ -271,8 +272,7 @@ function AddProductModal() {
     newProduct.imagen = nuevaImagen;
 
     api.post("/items",newProduct).then(res => {
-      alert("Producto agregado.");
-      history.push("/admin");
+      window.location.reload(true);
     }).catch(err => 
       alert("Error al agregar producto")
     );
@@ -495,8 +495,7 @@ function EditProductModal({editable}) {
     editedProduct.precioU = nuevoPrecio;
 
     api.put(`/items/${id}`,editedProduct).then(res=> {
-      alert("Producto editado con éxito.");
-      history.push("/admin");
+      window.location.reload(true);
     }).catch(err => {
       alert("Error al editar producto. ",err);
     });
@@ -685,9 +684,8 @@ function DeleteProductModal({id}) {
 
   const eliminarProducto = async (id) => {
     try{
-      await api.delete(`/items/${id}`);
-      alert("Producto eliminado con éxito.");
-      history.push("/admin");
+      let res = await api.delete(`/items/${id}`);
+      window.location.reload(true);
     }catch(err){
       alert("Error al eliminar producto. " + err);
     }
