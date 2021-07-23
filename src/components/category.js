@@ -108,16 +108,31 @@ const Counter = ({card, addToCart}) => {
 const Category = ({carrito, setCarrito}) => {
     const classes = useStyles();
     const [itemList, setItemList] = useState([]);
+    const [categoria, setCategoria] = useState({});
     let {categoryId} = useParams();
 
     useEffect(() => {
         getItemsForCategory();
+        getCategoryName();
         console.log(itemList);
     },[]);
 
     const getItemsForCategory = async () => {
-        let itemsData = await api.get(`items/${categoryId}`);
-        setItemList(itemsData.data);
+        try{
+            let itemsData = await api.get(`items/${categoryId}`);
+            setItemList(itemsData.data);
+        }catch(err){
+            alert(err);
+        }
+    }
+
+    const getCategoryName = async () => {
+        try{
+            let categoria = await api.get(`/categorias/${categoryId}`);
+            setCategoria(categoria.data);
+        }catch(err){
+            alert(err);
+        }
     }
 
     const handleOnAddToCart = (card,cantidad) => {
@@ -151,14 +166,9 @@ const Category = ({carrito, setCarrito}) => {
 
     return (
         <div className={classes.counterbutton}>
-            <RouteLink to="/" style={{textDecoration : 'none'}}>
-                <Button className={classes.darkBlend} variant="body2">
-                    {" Volver al Inicio "}
-                </Button>
-            </RouteLink>
             {itemList && itemList.length!=0? (
                 <div>
-                    <h3 align="center" style={{marginBottom:'-1.5%'}}>Productos</h3>
+                    <h3 align="center" style={{marginBottom:'-1.5%', marginTop: '10px'}}>Artículos de {categoria.nombre}</h3>
                     <main>
                         <Container className={classes.cardGrid} maxWidth="lg">
                         <Grid container spacing={4}>
@@ -196,6 +206,11 @@ const Category = ({carrito, setCarrito}) => {
                 <h5 style={{marginTop:'1%'}}>- No hay productos disponibles para esta categoría -</h5>
             </div>
             )}
+            <RouteLink to="/" style={{textDecoration : 'none'}}>
+                <Button className={classes.darkBlend} variant="body2">
+                    {" Volver al Inicio "}
+                </Button>
+            </RouteLink>
         </div>
     );
 }
