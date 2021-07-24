@@ -300,7 +300,7 @@ function Transactions() {
 
   return (
     <React.Fragment >
-      <h4  align= "center"  >TRANSACCIONES RECIENTES</h4>
+      <h4  align= "left"  >TRANSACCIONES RECIENTES</h4>
       <br/>
       {transacciones && transacciones.length!=0 ? transacciones.map((transaccion) => (
         <TransactionAccordion transaccion={transaccion} />
@@ -353,7 +353,7 @@ function Products() {
       <React.Fragment >
         <h1 className={classes.whiteBlend}>USUARIO ADMINISTRADOR</h1>
         <br/>
-        <h4 className={classes.whiteBlend} align= "center">ABM PRODUCTOS</h4>
+        <h4 className={classes.whiteBlend} align= "left">ABM PRODUCTOS</h4>
         <Table maxWidth="lg" size="small">
             <TableHead>
                 <TableRow className={classes.whiteBlend}>
@@ -522,7 +522,7 @@ function AddProductDialog({ open, onClose, nombre,setNombre,descripcion,setDescr
   }
 
   const validarCaracteres = (value) => {
-    let posibles = /^[a-zA-Z0-9_ ]*$/i;
+    let posibles = /^[áéíóúa-zA-Z0-9_+"'/!¡ ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {
@@ -753,7 +753,7 @@ function EditProductDialog({ open , onClose, closeModal, nombre,setNombre,descri
   }
 
   const validarCaracteres = (value) => {
-    let posibles = /^[a-zA-Z0-9_ ]*$/i;
+    let posibles = /^[áéíóúa-zA-Z0-9_+"'/!¡ ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {
