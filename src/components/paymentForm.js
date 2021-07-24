@@ -21,7 +21,7 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
   },[nameOnCard,cardNumber,expDate,cvv]);
 
   const validarCampos = () => {
-    return validarCaracteres(nameOnCard) && validarNumeros(cardNumber) && validarNumeros(cvv) && validarFormatoFecha(expDate);
+    return validarCaracteres(nameOnCard) && validarTarjeta(cardNumber) && validarCodigo(cvv) && validarFormatoFecha(expDate);
   }
 
   function validarFormatoFecha(value) {
@@ -33,9 +33,18 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
     }
   }
 
-  const validarNumeros = (value) => {
+  const validarTarjeta = (value) => {
     let valoresAceptados = /^[0-9 ]+$/;
-    if ( value.match(valoresAceptados) && (value!='')){
+    if ( value.match(valoresAceptados) && (value!='') && value.length == 16){
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  const validarCodigo = (value) => {
+    let valoresAceptados = /^[0-9 ]+$/;
+    if ( value.match(valoresAceptados) && (value!='') && (value.length == 3 || value.length == 4) ){
       return true;
     }else {
       return false;
@@ -43,7 +52,7 @@ export default function PaymentForm({nameOnCard,setNameOnCard,cardNumber,setCard
   }
 
   const validarCaracteres = (value) => {
-    let posibles = /^[a-zA-Z_ ]*$/i;
+    let posibles = /^[áéíóúa-zA-Z_' ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {

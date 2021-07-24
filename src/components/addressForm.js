@@ -28,15 +28,6 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
     validarNumeros(zipCode);
   }
 
-  function validarFormatoFecha(campo) {
-    var RegExPattern = /^\d{1,2}\/\d{1,2}\/$/;
-    if ((campo.match(RegExPattern)) && (campo!='')) {
-          return true;
-    } else {
-          return false;
-    }
-  }
-
   const validarNumeros = (value) => {
     let valoresAceptados = /^[0-9 ]+$/;
     if ( value.match(valoresAceptados) && (value!='') ){
@@ -47,7 +38,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   }
 
   const validarCaracteres = (value) => {
-    let posibles = /^[a-zA-Z_ ]*$/i;
+    let posibles = /^[áéíóúa-zA-Z_'" ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {
@@ -56,7 +47,7 @@ export default function AddressForm({firstName,setFirstName,lastName,setLastName
   }
 
   const validarCaracteresYNumeros = (value) => {
-    let posibles = /^[a-zA-Z0-9_ ]*$/i;
+    let posibles = /^[áéíóúa-zA-Z0-9_'". ]*$/i;
     if ((value.match(posibles)) && (value!='')) {
       return true;
     } else {

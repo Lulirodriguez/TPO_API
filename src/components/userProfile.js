@@ -23,6 +23,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 
 import avatar from "../images/marc.jpg";
 
@@ -79,6 +80,7 @@ const useStyles = makeStyles(styles);
 
 const EditProfile = ({usuario, setUsuario}) => {
   const classes = useStyles();
+  const [error, setError] = useState(false);
 
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
@@ -87,6 +89,19 @@ const EditProfile = ({usuario, setUsuario}) => {
   useEffect(()=> {
     getProfile();
   },[]);
+
+  useEffect(()=> {
+    try{
+      if(!validarCampos()){
+        setError(true);
+      }
+      else{
+        setError(false);
+      }
+    }catch(err){
+      setError(true);
+    }
+  },[nombre,apellido]);
 
   const getProfile = async () => {
     try{
@@ -99,6 +114,20 @@ const EditProfile = ({usuario, setUsuario}) => {
       return user;
     }catch(err){
       console.log(err);
+    }
+  }
+
+  const validarCampos = () => {
+    return validarCaracteres(nombre) &&
+    validarCaracteres(apellido);
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[áéíóúa-zA-Z_'" ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -123,7 +152,7 @@ const EditProfile = ({usuario, setUsuario}) => {
         alert("Ocurrio un error al actualizar la informacion de perfil");
       }
     }catch(err){
-      alert("Error al actualizar informacion de Perfil");
+      alert("El email ingresado es inválido");
     };
   }
 
@@ -138,6 +167,9 @@ const EditProfile = ({usuario, setUsuario}) => {
           <CardBody>
             <GridContainer>
               <GridItem xs={12} sm={12} md={12}>
+              {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
+                Complete los campos en el formato adecuado
+              </Typography> : <></>}
                 <CustomInput
                   labelText="Email"
                   id="email-address"
@@ -181,7 +213,7 @@ const EditProfile = ({usuario, setUsuario}) => {
             </GridContainer>
           </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdateProfile(e)}>Actualizar Perfil</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={!error? (e) => handleUpdateProfile(e) : console.log("Completar campos correctamente")}>Actualizar Perfil</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -191,6 +223,7 @@ const EditProfile = ({usuario, setUsuario}) => {
 
 const DireccionEnvio = ({usuario}) => {
   const classes = useStyles();
+  const [error, setError] = useState(false);
 
   const [firstRes, setFirstRes] = useState(null);
   const [address1, setAddress1] = useState('');
@@ -219,6 +252,53 @@ const DireccionEnvio = ({usuario}) => {
       // return address;
     }catch(err){
       console.log(err);
+    }
+  }
+
+  useEffect(()=> {
+    try{
+      if(!validarCampos()){
+        setError(true);
+      }
+      else{
+        setError(false);
+      }
+    }catch(err){
+      setError(true);
+    }
+  },[address1,address2,city,state,zipCode,country]);
+
+  const validarCampos = () => {
+    return validarCaracteresYNumeros(address1) &&
+    validarCaracteres(city) &&
+    validarCaracteres(state) &&
+    validarCaracteres(country);
+  }
+
+  const validarNumeros = (value) => {
+    let valoresAceptados = /^[0-9 ]+$/;
+    if ( value.match(valoresAceptados) && (value!='') ){
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[áéíóúÁÉÍÓÚa-zA-Z_ ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const validarCaracteresYNumeros = (value) => {
+    let posibles = /^[áéíóúÁÉÍÓÚa-zA-Z0-9_ ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -267,6 +347,11 @@ const DireccionEnvio = ({usuario}) => {
           </CardHeader>
           <CardBody>
             <GridContainer>
+            <GridItem xs={12} sm={12} md={12}>
+              {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
+                Complete los campos en el formato adecuado
+              </Typography> : <></>}
+              </GridItem>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
                   labelText="Direccion 1"
@@ -348,7 +433,7 @@ const DireccionEnvio = ({usuario}) => {
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdateAddress(e)}>Actualizar Detalles de Envío</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={!error? (e) => handleUpdateAddress(e) : console.log("Completar campos de forma adecuada")}>Actualizar Detalles de Envío</Button>
           </CardFooter>
         </Card>
       </GridItem>
@@ -358,6 +443,7 @@ const DireccionEnvio = ({usuario}) => {
 
 const MetodoDePago = ({usuario}) => {
   const classes = useStyles();
+  const [error, setError] = useState(false);
 
   const [firstRes, setFirstRes] = useState(null);
   const [nameOnCard, setNameOnCard] = useState('');
@@ -381,6 +467,59 @@ const MetodoDePago = ({usuario}) => {
       setCvv(payment.codigo);
     }catch(err){
       console.log(err);
+    }
+  }
+
+  useEffect(()=> {
+    try{
+      if(!validarCampos()){
+        setError(true);
+      }
+      else{
+        setError(false);
+      }
+    }catch(err){
+      setError(true);
+    }
+  },[nameOnCard,cardNumber,expDate,cvv]);
+
+  const validarCampos = () => {
+    return validarCaracteres(nameOnCard) && validarTarjeta(cardNumber) && validarCodigo(cvv) && validarFormatoFecha(expDate);
+  }
+
+  function validarFormatoFecha(value) {
+    var RegExPattern = /^\d{1,2}\/\d{2}$/;
+    if ((value.match(RegExPattern)) && (value!='')) {
+          return true;
+    } else {
+          return false;
+    }
+  }
+
+  const validarTarjeta = (value) => {
+    let valoresAceptados = /^[0-9 ]+$/;
+    if ( value.match(valoresAceptados) && (value!='') && value.length == 16){
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  const validarCodigo = (value) => {
+    let valoresAceptados = /^[0-9 ]+$/;
+    if ( value.match(valoresAceptados) && (value!='') && (value.length == 3 || value.length == 4) ){
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  const validarCaracteres = (value) => {
+    let posibles = /^[áéíóúa-zA-Z_' ]*$/i;
+    if ((value.match(posibles)) && (value!='')) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -427,6 +566,11 @@ const MetodoDePago = ({usuario}) => {
           </CardHeader>
           <CardBody>
             <GridContainer>
+              <GridItem xs={12} sm={12} md={12}>
+              {error? <Typography component="h1" variant="h5" align="center" style={{color: 'red', fontSize: '14px'}}>
+                Complete los campos en el formato adecuado
+              </Typography> : <></>}
+              </GridItem>
               <GridItem xs={12} sm={12} md={6}>
                 <CustomInput
                   labelText="Nombre en la Tarjeta"
@@ -482,7 +626,7 @@ const MetodoDePago = ({usuario}) => {
             </GridContainer>
             </CardBody>
           <CardFooter style={{margin:'auto', padding:'2%'}}>
-            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={(e) => handleUpdatePayment(e)}>Actualizar Método de Pago</Button>
+            <Button style={{backgroundColor:'pink', color: 'black'}} onClick={!error? (e) => handleUpdatePayment(e) : console.log("Completar Campos de forma adecuada")}>Actualizar Método de Pago</Button>
           </CardFooter>
         </Card>
       </GridItem>
